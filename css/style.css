@@ -88,8 +88,10 @@ body {
 #main-title {
     font-size: clamp(3rem, 10vw, 6rem);
     font-weight: 700;
+    color: #fff;
     background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
 }
