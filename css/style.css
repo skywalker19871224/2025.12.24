@@ -134,9 +134,17 @@ body {
 }
 
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 .main-vignette {
@@ -148,6 +156,7 @@ body {
     .dashboard {
         width: 95%;
     }
+
     .value {
         font-size: 2rem;
     }
