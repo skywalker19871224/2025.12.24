@@ -88,12 +88,20 @@ body {
 #main-title {
     font-size: clamp(3rem, 10vw, 6rem);
     font-weight: 700;
-    color: #fff;
-    background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--gold);
+    /* Fallback for older browsers */
     margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+    #main-title {
+        background: linear-gradient(135deg, #fff 0%, var(--gold) 60%, #b8860b 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
 }
 
 .greeting {
