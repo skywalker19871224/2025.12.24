@@ -49,15 +49,17 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* Center content vertically for tall screens */
-    padding: calc(env(safe-area-inset-top) + 2rem) 1rem calc(env(safe-area-inset-bottom) + 1rem);
+    /* Center content horizontally as a group */
+    padding: env(safe-area-inset-top) 1.5rem env(safe-area-inset-bottom);
     max-width: 800px;
     margin: 0 auto;
+    gap: 2rem;
+    /* Consistent spacing between header, grid, and footer */
 }
 
 .status-bar {
-    padding: 1.5rem 0.5rem 2rem;
-    /* Adjusted padding and added gap to icons below */
+    padding: 1.5rem 0.5rem 0;
+    /* Reduced bottom padding, spacing handled by gap */
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
