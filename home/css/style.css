@@ -115,14 +115,12 @@ body {
 }
 
 .icon-visual {
-    width: 100%;
-    max-width: 60px;
-    /* Slightly smaller for 5 columns */
-    aspect-ratio: 1/1;
+    width: 60px;
+    height: 60px;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 22.5%;
     /* iOS squirkle approximation */
     display: flex;
@@ -135,6 +133,8 @@ body {
     /* Soft inner glow */
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
+    /* Prevent shrinking in flex containers */
 }
 
 .icon-visual::after {
@@ -149,11 +149,11 @@ body {
 }
 
 .icon-visual.gold-gradient {
-    border-color: var(--gold);
+    border-color: rgba(212, 175, 55, 0.8);
 }
 
 .icon-visual.silver-gradient {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
     /* Blend silver into white theme */
 }
 
@@ -235,12 +235,6 @@ body {
 
     .icon-grid {
         gap: 1.5rem 1rem;
-    }
-
-    .icon-visual {
-        width: 60px;
-        /* Enforce fixed width for consistency */
-        height: 60px;
     }
 }
 
