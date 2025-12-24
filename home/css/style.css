@@ -206,7 +206,7 @@ body {
 .bottom-nav {
     padding: 1rem 0 calc(1rem + env(safe-area-inset-bottom));
     display: flex;
-    justify(content): center;
+    justify-content: center;
 }
 
 .nav-bar-pill {
@@ -220,21 +220,26 @@ body {
 /* Specific adjustments for 20:9 (ultra-tall) screens like Reno5 A */
 @media (max-aspect-ratio: 10/21) {
     .home-container {
-        padding-top: 10px; /* Precise position as requested */
-        justify-content: flex-start; /* Move group towards top */
-        gap: 1.5rem; /* Tighter gap to maintain top-weighted look */
+        padding-top: 10px;
+        /* Precise position as requested */
+        justify-content: flex-start;
+        /* Move group towards top */
+        gap: 1.5rem;
+        /* Tighter gap to maintain top-weighted look */
     }
-    
+
     .status-bar {
-        padding-top: 20px; /* Safe distance for punch-hole while keeping focus high */
+        padding-top: 20px;
+        /* Safe distance for punch-hole while keeping focus high */
     }
 
     .icon-grid {
         gap: 1.5rem 1rem;
     }
-    
+
     .icon-visual {
-        width: 60px; /* Enforce fixed width for consistency */
+        width: 60px;
+        /* Enforce fixed width for consistency */
         height: 60px;
     }
 }

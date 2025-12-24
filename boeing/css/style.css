@@ -1,0 +1,209 @@
+:root {
+    --hud-cyan: #00F2FF;
+    --hud-cyan-glow: rgba(0, 242, 255, 0.4);
+    --bg-deep: #050b1a;
+    --glass-hud: rgba(0, 242, 255, 0.05);
+    /* Very transparent aeronautical glass */
+    --border-hud: rgba(0, 242, 255, 0.3);
+    --text-hud: #E6F1FF;
+    --gold-caution: #ffcc00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-deep);
+    /* Placeholder gradient until image is ready */
+    background-image: radial-gradient(circle at center, #0a1f44 0%, #050b1a 100%);
+    background-size: cover;
+    background-attachment: fixed;
+    color: var(--text-hud);
+    font-family: 'Outfit', 'Inter', sans-serif;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    cursor: crosshair;
+}
+
+#hud-scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 4px, 3px 100%;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.dashboard-container {
+    padding: env(safe-area-inset-top) 1.5rem env(safe-area-inset-bottom);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+/* HUD System Header */
+.hud-header {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Orbitron', sans-serif;
+    border-bottom: 1px solid var(--border-hud);
+}
+
+.status-label {
+    color: var(--hud-cyan);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-shadow: 0 0 10px var(--hud-cyan-glow);
+}
+
+.system-time {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.phase-badge {
+    background: var(--hud-cyan);
+    color: var(--bg-deep);
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+/* Primary Flight Display (Central HUD) */
+.hud-center-primary {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.attitude-indicator {
+    width: 200px;
+    height: 200px;
+    border: 1px solid var(--border-hud);
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.horizon-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--hud-cyan);
+    box-shadow: 0 0 10px var(--hud-cyan-glow);
+}
+
+/* Instrument Cards */
+.instrument-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding-bottom: 2rem;
+}
+
+.hud-card {
+    background: var(--glass-hud);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-hud);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.hud-card:active {
+    background: rgba(0, 242, 255, 0.15);
+    border-color: var(--hud-cyan);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    color: var(--hud-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.card-value {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.card-value .value {
+    font-size: 1.8rem;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 400;
+}
+
+.card-value .unit {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+/* Return Nav */
+.return-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--hud-cyan);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 1rem 0;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.return-nav:hover {
+    opacity: 1;
+}
+
+/* Footer Log */
+.hud-footer {
+    padding: 1rem 1.5rem;
+    font-family: 'monospace';
+    font-size: 0.65rem;
+    color: var(--hud-cyan);
+    opacity: 0.6;
+}
+
+.log-line {
+    display: block;
+}
+
+@media (min-width: 800px) {
+    .instrument-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .span-2 {
+        grid-column: span 1;
+    }
+}
