@@ -148,28 +148,28 @@ body {
 }
 
 .icon-visual.silver-gradient {
-    border-color: rgba(212, 175, 55, 0.4);
-    /* Blend silver into gold theme */
+    border-color: rgba(255, 255, 255, 0.2);
+    /* Blend silver into white theme */
 }
 
 .icon-symbol {
     font-size: 1.5rem;
-    color: var(--gold);
-    /* Pale gold uniform color */
+    color: #f0f0f0;
+    /* Near-white color for better glass match */
     transition: all 0.3s ease;
 }
 
 /* Glow Effect on Press */
 .glass-icon-card:active .icon-visual {
     box-shadow:
-        0 0 30px var(--gold-glow),
-        inset 0 0 15px var(--gold-glow);
-    border-color: var(--gold);
+        0 0 30px rgba(255, 255, 255, 0.3),
+        inset 0 0 15px rgba(255, 255, 255, 0.2);
+    border-color: #fff;
 }
 
 .glass-icon-card:active .icon-symbol {
     color: #fff;
-    text-shadow: 0 0 10px var(--gold);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
 
 .gold-gradient .icon-symbol,
