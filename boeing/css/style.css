@@ -19,7 +19,7 @@
 body {
     background-color: var(--bg-deep);
     background-image: linear-gradient(rgba(5, 11, 26, 0.7), rgba(5, 11, 26, 0.7)),
-        url('../boeing_background.png');
+        url('../../boeing_background.png');
     background-size: cover;
     background-position: center bottom;
     /* Anchor to floor/dashboard */
