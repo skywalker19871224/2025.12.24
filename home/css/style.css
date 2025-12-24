@@ -148,36 +148,49 @@ body {
 }
 
 .icon-visual.silver-gradient {
-    border-color: #a0a0a0;
+    border-color: rgba(212, 175, 55, 0.4);
+    /* Blend silver into gold theme */
 }
 
 .icon-symbol {
     font-size: 1.5rem;
+    color: var(--gold);
+    /* Pale gold uniform color */
+    transition: all 0.3s ease;
 }
 
-.gold-gradient .icon-symbol {
-    background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* Glow Effect on Press */
+.glass-icon-card:active .icon-visual {
+    box-shadow:
+        0 0 30px var(--gold-glow),
+        inset 0 0 15px var(--gold-glow);
+    border-color: var(--gold);
 }
 
+.glass-icon-card:active .icon-symbol {
+    color: #fff;
+    text-shadow: 0 0 10px var(--gold);
+}
+
+.gold-gradient .icon-symbol,
 .silver-gradient .icon-symbol {
-    background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* Remove the individual background gradients to stick to uniform gold */
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: initial;
 }
 
 .icon-label {
     font-size: 0.65rem;
-    color: var(--text-main);
+    color: var(--text-dim);
     font-weight: 400;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
+    margin-top: 0.2rem;
 }
 
 .disabled {
