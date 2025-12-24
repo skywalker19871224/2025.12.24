@@ -18,7 +18,12 @@
 
 body {
     background-color: var(--stark-bg);
-    background-image: radial-gradient(circle at center, #240a0a 0%, #0a0404 100%);
+    background-image: linear-gradient(rgba(10, 4, 4, 0.7), rgba(10, 4, 4, 0.7)),
+        url('../../ironman_background.png');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     color: #fff;
     font-family: 'Outfit', 'Inter', sans-serif;
     height: 100vh;
