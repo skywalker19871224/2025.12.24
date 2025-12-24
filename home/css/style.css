@@ -206,7 +206,7 @@ body {
 .bottom-nav {
     padding: 1rem 0 calc(1rem + env(safe-area-inset-bottom));
     display: flex;
-    justify-content: center;
+    justify(content): center;
 }
 
 .nav-bar-pill {
@@ -217,10 +217,31 @@ body {
     opacity: 0.5;
 }
 
-/* Specific adjustments for 20:9 screens like Reno5 A */
-@media (aspect-ratio: 9/20),
-(min-aspect-ratio: 9/20) {
+/* Specific adjustments for 20:9 (ultra-tall) screens like Reno5 A */
+@media (max-aspect-ratio: 10/21) {
+    .home-container {
+        padding-top: 5rem;
+        /* Strategic space for top-left punch-hole camera */
+        gap: 3rem;
+        /* Increase gap to fill ultra-tall screen proportionally */
+    }
+
     .icon-grid {
-        gap: 2rem;
+        gap: 2.5rem 1rem;
+        /* More vertical gap for tall screens */
+    }
+}
+
+/* Adjust for PC/Wider screens */
+@media (min-width: 810px) {
+    .home-container {
+        padding-top: 3rem;
+        justify-content: flex-start;
+        /* Standard top-aligned layout for desktop */
+        gap: 4rem;
+    }
+
+    .icon-grid {
+        gap: 2.5rem;
     }
 }
