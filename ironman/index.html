@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>STARK INDUSTRIES | IRONMAN HUD</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+</head>
+
+<body>
+    <div id="stark-scanner"></div>
+    <div id="particle-container"></div>
+
+    <main class="ironman-container">
+        <!-- Stark System Header -->
+        <header class="stark-header">
+            <div class="system-status">
+                <div class="status-box">
+                    <span class="label">OS:</span>
+                    <span class="value">JARVIS v2.0</span>
+                </div>
+                <div class="status-box">
+                    <span class="label">AUTH:</span>
+                    <span class="value">T. STARK</span>
+                </div>
+            </div>
+            <div class="stark-logo">
+                <span class="brand">STARK</span>
+                <span class="type">INDUSTRIES</span>
+            </div>
+        </header>
+
+        <!-- Central Arc Reactor Display -->
+        <div class="arc-reactor-core">
+            <div class="arc-outer-ring"></div>
+            <div class="arc-inner-ring"></div>
+            <div class="arc-center-glow"></div>
+            <div class="arc-power-level">
+                <span class="percent" id="power-value">100</span>
+                <span class="unit">%</span>
+            </div>
+            <span class="core-label">CORE TEMPERATURE: STEADY</span>
+        </div>
+
+        <section class="stark-grid">
+            <!-- Suit Integrity -->
+            <div class="stark-card">
+                <div class="card-edge top"></div>
+                <div class="card-header">
+                    <i class="ph-bold ph-shield-check"></i>
+                    <span>INTEGRITY</span>
+                </div>
+                <div class="card-display">
+                    <div class="gauge-bar">
+                        <div class="gauge-fill" style="width: 98%"></div>
+                    </div>
+                    <span class="display-val">98%</span>
+                </div>
+            </div>
+
+            <!-- Energy Output -->
+            <div class="stark-card">
+                <div class="card-edge top"></div>
+                <div class="card-header">
+                    <i class="ph-bold ph-lightning"></i>
+                    <span>OUTPUT</span>
+                </div>
+                <div class="card-display">
+                    <span class="display-val big">4.2</span>
+                    <span class="display-unit">GW</span>
+                </div>
+            </div>
+
+            <!-- Flight Speed -->
+            <div class="stark-card">
+                <div class="card-edge top"></div>
+                <div class="card-header">
+                    <i class="ph-bold ph-rocket-launch"></i>
+                    <span>VELOCITY</span>
+                </div>
+                <div class="card-display">
+                    <span class="display-val">MACH 2.4</span>
+                </div>
+            </div>
+
+            <!-- Weapon Systems -->
+            <div class="stark-card">
+                <div class="card-edge top"></div>
+                <div class="card-header">
+                    <i class="ph-bold ph-target"></i>
+                    <span>WEAPONS</span>
+                </div>
+                <div class="card-display">
+                    <span class="status-msg green">ONLINE</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Link Back -->
+        <a href="../home/" class="stark-return">
+            <i class="ph-bold ph-caret-double-left"></i>
+            <span>RETURN TO HQ</span>
+        </a>
+    </main>
+
+    <footer class="stark-footer">
+        <div class="console-output">
+            <p>> ACCESS GRANTED. HAPPY BIRTHDAY, SIR.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
