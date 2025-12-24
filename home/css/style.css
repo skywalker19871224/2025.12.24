@@ -20,13 +20,13 @@ body {
     background-color: var(--bg-dark);
     background-image: linear-gradient(rgba(10, 14, 23, 0.8), rgba(10, 14, 23, 0.8)), url('../background.png');
     background-size: cover;
-    background-position: center;
+    background-position: center top;
     background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--text-main);
     font-family: 'Outfit', 'Inter', sans-serif;
     min-height: 100vh;
     min-height: 100dvh;
-    /* Modern mobile height */
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -93,12 +93,11 @@ body {
 }
 
 .icon-grid {
-    flex: 1;
+    /* Removed flex: 1 to prevent vertical stretching */
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 0.8rem;
-    padding: 1rem 0.2rem;
+    gap: 1.2rem 0.8rem;
+    padding: 0.5rem 0.2rem;
 }
 
 .glass-icon-card {
@@ -203,7 +202,7 @@ body {
 }
 
 .bottom-nav {
-    padding: 1rem 0;
+    padding: 1rem 0 calc(1rem + env(safe-area-inset-bottom));
     display: flex;
     justify-content: center;
 }
@@ -213,6 +212,7 @@ body {
     height: 4px;
     background: var(--glass-border);
     border-radius: 2px;
+    opacity: 0.5;
 }
 
 /* Specific adjustments for 20:9 screens like Reno5 A */
