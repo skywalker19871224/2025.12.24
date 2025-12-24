@@ -18,10 +18,13 @@
 
 body {
     background-color: var(--bg-deep);
-    /* Placeholder gradient until image is ready */
-    background-image: radial-gradient(circle at center, #0a1f44 0%, #050b1a 100%);
+    background-image: linear-gradient(rgba(5, 11, 26, 0.7), rgba(5, 11, 26, 0.7)),
+        url('../boeing_background.png');
     background-size: cover;
+    background-position: center bottom;
+    /* Anchor to floor/dashboard */
     background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--text-hud);
     font-family: 'Outfit', 'Inter', sans-serif;
     height: 100vh;
