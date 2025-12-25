@@ -1,0 +1,244 @@
+:root {
+    --bg-dark: #0a0e17;
+    --gold: #d4af37;
+    --gold-glow: rgba(212, 175, 55, 0.4);
+
+    /* Christmas Palette */
+    --xmas-red: #D42426;
+    --xmas-green: #165B33;
+    --xmas-red-dim: rgba(212, 36, 38, 0.3);
+    --xmas-green-dim: rgba(22, 91, 51, 0.3);
+
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-main: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.8);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--xmas-green);
+    /* Hybrid Background: Dark Red/Green Gradient */
+    background-image: linear-gradient(135deg, #2b0a0a 0%, #0a1f0a 100%);
+    color: var(--text-main);
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Add a subtle festive texture overlay if desired, or keep clean */
+    background: radial-gradient(circle at top right, rgba(212, 36, 38, 0.1), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+#snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.dashboard {
+    position: relative;
+    z-index: 10;
+    width: 90%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 30px var(--gold-glow);
+    transform: translateY(-5px);
+}
+
+/* Tinted Cards for Christmas Vibe */
+.red-tint {
+    background: linear-gradient(135deg, rgba(212, 36, 38, 0.1), rgba(255, 255, 255, 0.05));
+    border-color: rgba(212, 36, 38, 0.3);
+}
+
+.green-tint {
+    background: linear-gradient(135deg, rgba(22, 91, 51, 0.1), rgba(255, 255, 255, 0.05));
+    border-color: rgba(22, 91, 51, 0.3);
+}
+
+.gold-tint {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(255, 255, 255, 0.05));
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.hero {
+    text-align: center;
+}
+
+.main-vignette {
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    /* Gold border for main card */
+}
+
+.sub-detail {
+    font-size: 0.9rem;
+    letter-spacing: 0.5rem;
+    color: var(--gold);
+    font-weight: 300;
+}
+
+#main-title {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+    #main-title {
+        background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+}
+
+.greeting {
+    font-size: 1.5rem;
+    color: var(--text-dim);
+    font-weight: 300;
+}
+
+/* Mini Navigation inside Hero */
+.mini-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.nav-icon {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-icon:hover {
+    color: var(--gold);
+    transform: scale(1.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+}
+
+.value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    /* Apply subtle tint to values too */
+}
+
+.red-tint .value {
+    color: #ff8080;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.green-tint .value {
+    color: #80ffab;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.gold-tint .value {
+    color: #ffe680;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.quote-card {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-dim);
+    font-weight: 300;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.main-vignette {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .dashboard {
+        width: 95%;
+    }
+
+    .value {
+        font-size: 2rem;
+    }
+}
