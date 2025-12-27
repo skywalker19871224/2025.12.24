@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;700&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
 
@@ -88,14 +90,65 @@
             </div>
 
             <!-- Destination -->
-            <div class="hud-card span-2">
+            <div class="hud-card">
                 <div class="card-header">
                     <i class="ph-bold ph-navigation-arrow"></i>
                     <span>DESTINATION</span>
                 </div>
-                <div class="card-info">
-                    <span class="label">ETA (UTC)</span>
-                    <span class="value">DEC 24 23:59</span>
+                <div class="card-value">
+                    <span class="value" style="font-size: 1.1rem; line-height: 1.2;">NRT / TOKYO</span>
+                </div>
+                <div class="card-extra">
+                    <span class="label">ETA</span>
+                    <span class="value">23:59Z</span>
+                </div>
+            </div>
+
+            <!-- Weather Card -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-cloud-lightning"></i>
+                    <span>WEATHER SCAN</span>
+                </div>
+                <div class="radar-container">
+                    <div class="radar-sweep"></div>
+                    <div class="radar-blip blip-1"></div>
+                    <div class="radar-blip blip-2"></div>
+                </div>
+                <div class="card-extra">
+                    <span class="label">RANGE</span>
+                    <span class="value">80 NM</span>
+                </div>
+            </div>
+
+            <!-- Cabin Environment -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-thermometer-cold"></i>
+                    <span>CABIN ENV</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">23.5</span>
+                    <span class="unit">°C</span>
+                </div>
+                <div class="card-extra">
+                    <span class="label">PRESS</span>
+                    <span class="value">8,000 FT</span>
+                </div>
+            </div>
+
+            <!-- Communication -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-broadcast"></i>
+                    <span>COMM / XPDR</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">7000</span>
+                </div>
+                <div class="card-extra">
+                    <span class="label">VHF1</span>
+                    <span class="value">121.50</span>
                 </div>
             </div>
         </section>

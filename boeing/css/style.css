@@ -154,6 +154,7 @@ body {
     display: flex;
     align-items: baseline;
     gap: 5px;
+    margin: 0.5rem 0;
 }
 
 .card-value .value {
@@ -167,8 +168,103 @@ body {
     opacity: 0.6;
 }
 
+.card-extra {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.card-extra .label {
+    opacity: 0.5;
+}
+
+.card-extra .value {
+    color: var(--hud-cyan);
+    font-weight: 700;
+}
+
+/* Radar Animation */
+.radar-container {
+    width: 100%;
+    height: 60px;
+    background: rgba(0, 242, 255, 0.03);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    margin: 5px 0;
+}
+
+.radar-sweep {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(0, 242, 255, 0.1),
+            rgba(0, 242, 255, 0.4),
+            transparent);
+    animation: sweep 3s linear infinite;
+}
+
+.radar-blip {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--gold-caution);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold-caution);
+    opacity: 0;
+}
+
+.blip-1 {
+    top: 20%;
+    left: 40%;
+    animation: blink 3s ease-in-out infinite;
+}
+
+.blip-2 {
+    top: 60%;
+    left: 70%;
+    animation: blink 3s ease-in-out infinite 1s;
+}
+
+@keyframes sweep {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    45%,
+    55%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
 .span-2 {
     grid-column: span 2;
+}
+
+@media (max-width: 600px) {
+    .instrument-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 /* Return Nav */
