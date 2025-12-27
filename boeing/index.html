@@ -58,28 +58,55 @@
             <div class="engine-control-unit right-eng b737-style">
                 <div class="gauge-header">N2</div>
                 <div class="custom-svg-container" style="width: 140px;">
-                    <svg viewBox="0 0 140 120" class="b737-gauge">
-                        <!-- 3/4 Circular Arc (Center 70, 60 / Radius 40) -->
-                        <!-- Arc starts from 135deg to 45deg (clockwise) -->
-                        <path class="gauge-arc-track" d="M 41.7 88.3 A 40 40 0 1 1 98.3 88.3" fill="none"
+                    <svg viewBox="0 0 140 130" class="b737-gauge">
+                        <!-- 3/4 Circular Arc (Center 70, 70 / Radius 45) -->
+                        <path class="gauge-arc-track" d="M 38.2 101.8 A 45 45 0 1 1 101.8 101.8" fill="none"
                             stroke-width="2" />
 
-                        <!-- Active Fill Path -->
-                        <path id="fill-eng2" class="gauge-arc-fill" d="M 41.7 88.3 A 40 40 0 1 1 98.3 88.3" fill="none"
-                            stroke-width="3" />
+                        <!-- Active Fill Path (Matches Radius 45) -->
+                        <path id="fill-eng2" class="gauge-arc-fill" d="M 38.2 101.8 A 45 45 0 1 1 101.8 101.8"
+                            fill="none" stroke-width="3" />
 
-                        <!-- Central Needle (Rotating from 70, 60) -->
-                        <g id="pointer-group-eng2">
-                            <line x1="0" y1="0" x2="0" y2="-38" class="gauge-needle-b737" stroke-width="2.5" />
-                            <circle cx="0" cy="0" r="3" fill="white" />
+                        <!-- Scale Ticks (Every 10% from 135deg to 405deg) -->
+                        <!-- Using transform for ticks relative to center (70, 70) -->
+                        <g class="gauge-ticks">
+                            <!-- 0 (135deg) -->
+                            <line x1="70" y1="25" x2="70" y2="20" transform="rotate(135, 70, 70)" stroke="white"
+                                stroke-width="1.5" />
+                            <!-- 2 (189deg) -->
+                            <line x1="70" y1="25" x2="70" y2="20" transform="rotate(189, 70, 70)" stroke="white"
+                                stroke-width="1.5" />
+                            <!-- 4 (243deg) -->
+                            <line x1="70" y1="25" x2="70" y2="20" transform="rotate(243, 70, 70)" stroke="white"
+                                stroke-width="1.5" />
+                            <!-- 6 (297deg) -->
+                            <line x1="70" y1="25" x2="70" y2="20" transform="rotate(297, 70, 70)" stroke="white"
+                                stroke-width="1.5" />
+                            <!-- 8 (351deg) -->
+                            <line x1="70" y1="25" x2="70" y2="20" transform="rotate(351, 70, 70)" stroke="white"
+                                stroke-width="1.5" />
+                            <!-- 10 (405deg/45deg) -->
+                            <line x1="70" y1="25" x2="70" y2="20" transform="rotate(45, 70, 70)" stroke="white"
+                                stroke-width="1.5" />
                         </g>
 
-                        <!-- Top Digital Readout -->
-                        <text x="70" y="35" class="gauge-text-b737" text-anchor="middle" id="txt-eng2">79.4</text>
+                        <!-- Scale Numbers -->
+                        <text x="28" y="110" class="scale-label" text-anchor="middle">0</text>
+                        <text x="25" y="70" class="scale-label" text-anchor="middle">2</text>
+                        <text x="45" y="35" class="scale-label" text-anchor="middle">4</text>
+                        <text x="95" y="35" class="scale-label" text-anchor="middle">6</text>
+                        <text x="115" y="70" class="scale-label" text-anchor="middle">8</text>
+                        <text x="112" y="110" class="scale-label" text-anchor="middle">10</text>
 
-                        <!-- Scale Marks (Simple) -->
-                        <text x="35" y="95" class="scale-label" text-anchor="middle">0</text>
-                        <text x="105" y="95" class="scale-label" text-anchor="middle">10</text>
+                        <!-- Central Needle (Rotating from 70, 70) -->
+                        <g id="pointer-group-eng2">
+                            <line x1="0" y1="0" x2="0" y2="-42" class="gauge-needle-b737" stroke-width="2.5" />
+                            <circle cx="0" cy="0" r="4" fill="white" />
+                        </g>
+
+                        <!-- Top Digital Readout with Box -->
+                        <rect x="45" y="5" width="50" height="25" stroke="white" stroke-width="1" fill="none" />
+                        <text x="70" y="23" class="gauge-text-b737" text-anchor="middle" id="txt-eng2">79.4</text>
                     </svg>
                 </div>
                 <input type="range" class="thrust-slider" id="slider-eng2" min="0" max="100" step="0.1" value="79.4">
@@ -212,7 +239,7 @@
             <span class="log-line">> NAVIGATION STABILIZED</span>
             <span class="log-line">> NETWORK CONNECTION SECURE</span>
             <span class="version-tag"
-                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.0.7</span>
+                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.0.8</span>
         </div>
     </footer>
 

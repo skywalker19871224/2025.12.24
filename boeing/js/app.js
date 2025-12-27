@@ -39,8 +39,8 @@ function initEngineControls() {
                 if (pointerGroup) {
                     // Arc is 270 degrees. 0% = 135deg, 100% = 405deg (135 + 270)
                     const angle = 135 + (percentage * 270);
-                    // Translate to the center of the arc (70, 60)
-                    pointerGroup.setAttribute('transform', `translate(70, 60) rotate(${angle})`);
+                    // Translate to the new center (70, 70)
+                    pointerGroup.setAttribute('transform', `translate(70, 70) rotate(${angle})`);
                 }
             }
         };
