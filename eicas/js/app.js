@@ -79,6 +79,9 @@ function initEngineControls() {
 
         setInterval(() => {
             if (document.activeElement === slider) return;
+            // Disable jitter for N2 (Permanent Edition)
+            if (eng.id === 2) return;
+
             const currentVal = parseFloat(slider.value);
             const jitter = (Math.random() - 0.5) * 0.15;
             const nextVal = Math.min(100, Math.max(0, currentVal + jitter));
