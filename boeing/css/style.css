@@ -215,6 +215,15 @@ body {
     font-weight: 700;
 }
 
+.gauge-pointer {
+    fill: var(--hud-cyan);
+    stroke: none;
+}
+
+#pointer-group-eng2 {
+    transition: transform 0.3s ease;
+}
+
 .attitude-indicator {
     width: 240px;
     height: 240px;

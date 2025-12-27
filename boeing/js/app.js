@@ -33,6 +33,17 @@ function initEngineControls() {
             const offset = arcLength * (1 - percentage);
             fill.style.strokeDashoffset = offset;
             text.textContent = parseFloat(val).toFixed(1);
+
+            // Update rotation for precision pointer (Right engine only)
+            if (eng.id === 2) {
+                const pointerGroup = document.getElementById('pointer-group-eng2');
+                if (pointerGroup) {
+                    // Arc is 180 degrees (semi-circle). 0% = -180deg, 100% = 0deg
+                    // Start at (20, 50), Center is (70, 50)
+                    const angle = -180 + (percentage * 180);
+                    pointerGroup.setAttribute('transform', `translate(${70 + 50 * Math.cos(angle * Math.PI / 180)}, ${50 + 50 * Math.sin(angle * Math.PI / 180)}) rotate(${angle + 90})`);
+                }
+            }
         };
 
         slider.addEventListener('input', (e) => {
