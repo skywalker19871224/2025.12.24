@@ -45,9 +45,9 @@ function initEngineControls() {
                 fill.style.strokeDashoffset = offset;
             } else if (eng.id === 2) {
                 // N2 Logic (Fan Fill + Needle)
-                // Range 0-110 maps to 0-220 degrees (approx)
+                // Range 0-100 maps to 0-220 degrees (approx)
                 // Center 70, 70. Radius 55. Start Angle 0 (3 o'clock).
-                const deg = (val / 110) * 220; // 0 to 220
+                const deg = (val / 100) * 220; // 0 to 220
                 const rad = deg * (Math.PI / 180);
 
                 // Calculate end point on circle
@@ -81,7 +81,7 @@ function initEngineControls() {
             if (document.activeElement === slider) return;
             const currentVal = parseFloat(slider.value);
             const jitter = (Math.random() - 0.5) * 0.15;
-            const nextVal = Math.min(110, Math.max(0, currentVal + jitter));
+            const nextVal = Math.min(100, Math.max(0, currentVal + jitter));
             slider.value = nextVal;
             updateGauge(nextVal);
         }, 1500 + Math.random() * 1000);
