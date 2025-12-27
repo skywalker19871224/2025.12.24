@@ -6,9 +6,9 @@
 
 ### ✈️ Boeing 787 HUD Dashboard
 - **URL**: [https://2025-12-24.pages.dev/boeing/](https://2025-12-24.pages.dev/boeing/)
-- **状態**: **完成 (Completed)** ✅ (v1.1.5)
+- **状態**: **完成 (Completed)** ✅ (v1.1.6)
 - **最終更新**: 2025-12-27
-- **特徴**: 近未来的なHUD、N1計器と高忠実度B787 EICAS N2 (センターピボット連動ボックス) を搭載。
+- **特徴**: 近未来的なHUD、N1計器と高忠実度B787 EICAS N2 (2px垂直オフセット版) を搭載。
 
 ---
 
