@@ -23,25 +23,27 @@ function initEngineControls() {
         const fill = document.getElementById(eng.fill);
         const text = document.getElementById(eng.text);
 
-        if (!slider || !fill || !text) return;
-
-        const arcLength = eng.arcLength;
-        fill.style.strokeDasharray = arcLength;
+        const arcPath = fill;
+        const totalPathLength = arcPath.getTotalLength();
+        fill.style.strokeDasharray = totalPathLength;
 
         const updateGauge = (val) => {
             const percentage = val / 100;
-            const offset = arcLength * (1 - percentage);
+            const offset = totalPathLength * (1 - percentage);
             fill.style.strokeDashoffset = offset;
             text.textContent = parseFloat(val).toFixed(1);
 
-            // Update rotation for precision pointer (Right engine only)
+            // Update precision pointer for N2 (id: 2)
             if (eng.id === 2) {
                 const pointerGroup = document.getElementById('pointer-group-eng2');
-                if (pointerGroup) {
-                    // Arc is 180 degrees (semi-circle). 0% = -180deg, 100% = 0deg
-                    // Start at (20, 50), Center is (70, 50)
+                if (pointerGroup && arcPath) {
+                    // Get point precisely matching the current value on the path
+                    const point = arcPath.getPointAtLength(totalPathLength * percentage);
+
+                    // Calculate angle for rotation based on the semi-circle (matching SVG geometry)
                     const angle = -180 + (percentage * 180);
-                    pointerGroup.setAttribute('transform', `translate(${70 + 50 * Math.cos(angle * Math.PI / 180)}, ${50 + 50 * Math.sin(angle * Math.PI / 180)}) rotate(${angle + 90})`);
+
+                    pointerGroup.setAttribute('transform', `translate(${point.x}, ${point.y}) rotate(${angle + 90})`);
                 }
             }
         };
