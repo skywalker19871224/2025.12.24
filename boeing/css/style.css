@@ -153,6 +153,7 @@ body {
 
 .thrust-slider {
     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     height: 4px;
     background: rgba(0, 242, 255, 0.1);
@@ -179,29 +180,28 @@ body {
     opacity: 0.5;
 }
 
-/* Custom SVG Gauge (Shape Copy v1.0.1) */
+/* Custom SVG Gauge (Shape Copy v1.0.2) */
 .custom-svg-container {
     position: relative;
-    width: 120px;
+    width: 140px;
     height: 100px;
 }
 
 .shape-copy-gauge {
     width: 100%;
     height: 100%;
-    stroke: var(--hud-cyan);
     filter: drop-shadow(0 0 5px var(--hud-cyan-glow));
 }
 
-.gauge-track-semi {
-    stroke: rgba(0, 242, 255, 0.1);
-}
-
+.gauge-frame-arc,
 .gauge-line-top,
-.gauge-needle,
 .gauge-value-box {
     stroke: var(--hud-cyan);
     fill: none;
+}
+
+.gauge-limit-marker {
+    filter: drop-shadow(0 0 5px rgba(255, 153, 0, 0.8));
 }
 
 .gauge-fill-semi {
@@ -213,7 +213,7 @@ body {
 .gauge-text-svg {
     fill: var(--hud-cyan);
     font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
 }
 
