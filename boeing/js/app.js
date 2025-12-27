@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock();
     setInterval(updateClock, 1000);
     initInstruments();
+    initEngineControls();
 });
 
 function updateClock() {
@@ -11,8 +12,48 @@ function updateClock() {
     if (clockEl) clockEl.textContent = timeString + ' UTC';
 }
 
+function initEngineControls() {
+    const engines = [
+        { id: 1, slider: 'slider-eng1', fill: 'fill-eng1', text: 'txt-eng1' },
+        { id: 2, slider: 'slider-eng2', fill: 'fill-eng2', text: 'txt-eng2' }
+    ];
+
+    const arcLength = 188.5;
+
+    engines.forEach(eng => {
+        const slider = document.getElementById(eng.slider);
+        const fill = document.getElementById(eng.fill);
+        const text = document.getElementById(eng.text);
+
+        if (!slider || !fill || !text) return;
+
+        fill.style.strokeDasharray = arcLength;
+
+        const updateGauge = (val) => {
+            const percentage = val / 100;
+            const offset = arcLength * (1 - percentage);
+            fill.style.strokeDashoffset = offset;
+            text.textContent = parseFloat(val).toFixed(1);
+        };
+
+        slider.addEventListener('input', (e) => {
+            updateGauge(e.target.value);
+        });
+
+        updateGauge(slider.value);
+
+        setInterval(() => {
+            if (document.activeElement === slider) return;
+            const currentVal = parseFloat(slider.value);
+            const jitter = (Math.random() - 0.5) * 0.15;
+            const nextVal = Math.min(100, Math.max(0, currentVal + jitter));
+            slider.value = nextVal;
+            updateGauge(nextVal);
+        }, 1500 + Math.random() * 1000);
+    });
+}
+
 function initInstruments() {
-    // Simulate slight fluctuations in instruments for "live" feel
     const cards = document.querySelectorAll('.hud-card');
 
     cards.forEach(card => {
@@ -28,7 +69,6 @@ function initInstruments() {
             if (title === 'CABIN ENV') {
                 variation = (Math.random() - 0.5) * 0.05;
             } else if (title === 'COMM / XPDR') {
-                // Occasionally change transponder code slightly for effect
                 if (Math.random() > 0.95) {
                     baseValue = 7000 + Math.floor(Math.random() * 5);
                 }
@@ -44,7 +84,7 @@ function initInstruments() {
             } else if (baseValue > 1000) {
                 valueEl.textContent = Math.round(newValue).toLocaleString();
             } else {
-                valueEl.textContent = newValue.toFixed(title === 'CABIN ENV' ? 1 : 1);
+                valueEl.textContent = newValue.toFixed(1);
             }
 
             if (title !== 'COMM / XPDR') baseValue = newValue;

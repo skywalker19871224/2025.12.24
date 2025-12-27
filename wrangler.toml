@@ -1,6 +1,6 @@
 name = "2025-12-24"
 pages_build_output_dir = "."
-account_id = "1e645d153a173af4db10240f6adf81cd" # Cloudflare: skywalker19871224@gmail.com | Git: skywalker19871224
+# account_id = "1e645d153a173af4db10240f6adf81cd" # Cloudflare: skywalker19871224@gmail.com | Git: skywalker19871224
 
 # Compatibility settings
 compatibility_date = "2024-12-27"

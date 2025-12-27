@@ -33,10 +33,42 @@
 
         <!-- Main HUD Grid -->
         <div class="hud-center-primary">
+            <!-- Left Engine -->
+            <div class="engine-control-unit left-eng">
+                <div class="gauge-header">TPR</div>
+                <div class="svg-gauge-container">
+                    <svg viewBox="0 0 100 100">
+                        <path class="gauge-track" d="M 20 80 A 40 40 0 1 1 80 80" />
+                        <path class="gauge-fill-path" id="fill-eng1" d="M 20 80 A 40 40 0 1 1 80 80" />
+                    </svg>
+                    <div class="gauge-digital-box">
+                        <span id="txt-eng1">79.4</span>
+                    </div>
+                </div>
+                <input type="range" class="thrust-slider" id="slider-eng1" min="0" max="100" step="0.1" value="79.4">
+                <div class="engine-id">L ENG</div>
+            </div>
+
             <div class="attitude-indicator">
                 <div class="horizon-line"></div>
                 <div class="pitch-ladder"></div>
                 <div class="aircraft-symbol"></div>
+            </div>
+
+            <!-- Right Engine -->
+            <div class="engine-control-unit right-eng">
+                <div class="gauge-header">TPR</div>
+                <div class="svg-gauge-container">
+                    <svg viewBox="0 0 100 100">
+                        <path class="gauge-track" d="M 20 80 A 40 40 0 1 1 80 80" />
+                        <path class="gauge-fill-path" id="fill-eng2" d="M 20 80 A 40 40 0 1 1 80 80" />
+                    </svg>
+                    <div class="gauge-digital-box">
+                        <span id="txt-eng2">79.4</span>
+                    </div>
+                </div>
+                <input type="range" class="thrust-slider" id="slider-eng2" min="0" max="100" step="0.1" value="79.4">
+                <div class="engine-id">R ENG</div>
             </div>
         </div>
 

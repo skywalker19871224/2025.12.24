@@ -92,18 +92,101 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 3rem;
     position: relative;
+    padding: 2rem 0;
+}
+
+.engine-control-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    font-family: 'Orbitron', sans-serif;
+    pointer-events: auto;
+    /* Enable interaction */
+}
+
+.gauge-header {
+    font-size: 0.6rem;
+    color: var(--hud-cyan);
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+}
+
+.svg-gauge-container {
+    position: relative;
+    width: 100px;
+    height: 80px;
+}
+
+.gauge-track {
+    fill: none;
+    stroke: rgba(0, 242, 255, 0.1);
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.gauge-fill-path {
+    fill: none;
+    stroke: var(--hud-cyan);
+    stroke-width: 5;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.3s ease;
+    filter: drop-shadow(0 0 5px var(--hud-cyan-glow));
+}
+
+.gauge-digital-box {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 242, 255, 0.1);
+    border: 1px solid var(--border-hud);
+    padding: 2px 5px;
+    min-width: 50px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--hud-cyan);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+}
+
+.thrust-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 242, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.thrust-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 24px;
+    background: var(--bg-deep);
+    border: 1px solid var(--hud-cyan);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--hud-cyan-glow);
+}
+
+.engine-id {
+    font-size: 0.6rem;
+    margin-top: 0.5rem;
     opacity: 0.5;
-    pointer-events: none;
 }
 
 .attitude-indicator {
-    width: 200px;
-    height: 200px;
+    width: 240px;
+    height: 240px;
     border: 1px solid var(--border-hud);
     border-radius: 50%;
     position: relative;
     overflow: hidden;
+    opacity: 0.8;
 }
 
 .horizon-line {
@@ -111,9 +194,29 @@ body {
     top: 50%;
     left: 0;
     width: 100%;
-    height: 1px;
+    height: 2px;
     background: var(--hud-cyan);
-    box-shadow: 0 0 10px var(--hud-cyan-glow);
+    box-shadow: 0 0 15px var(--hud-cyan-glow);
+}
+
+@media (max-width: 768px) {
+    .hud-center-primary {
+        gap: 1rem;
+    }
+
+    .engine-control-unit {
+        width: 80px;
+    }
+
+    .attitude-indicator {
+        width: 140px;
+        height: 140px;
+    }
+
+    .svg-gauge-container {
+        width: 80px;
+        height: 60px;
+    }
 }
 
 /* Instrument Cards */
