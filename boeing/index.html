@@ -55,6 +55,34 @@
                 <div class="aircraft-symbol"></div>
             </div>
 
+            <div class="engine-control-unit right-eng eicas-n2">
+                <div class="custom-svg-container" style="width: 140px; height: 140px;">
+                    <svg viewBox="0 0 140 140" class="eicas-gauge">
+                        <!-- Main Arc Track: 3 o'clock (0deg) to 10 o'clock (210deg anticlockwise) -->
+                        <path class="gauge-arc-track" d="M 125 70 A 55 55 0 1 1 27.8 34.6" fill="none" stroke="white"
+                            stroke-width="2" />
+
+                        <!-- Limit Markers -->
+                        <line x1="27.8" y1="34.6" x2="20" y2="24" stroke="red" stroke-width="3" />
+                        <line x1="35" y1="28" x2="28" y2="18" stroke="yellow" stroke-width="3" />
+
+                        <!-- Digital Readout Box -->
+                        <rect x="75" y="10" width="60" height="35" stroke="white" stroke-width="1.5" fill="black" />
+                        <text x="105" y="35" class="gauge-text-b737" text-anchor="middle" id="txt-eng2"
+                            style="font-size: 20px;">89.0</text>
+
+                        <!-- Dynamic Fan Fill (Area) -->
+                        <path id="fan-fill-eng2" fill="rgba(200, 200, 200, 0.4)" stroke="none"
+                            d="M 70 70 L 125 70 A 55 55 0 0 1 125 70 Z" />
+
+                        <!-- Active Needle -->
+                        <line id="needle-eng2" x1="70" y1="70" x2="125" y2="70" stroke="white" stroke-width="2.5" />
+                    </svg>
+                </div>
+                <div class="gauge-header" style="color:var(--hud-cyan); font-size: 14px; margin-top:-20px;">N2</div>
+                <input type="range" class="thrust-slider" id="slider-eng2" min="0" max="110" step="0.1" value="89.0">
+            </div>
+
         </div>
 
         <section class="instrument-grid">
