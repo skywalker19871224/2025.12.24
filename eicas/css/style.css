@@ -1,0 +1,490 @@
+:root {
+    --hud-cyan: #00F2FF;
+    --hud-cyan-glow: rgba(0, 242, 255, 0.4);
+    --bg-deep: #050b1a;
+    --glass-hud: rgba(0, 242, 255, 0.05);
+    /* Very transparent aeronautical glass */
+    --border-hud: rgba(0, 242, 255, 0.3);
+    --text-hud: #E6F1FF;
+    --gold-caution: #ffcc00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-deep);
+    background-image: linear-gradient(rgba(5, 11, 26, 0.7), rgba(5, 11, 26, 0.7)),
+        url('../../boeing_background.png');
+    background-size: cover;
+    background-position: center bottom;
+    /* Anchor to floor/dashboard */
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--text-hud);
+    font-family: 'Outfit', 'Inter', sans-serif;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    cursor: crosshair;
+}
+
+#hud-scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 4px, 3px 100%;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.dashboard-container {
+    padding: env(safe-area-inset-top) 1.5rem env(safe-area-inset-bottom);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+/* HUD System Header */
+.hud-header {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Orbitron', sans-serif;
+    border-bottom: 1px solid var(--border-hud);
+}
+
+.status-label {
+    color: var(--hud-cyan);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-shadow: 0 0 10px var(--hud-cyan-glow);
+}
+
+.system-time {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.phase-badge {
+    background: var(--hud-cyan);
+    color: var(--bg-deep);
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+/* Primary Flight Display (Central HUD) */
+.hud-center-primary {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    position: relative;
+    padding: 2rem 0;
+}
+
+.engine-control-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    font-family: 'Orbitron', sans-serif;
+    pointer-events: auto;
+    /* Enable interaction */
+}
+
+.gauge-header {
+    font-size: 0.6rem;
+    color: var(--hud-cyan);
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+}
+
+.svg-gauge-container {
+    position: relative;
+    width: 100px;
+    height: 80px;
+}
+
+.gauge-track {
+    fill: none;
+    stroke: rgba(0, 242, 255, 0.1);
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.gauge-fill-path {
+    fill: none;
+    stroke: var(--hud-cyan);
+    stroke-width: 5;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.3s ease;
+    filter: drop-shadow(0 0 5px var(--hud-cyan-glow));
+}
+
+.gauge-digital-box {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 242, 255, 0.1);
+    border: 1px solid var(--border-hud);
+    padding: 2px 5px;
+    min-width: 50px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--hud-cyan);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+}
+
+.thrust-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 242, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.thrust-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 24px;
+    background: var(--bg-deep);
+    border: 1px solid var(--hud-cyan);
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.engine-id {
+    font-size: 0.6rem;
+    margin-top: 0.5rem;
+    opacity: 0.5;
+}
+
+/* B737 EICAS Style N2 Gauge (v1.0.7) */
+.b737-gauge {
+    width: 100%;
+    height: 100%;
+}
+
+.gauge-arc-track {
+    stroke: rgba(255, 255, 255, 0.2);
+}
+
+.gauge-arc-fill {
+    stroke: var(--hud-cyan);
+    filter: drop-shadow(0 0 5px var(--hud-cyan-glow));
+}
+
+.gauge-needle-b737 {
+    stroke: #ffffff;
+    stroke-linecap: round;
+}
+
+.gauge-text-b737 {
+    fill: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.scale-label {
+    fill: rgba(255, 255, 255, 0.5);
+    font-size: 10px;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Custom SVG Gauge (Shape Copy v1.0.6 - True Circular Motion) */
+.custom-svg-container {
+    position: relative;
+    width: 140px;
+    height: 100px;
+}
+
+.shape-copy-gauge {
+    width: 100%;
+    height: 100%;
+}
+
+.gauge-frame-arc,
+.gauge-line-top,
+.gauge-value-box {
+    stroke: var(--hud-cyan);
+    fill: none;
+}
+
+.gauge-limit-marker {
+    stroke: #ff9900;
+}
+
+.gauge-fill-semi {
+    stroke: var(--hud-cyan);
+    transition: stroke-dashoffset 0.3s ease-out;
+}
+
+.gauge-text-svg {
+    fill: var(--hud-cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.gauge-pointer {
+    fill: var(--hud-cyan);
+    stroke: none;
+}
+
+/* No CSS transition here to allow perfect path-following in JS */
+#pointer-group-eng2 {
+    will-change: transform;
+}
+
+.attitude-indicator {
+    width: 240px;
+    height: 240px;
+    border: 1px solid var(--border-hud);
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    opacity: 0.8;
+}
+
+.horizon-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--hud-cyan);
+    box-shadow: 0 0 15px var(--hud-cyan-glow);
+}
+
+@media (max-width: 768px) {
+    .hud-center-primary {
+        gap: 1rem;
+    }
+
+    .engine-control-unit {
+        width: 80px;
+    }
+
+    .attitude-indicator {
+        width: 140px;
+        height: 140px;
+    }
+
+    .svg-gauge-container {
+        width: 80px;
+        height: 60px;
+    }
+}
+
+/* Instrument Cards */
+.instrument-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding-bottom: 2rem;
+}
+
+.hud-card {
+    background: var(--glass-hud);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-hud);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.hud-card:active {
+    background: rgba(0, 242, 255, 0.15);
+    border-color: var(--hud-cyan);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    color: var(--hud-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.card-value {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin: 0.5rem 0;
+}
+
+.card-value .value {
+    font-size: 1.8rem;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 400;
+}
+
+.card-value .unit {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.card-extra {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.card-extra .label {
+    opacity: 0.5;
+}
+
+.card-extra .value {
+    color: var(--hud-cyan);
+    font-weight: 700;
+}
+
+/* Radar Animation */
+.radar-container {
+    width: 100%;
+    height: 60px;
+    background: rgba(0, 242, 255, 0.03);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    margin: 5px 0;
+}
+
+.radar-sweep {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(0, 242, 255, 0.1),
+            rgba(0, 242, 255, 0.4),
+            transparent);
+    animation: sweep 3s linear infinite;
+}
+
+.radar-blip {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--gold-caution);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold-caution);
+    opacity: 0;
+}
+
+.blip-1 {
+    top: 20%;
+    left: 40%;
+    animation: blink 3s ease-in-out infinite;
+}
+
+.blip-2 {
+    top: 60%;
+    left: 70%;
+    animation: blink 3s ease-in-out infinite 1s;
+}
+
+@keyframes sweep {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    45%,
+    55%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+@media (max-width: 600px) {
+    .instrument-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Return Nav */
+.return-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--hud-cyan);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 1rem 0;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.return-nav:hover {
+    opacity: 1;
+}
+
+/* Footer Log */
+.hud-footer {
+    padding: 1rem 1.5rem;
+    font-family: 'monospace';
+    font-size: 0.65rem;
+    color: var(--hud-cyan);
+    opacity: 0.6;
+}
+
+.log-line {
+    display: block;
+}
+
+@media (min-width: 800px) {
+    .instrument-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .span-2 {
+        grid-column: span 1;
+    }
+}

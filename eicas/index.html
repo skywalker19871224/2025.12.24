@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boeing 787 EICAS | Permanent Edition</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+</head>
+
+<body>
+    <div id="hud-scanlines"></div>
+    <div id="particle-container"></div>
+
+    <main class="dashboard-container">
+        <!-- Flight Status Header -->
+        <header class="hud-header">
+            <div class="system-status">
+                <span class="status-label">SYS OK</span>
+                <span class="system-time" id="system-time">00:00:00</span>
+            </div>
+            <div class="flight-phase">
+                <span class="phase-badge">CRUISE</span>
+                <span class="flight-no">B787-2025</span>
+            </div>
+        </header>
+
+        <!-- Main HUD Grid -->
+        <div class="hud-center-primary">
+            <!-- Left Engine -->
+            <div class="engine-control-unit left-eng">
+                <div class="gauge-header">N1</div>
+                <div class="svg-gauge-container">
+                    <svg viewBox="0 0 100 100">
+                        <path class="gauge-track" d="M 20 80 A 40 40 0 1 1 80 80" />
+                        <path class="gauge-fill-path" id="fill-eng1" d="M 20 80 A 40 40 0 1 1 80 80" />
+                    </svg>
+                    <div class="gauge-digital-box">
+                        <span id="txt-eng1">79.4</span>
+                    </div>
+                </div>
+                <input type="range" class="thrust-slider" id="slider-eng1" min="0" max="100" step="0.1" value="79.4">
+                <div class="engine-id">L ENG</div>
+            </div>
+
+            <div class="attitude-indicator">
+                <div class="horizon-line"></div>
+                <div class="pitch-ladder"></div>
+                <div class="aircraft-symbol"></div>
+            </div>
+
+            <div class="engine-control-unit right-eng eicas-n2">
+                <div class="custom-svg-container" style="width: 140px; height: 140px;">
+                    <svg viewBox="0 0 140 140" class="eicas-gauge">
+                        <!-- Main Arc Track: 3 o'clock (0deg) to 10 o'clock (210deg anticlockwise) -->
+                        <path class="gauge-arc-track" d="M 125 70 A 55 55 0 1 1 27.8 34.6" fill="none" stroke="white"
+                            stroke-width="2" />
+
+                        <!-- Limit Markers -->
+                        <!-- Red Line: Thick radial at 100% -->
+                        <line x1="27.8" y1="34.6" x2="20.2" y2="28.2" stroke="red" stroke-width="4" />
+                        <!-- Amber Bracket: At 90% (198deg). Constructed to look like a staple/bracket [ ] -->
+                        <g transform="rotate(198, 70, 70)">
+                            <polyline points="124,67 132,67 132,73 124,73" fill="none" stroke="yellow" stroke-width="2"
+                                transform="translate(-1, 0)" />
+                        </g>
+
+                        <!-- Digital Readout Box (Centered - 2px Offset Up) -->
+                        <rect x="70" y="40" width="70" height="28" stroke="white" stroke-width="1.2" fill="black" />
+                        <!-- Old Font: font-family: 'Courier New', monospace; font-weight: 900; -->
+                        <text x="105" y="61" class="gauge-text-b737" text-anchor="middle" id="txt-eng2"
+                            style="font-family: 'Verdana', sans-serif; font-size: 20px; font-weight: normal; letter-spacing: 1px;">89.0</text>
+
+                        <!-- Dynamic Fan Fill (Area) -->
+                        <path id="fan-fill-eng2" fill="rgba(200, 200, 200, 0.4)" stroke="none"
+                            d="M 70 70 L 125 70 A 55 55 0 0 1 125 70 Z" />
+
+                        <!-- Active Needle -->
+                        <line id="needle-eng2" x1="70" y1="70" x2="125" y2="70" stroke="white" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="gauge-header" style="color:var(--hud-cyan); font-size: 14px; margin-top:-20px;">N2</div>
+                <input type="range" class="thrust-slider" id="slider-eng2" min="0" max="100" step="0.1" value="89.0">
+            </div>
+
+        </div>
+
+        <section class="instrument-grid">
+            <!-- Altitude Card -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-airplane-landing"></i>
+                    <span>ALTITUDE</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">38,000</span>
+                    <span class="unit">FT</span>
+                </div>
+            </div>
+
+            <!-- Airspeed Card -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-wind"></i>
+                    <span>AIRSPEED</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">485</span>
+                    <span class="unit">KTS</span>
+                </div>
+            </div>
+
+            <!-- Engine N1 -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-fan"></i>
+                    <span>ENG N1</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">92.4</span>
+                    <span class="unit">%</span>
+                </div>
+            </div>
+
+            <!-- Fuel Status -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-gas-can"></i>
+                    <span>FUEL</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">12.5</span>
+                    <span class="unit">TONS</span>
+                </div>
+            </div>
+
+            <!-- Destination -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-navigation-arrow"></i>
+                    <span>DESTINATION</span>
+                </div>
+                <div class="card-value">
+                    <span class="value" style="font-size: 1.1rem; line-height: 1.2;">NRT / TOKYO</span>
+                </div>
+                <div class="card-extra">
+                    <span class="label">ETA</span>
+                    <span class="value">23:59Z</span>
+                </div>
+            </div>
+
+            <!-- Weather Card -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-cloud-lightning"></i>
+                    <span>WEATHER SCAN</span>
+                </div>
+                <div class="radar-container">
+                    <div class="radar-sweep"></div>
+                    <div class="radar-blip blip-1"></div>
+                    <div class="radar-blip blip-2"></div>
+                </div>
+                <div class="card-extra">
+                    <span class="label">RANGE</span>
+                    <span class="value">80 NM</span>
+                </div>
+            </div>
+
+            <!-- Cabin Environment -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-thermometer-cold"></i>
+                    <span>CABIN ENV</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">23.5</span>
+                    <span class="unit">°C</span>
+                </div>
+                <div class="card-extra">
+                    <span class="label">PRESS</span>
+                    <span class="value">8,000 FT</span>
+                </div>
+            </div>
+
+            <!-- Communication -->
+            <div class="hud-card">
+                <div class="card-header">
+                    <i class="ph-bold ph-broadcast"></i>
+                    <span>COMM / XPDR</span>
+                </div>
+                <div class="card-value">
+                    <span class="value">7000</span>
+                </div>
+                <div class="card-extra">
+                    <span class="label">VHF1</span>
+                    <span class="value">121.50</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Link Back -->
+        <a href="../home/" class="return-nav">
+            <i class="ph-light ph-caret-left"></i>
+            <span>RETURN TO FLEET</span>
+        </a>
+    </main>
+
+    <footer class="hud-footer">
+        <div class="system-log">
+            <span class="log-line">> NAVIGATION STABILIZED</span>
+            <span class="log-line">> NETWORK CONNECTION SECURE</span>
+            <span class="version-tag"
+                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">Permanent Edition</span>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
