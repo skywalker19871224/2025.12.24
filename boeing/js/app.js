@@ -14,11 +14,9 @@ function updateClock() {
 
 function initEngineControls() {
     const engines = [
-        { id: 1, slider: 'slider-eng1', fill: 'fill-eng1', text: 'txt-eng1' },
-        { id: 2, slider: 'slider-eng2', fill: 'fill-eng2', text: 'txt-eng2' }
+        { id: 1, slider: 'slider-eng1', fill: 'fill-eng1', text: 'txt-eng1', arcLength: 188.5 },
+        { id: 2, slider: 'slider-eng2', fill: 'fill-eng2', text: 'txt-eng2', arcLength: 157.1 }
     ];
-
-    const arcLength = 188.5;
 
     engines.forEach(eng => {
         const slider = document.getElementById(eng.slider);
@@ -27,6 +25,7 @@ function initEngineControls() {
 
         if (!slider || !fill || !text) return;
 
+        const arcLength = eng.arcLength;
         fill.style.strokeDasharray = arcLength;
 
         const updateGauge = (val) => {
