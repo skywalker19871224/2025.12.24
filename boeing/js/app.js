@@ -14,14 +14,15 @@ function updateClock() {
 
 function initEngineControls() {
     const engines = [
-        { id: 1, slider: 'slider-eng1', fill: 'fill-eng1', text: 'txt-eng1', arcLength: 188.5 },
-        { id: 2, slider: 'slider-eng2', fill: 'fill-eng2', text: 'txt-eng2', arcLength: 157.1 }
+        { id: 1, slider: 'slider-eng1', fill: 'fill-eng1', text: 'txt-eng1', arcLength: 188.5 }
     ];
 
     engines.forEach(eng => {
         const slider = document.getElementById(eng.slider);
         const fill = document.getElementById(eng.fill);
         const text = document.getElementById(eng.text);
+
+        if (!slider || !fill || !text) return;
 
         const arcPath = fill;
         const totalPathLength = arcPath.getTotalLength();
@@ -32,20 +33,6 @@ function initEngineControls() {
             const offset = totalPathLength * (1 - percentage);
             fill.style.strokeDashoffset = offset;
             text.textContent = parseFloat(val).toFixed(1);
-
-            // Update needle rotation for New N2 (EGT) (id: 2)
-            if (eng.id === 2) {
-                const pointerGroup = document.getElementById('pointer-group-eng2');
-                if (pointerGroup) {
-                    // Mapping input 0-1000 to angle -135 to +30 (approx based on new gauge face)
-                    const valClamped = Math.min(Math.max(val, 0), 1000);
-                    const angle = -135 + (valClamped / 1000) * 165;
-
-                    pointerGroup.setAttribute('transform', `translate(70, 70) rotate(${angle})`);
-                    // Integer only for cleaner look
-                    text.textContent = Math.round(val);
-                }
-            }
         };
 
         slider.addEventListener('input', (e) => {
