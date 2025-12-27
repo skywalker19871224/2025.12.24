@@ -40,10 +40,12 @@ function initEngineControls() {
                     // Get point precisely matching the current value on the path
                     const point = arcPath.getPointAtLength(totalPathLength * percentage);
 
-                    // Calculate angle for rotation based on the semi-circle (matching SVG geometry)
-                    const angle = -180 + (percentage * 180);
+                    // Arc is BOTTOM semi-circle: 0% is Left (180deg), 100% is Right (0deg/360deg)
+                    // The path goes: 180 -> 90 -> 0 (Counter-clockwise in SVG coordinates)
+                    const angle = 180 - (percentage * 180);
 
-                    pointerGroup.setAttribute('transform', `translate(${point.x}, ${point.y}) rotate(${angle + 90})`);
+                    // Pointer points to center: (angle - 90)
+                    pointerGroup.setAttribute('transform', `translate(${point.x}, ${point.y}) rotate(${angle - 90})`);
                 }
             }
         };
