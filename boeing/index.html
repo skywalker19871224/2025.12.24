@@ -63,8 +63,13 @@
                             stroke-width="2" />
 
                         <!-- Limit Markers -->
-                        <line x1="27.8" y1="34.6" x2="20.2" y2="28.2" stroke="red" stroke-width="3" />
-                        <line x1="17.7" y1="53.0" x2="8.2" y2="49.9" stroke="yellow" stroke-width="3" />
+                        <!-- Red Line: Thick radial at 100% -->
+                        <line x1="27.8" y1="34.6" x2="20.2" y2="28.2" stroke="red" stroke-width="4" />
+                        <!-- Amber Bracket: At 90% (198deg). Constructed to look like a staple/bracket [ ] -->
+                        <g transform="rotate(198, 70, 70)">
+                            <polyline points="124,67 132,67 132,73 124,73" fill="none" stroke="yellow" stroke-width="2"
+                                transform="translate(-1, 0)" />
+                        </g>
 
                         <!-- Digital Readout Box (Centered - 2px Offset Up) -->
                         <rect x="70" y="40" width="70" height="28" stroke="white" stroke-width="1.2" fill="black" />
@@ -211,7 +216,7 @@
             <span class="log-line">> NAVIGATION STABILIZED</span>
             <span class="log-line">> NETWORK CONNECTION SECURE</span>
             <span class="version-tag"
-                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.1.11</span>
+                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.1.12</span>
         </div>
     </footer>
 
