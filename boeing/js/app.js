@@ -33,14 +33,19 @@ function initEngineControls() {
             fill.style.strokeDashoffset = offset;
             text.textContent = parseFloat(val).toFixed(1);
 
-            // Update needle rotation for B737-style N2 (id: 2)
+            // Update needle rotation for New N2 (EGT) (id: 2)
             if (eng.id === 2) {
                 const pointerGroup = document.getElementById('pointer-group-eng2');
                 if (pointerGroup) {
-                    // Arc is 270 degrees. 0% = 135deg, 100% = 405deg (135 + 270)
-                    const angle = 135 + (percentage * 270);
-                    // Translate to the new center (70, 70)
+                    // Visual range mapping for standard EGT gauge
+                    // 0 deg is vertical up (Top). Needle rests bottom-left approx -140 deg.
+                    // Max is approx +50 deg (before hitting the box).
+                    // Mapping input 0-1000 to angle -140 to +50
+                    const valClamped = Math.min(Math.max(val, 0), 1000);
+                    const angle = -140 + (valClamped / 1000) * 190;
+
                     pointerGroup.setAttribute('transform', `translate(70, 70) rotate(${angle})`);
+                    text.textContent = Math.round(val);
                 }
             }
         };
