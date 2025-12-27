@@ -55,36 +55,35 @@
                 <div class="aircraft-symbol"></div>
             </div>
 
-            <div class="engine-control-unit right-eng custom-gauge-v2">
+            <div class="engine-control-unit right-eng b737-style">
                 <div class="gauge-header">N2</div>
                 <div class="custom-svg-container" style="width: 140px;">
-                    <svg viewBox="0 0 140 100" class="shape-copy-gauge">
-                        <!-- Bottom Semi-circle Frame (Center 70, 50 / Radius 50) -->
-                        <path class="gauge-frame-arc" d="M 20 50 A 50 50 0 0 0 120 50" stroke-width="2.5" fill="none" />
-                        <!-- Top-Left Horizontal Line (Radius length) -->
-                        <line class="gauge-line-top" x1="20" y1="50" x2="70" y2="50" stroke-width="2.5" />
-                        <!-- Orange Limit Marker (Redline) -->
-                        <line class="gauge-limit-marker" x1="20" y1="50" x2="11" y2="33" stroke="#ff9900"
-                            stroke-width="4" stroke-linecap="round" />
-                        <!-- Digital Box (Matches Radius 50) -->
-                        <rect class="gauge-value-box" x="70" y="10" width="50" height="40" stroke-width="2.5"
-                            fill="none" />
+                    <svg viewBox="0 0 140 120" class="b737-gauge">
+                        <!-- 3/4 Circular Arc (Center 70, 60 / Radius 40) -->
+                        <!-- Arc starts from 135deg to 45deg (clockwise) -->
+                        <path class="gauge-arc-track" d="M 41.7 88.3 A 40 40 0 1 1 98.3 88.3" fill="none"
+                            stroke-width="2" />
 
-                        <!-- Active Fill Path (Perfect Semi-circle) -->
-                        <path id="fill-eng2" class="gauge-fill-semi" d="M 20 50 A 50 50 0 0 0 120 50" fill="none"
-                            stroke-width="5" stroke-linecap="butt" />
+                        <!-- Active Fill Path -->
+                        <path id="fill-eng2" class="gauge-arc-fill" d="M 41.7 88.3 A 40 40 0 1 1 98.3 88.3" fill="none"
+                            stroke-width="3" />
 
-                        <!-- Precision Pointer (Triangle) -->
+                        <!-- Central Needle (Rotating from 70, 60) -->
                         <g id="pointer-group-eng2">
-                            <polygon class="gauge-pointer" points="-6,0 0,-10 6,0" fill="var(--hud-cyan)" />
+                            <line x1="0" y1="0" x2="0" y2="-38" class="gauge-needle-b737" stroke-width="2.5" />
+                            <circle cx="0" cy="0" r="3" fill="white" />
                         </g>
 
-                        <!-- Digital Text (Centered at x=95) -->
-                        <text x="95" y="38" class="gauge-text-svg" text-anchor="middle" id="txt-eng2">79.4</text>
+                        <!-- Top Digital Readout -->
+                        <text x="70" y="35" class="gauge-text-b737" text-anchor="middle" id="txt-eng2">79.4</text>
+
+                        <!-- Scale Marks (Simple) -->
+                        <text x="35" y="95" class="scale-label" text-anchor="middle">0</text>
+                        <text x="105" y="95" class="scale-label" text-anchor="middle">10</text>
                     </svg>
                 </div>
                 <input type="range" class="thrust-slider" id="slider-eng2" min="0" max="100" step="0.1" value="79.4">
-                <div class="engine-id">R ENG</div>
+                <div class="engine-id">R ENGINE (N2)</div>
             </div>
         </div>
 
@@ -213,7 +212,7 @@
             <span class="log-line">> NAVIGATION STABILIZED</span>
             <span class="log-line">> NETWORK CONNECTION SECURE</span>
             <span class="version-tag"
-                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.0.6</span>
+                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.0.7</span>
         </div>
     </footer>
 

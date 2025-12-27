@@ -33,19 +33,14 @@ function initEngineControls() {
             fill.style.strokeDashoffset = offset;
             text.textContent = parseFloat(val).toFixed(1);
 
-            // Update precision pointer for N2 (id: 2)
+            // Update needle rotation for B737-style N2 (id: 2)
             if (eng.id === 2) {
                 const pointerGroup = document.getElementById('pointer-group-eng2');
-                if (pointerGroup && arcPath) {
-                    // Get point precisely matching the current value on the path
-                    const point = arcPath.getPointAtLength(totalPathLength * percentage);
-
-                    // Arc is BOTTOM semi-circle: 0% is Left (180deg), 100% is Right (0deg/360deg)
-                    // The path goes: 180 -> 90 -> 0 (Counter-clockwise in SVG coordinates)
-                    const angle = 180 - (percentage * 180);
-
-                    // Pointer points to center: (angle - 90)
-                    pointerGroup.setAttribute('transform', `translate(${point.x}, ${point.y}) rotate(${angle - 90})`);
+                if (pointerGroup) {
+                    // Arc is 270 degrees. 0% = 135deg, 100% = 405deg (135 + 270)
+                    const angle = 135 + (percentage * 270);
+                    // Translate to the center of the arc (70, 60)
+                    pointerGroup.setAttribute('transform', `translate(70, 60) rotate(${angle})`);
                 }
             }
         };

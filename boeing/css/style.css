@@ -180,6 +180,39 @@ body {
     opacity: 0.5;
 }
 
+/* B737 EICAS Style N2 Gauge (v1.0.7) */
+.b737-gauge {
+    width: 100%;
+    height: 100%;
+}
+
+.gauge-arc-track {
+    stroke: rgba(255, 255, 255, 0.2);
+}
+
+.gauge-arc-fill {
+    stroke: var(--hud-cyan);
+    filter: drop-shadow(0 0 5px var(--hud-cyan-glow));
+}
+
+.gauge-needle-b737 {
+    stroke: #ffffff;
+    stroke-linecap: round;
+}
+
+.gauge-text-b737 {
+    fill: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.scale-label {
+    fill: rgba(255, 255, 255, 0.5);
+    font-size: 10px;
+    font-family: 'Outfit', sans-serif;
+}
+
 /* Custom SVG Gauge (Shape Copy v1.0.6 - True Circular Motion) */
 .custom-svg-container {
     position: relative;
