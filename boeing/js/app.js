@@ -37,14 +37,12 @@ function initEngineControls() {
             if (eng.id === 2) {
                 const pointerGroup = document.getElementById('pointer-group-eng2');
                 if (pointerGroup) {
-                    // Visual range mapping for standard EGT gauge
-                    // 0 deg is vertical up (Top). Needle rests bottom-left approx -140 deg.
-                    // Max is approx +50 deg (before hitting the box).
-                    // Mapping input 0-1000 to angle -140 to +50
+                    // Mapping input 0-1000 to angle -135 to +30 (approx based on new gauge face)
                     const valClamped = Math.min(Math.max(val, 0), 1000);
-                    const angle = -140 + (valClamped / 1000) * 190;
+                    const angle = -135 + (valClamped / 1000) * 165;
 
                     pointerGroup.setAttribute('transform', `translate(70, 70) rotate(${angle})`);
+                    // Integer only for cleaner look
                     text.textContent = Math.round(val);
                 }
             }

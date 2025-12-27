@@ -58,33 +58,43 @@
             <div class="engine-control-unit right-eng b737-style">
                 <div class="gauge-header">N2</div>
                 <div class="custom-svg-container" style="width: 140px;">
-                    <svg viewBox="0 0 140 130" class="b737-gauge">
-                        <!-- Asymmetrical Arc Track -->
-                        <!-- Defined path: Start top-left, curve around bottom, end mid-right specific to image -->
-                        <!-- Center 70, 70 Radius 50. Arc from ~100deg (Top-Left) to ~40deg (Top-Right) but cut by box -->
-                        <!-- Let's imitate the image: Arc is mainly Left and Bottom -->
-                        <path class="gauge-arc-track" d="M 45 35 A 50 50 0 1 0 105 35" fill="none" stroke="white"
-                            stroke-width="2" stroke-dasharray="210" stroke-dashoffset="60"
-                            transform="rotate(-40 70 70)" />
+                    <svg viewBox="0 0 140 140" class="b737-gauge">
+                        <!-- Context Label (HAI in Green) -->
+                        <text x="120" y="20" fill="#00ff00"
+                            style="font-family: monospace; font-size: 14px; font-weight: bold;">HAI</text>
 
-                        <!-- Limit Markers (Top-Left of the Arc) -->
-                        <path d="M 28 35 L 35 42" stroke="red" stroke-width="3" />
-                        <path d="M 24 45 L 31 52" stroke="yellow" stroke-width="3" />
+                        <!-- Main Arc Track (Asymmetrical, ending at Box Corner) -->
+                        <!-- Start: ~-140deg, End: ~-15deg (Bottom-Left to Box corner) -->
+                        <path class="gauge-arc-track" d="M 31.6 102.1 A 50 50 0 1 0 115 88" fill="none" stroke="white"
+                            stroke-width="1.2" />
 
-                        <!-- Digital Readout Box (Occupying Top-Right) -->
-                        <rect x="75" y="15" width="60" height="35" stroke="white" stroke-width="1.5" fill="black" />
-                        <text x="105" y="40" class="gauge-text-b737" text-anchor="middle" id="txt-eng2"
-                            style="font-size: 22px;">525.9</text>
+                        <!-- Limit Markers (Radial Ticks) -->
+                        <!-- Red Line at top-left (~-130deg) -->
+                        <line x1="31.6" y1="37.9" x2="21" y2="28" stroke="red" stroke-width="3"
+                            transform="rotate(-10, 70, 70)" />
+                        <!-- Yellow Line just below red -->
+                        <line x1="31.6" y1="37.9" x2="21" y2="28" stroke="yellow" stroke-width="3"
+                            transform="rotate(15, 70, 70)" />
 
-                        <!-- Central Needle -->
+                        <!-- Digital Readout Box (Refined Proportions) -->
+                        <g>
+                            <rect x="65" y="30" width="70" height="42" stroke="white" stroke-width="1.2" fill="black" />
+                            <!-- Using a blocky font approach with monospace -->
+                            <text x="100" y="60" fill="white"
+                                style="font-family: 'Courier New', monospace; font-size: 24px; font-weight: 900;"
+                                text-anchor="middle" id="txt-eng2">525.9</text>
+                        </g>
+
+                        <!-- Central Needle (Pivot 70, 70) -->
                         <g id="pointer-group-eng2">
                             <line x1="0" y1="0" x2="0" y2="-48" class="gauge-needle-b737" stroke-width="3" />
+                            <!-- Needle tip base circle optional, image shows blunt line -->
                         </g>
                     </svg>
                 </div>
                 <!-- Updated label below -->
-                <input type="range" class="thrust-slider" id="slider-eng2" min="0" max="1000" step="1" value="525.9">
-                <div class="engine-id">EGT (N2)</div>
+                <input type="range" class="thrust-slider" id="slider-eng2" min="0" max="1000" step="1" value="525">
+                <div class="engine-id">ENGINE 2 - EGT</div>
             </div>
         </div>
 
@@ -213,7 +223,7 @@
             <span class="log-line">> NAVIGATION STABILIZED</span>
             <span class="log-line">> NETWORK CONNECTION SECURE</span>
             <span class="version-tag"
-                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.0.9</span>
+                style="font-size: 0.55rem; opacity: 0.4; margin-top: 10px; display: block;">v1.1.0</span>
         </div>
     </footer>
 
