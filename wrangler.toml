@@ -1,6 +1,16 @@
 name = "2025-12-24"
 pages_build_output_dir = "."
-# account_id = "1e645d153a173af4db10240f6adf81cd" # TARGET ACCOUNT: skywalker19871224@gmail.com
 
-# Compatibility settings
-compatibility_date = "2025-12-27"
+# ========================================
+# Safety Guardrails (アカウント固定設定)
+# ========================================
+
+# ☁️ Cloudflare (デプロイ先)
+# Email: skywalker19871224@gmail.com
+# account_id = "1e645d153a173af4db10240f6adf81cd"
+
+# 🐙 Git (バージョン管理先)
+# Repository: https://github.com/skywalker19871224/2025.12.24
+# Local Git Config:
+#   git config --local user.name "skywalker19871224"
+#   git config --local user.email "skywalker19871224@gmail.com"
