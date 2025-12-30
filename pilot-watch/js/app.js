@@ -309,19 +309,49 @@ function generateSVG(type, id) {
         else if (type === 'eicas_gamma') {
             color = 'rgba(0, 255, 128, 0.15)';
             digitColor = '#00ff80';
-            // GAMMA Add-on: Tactical Scope (Precision)
+            // GAMMA Add-on: Night Vision Sniper Scope (Mil-Dot)
             extra += `
-                <!-- Crosshair -->
-                <line x1="120" y1="40" x2="120" y2="200" stroke="#00ff80" stroke-width="0.5" opacity="0.3" />
-                <line x1="40" y1="120" x2="200" y2="120" stroke="#00ff80" stroke-width="0.5" opacity="0.3" />
-                <!-- Reticle Circles -->
-                <circle cx="120" cy="120" r="40" fill="none" stroke="#00ff80" stroke-width="0.5" opacity="0.2" />
-                <circle cx="120" cy="120" r="70" fill="none" stroke="#00ff80" stroke-width="0.5" opacity="0.1" stroke-dasharray="10,5" />
-                <!-- Corner Brackets -->
-                <path d="M 80 80 L 70 80 L 70 90" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
-                <path d="M 160 80 L 170 80 L 170 90" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
-                <path d="M 80 160 L 70 160 L 70 150" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
-                <path d="M 160 160 L 170 160 L 170 150" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
+                <defs>
+                    <!-- Night Vision Scanline Pattern -->
+                    <pattern id="scanlines" x="0" y="0" width="1" height="4" patternUnits="userSpaceOnUse">
+                        <rect x="0" y="0" width="1" height="2" fill="#00ff80" opacity="0.1"/>
+                    </pattern>
+                </defs>
+                
+                <!-- NVG Background Tint -->
+                <circle cx="120" cy="120" r="110" fill="url(#scanlines)" opacity="0.3" />
+                <circle cx="120" cy="120" r="110" fill="#001105" opacity="0.5" />
+
+                <!-- Main Crosshair with Mil-Dots -->
+                <line x1="120" y1="20" x2="120" y2="220" stroke="#00ff80" stroke-width="0.8" opacity="0.6" />
+                <line x1="20" y1="120" x2="220" y2="120" stroke="#00ff80" stroke-width="0.8" opacity="0.6" />
+                
+                <!-- Mil-Dots Generation (Vertical & Horizontal) -->
+                ${Array.from({ length: 9 }).map((_, i) => {
+                const offset = (i + 1) * 20; // 20px spacing
+                if (offset > 80) return '';
+                return `
+                        <!-- Vertical Dots -->
+                        <ellipse cx="120" cy="${120 - offset}" rx="1.5" ry="1" fill="#00ff80" opacity="0.8" />
+                        <ellipse cx="120" cy="${120 + offset}" rx="1.5" ry="1" fill="#00ff80" opacity="0.8" />
+                        <!-- Horizontal Dots -->
+                        <ellipse cx="${120 - offset}" cy="120" rx="1" ry="1.5" fill="#00ff80" opacity="0.8" />
+                        <ellipse cx="${120 + offset}" cy="120" rx="1" ry="1.5" fill="#00ff80" opacity="0.8" />
+                    `;
+            }).join('')}
+
+                <!-- Center Reticle Open Circle -->
+                <circle cx="120" cy="120" r="15" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
+
+                <!-- Stadiametric Rangefinder (Lower Left) -->
+                <path d="M 60 160 Q 80 160 80 140" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
+                <line x1="60" y1="160" x2="90" y2="160" stroke="#00ff80" stroke-width="0.5" opacity="0.4" />
+                <text x="65" y="155" fill="#00ff80" font-family="monospace" font-size="4" opacity="0.6">1.7m</text>
+
+                <!-- OSD Text info -->
+                <text x="120" y="190" fill="#00ff80" font-family="monospace" font-size="6" text-anchor="middle" letter-spacing="2" opacity="0.8">NVG MODE: ACTIVE</text>
+                <text x="40" y="115" fill="#00ff80" font-family="monospace" font-size="4" text-anchor="end" opacity="0.6">WIND: 4.2</text>
+                <text x="200" y="115" fill="#00ff80" font-family="monospace" font-size="4" text-anchor="start" opacity="0.6">ELEV: +1.5</text>
             `;
         }
         else if (type === 'eicas_delta') {
