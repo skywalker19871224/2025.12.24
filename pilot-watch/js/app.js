@@ -298,7 +298,6 @@ function generateSVG(type, id) {
         if (id === 'watch-1') {
             extra += `
                 <text x="170" y="125" class="digital-seconds" fill="var(--hud-cyan)" font-family="Orbitron" font-size="16" font-weight="bold" text-anchor="middle">00</text>
-                <text x="170" y="133" fill="var(--hud-cyan)" font-family="Orbitron" font-size="5" text-anchor="middle" opacity="0.5">SEC</text>
                 
                 <!-- Subtle frame for digital display -->
                 <rect x="155" y="108" width="30" height="30" rx="3" fill="none" stroke="var(--hud-cyan)" stroke-width="0.5" opacity="0.2" />
