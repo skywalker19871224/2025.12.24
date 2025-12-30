@@ -20,7 +20,6 @@ function initWatches() {
                 hour: container.querySelector('.hand-h'),
                 minute: container.querySelector('.hand-m'),
                 second: container.querySelector('.hand-s'),
-                second: container.querySelector('.hand-s'),
                 sub1: container.querySelector('.hand-sub1'), // Minutes (Top)
                 sub2: container.querySelector('.hand-sub2'), // Hours (Bottom)
                 sub3: container.querySelector('.hand-sub3'), // Small Sec (Left)
@@ -301,7 +300,10 @@ function generateSVG(type, id) {
                 <!-- Sleek horizontal frame for digital display -->
                 <rect x="152" y="109" width="36" height="22" rx="2" fill="rgba(0,0,0,0.4)" stroke="${digitColor}" stroke-width="0.5" opacity="0.3" />
                 
-                <text x="170" y="121" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="central">00</text>
+                <text y="121" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="14" font-weight="bold" dominant-baseline="central">
+                    <tspan x="163" text-anchor="middle">0</tspan>
+                    <tspan x="177" text-anchor="middle">0</tspan>
+                </text>
             `;
         }
     }
@@ -647,9 +649,14 @@ function animate() {
             updateFanFill(watch.hands.fan, secPercent);
         }
 
-        // Digital Seconds update for No.01 Alpha
+        // Digital Seconds update for No.01 Alpha & No.02 Beta
         if (watch.hands.digitalSec) {
-            watch.hands.digitalSec.textContent = s.toString().padStart(2, '0');
+            const digits = s.toString().padStart(2, '0').split('');
+            const tspans = watch.hands.digitalSec.querySelectorAll('tspan');
+            if (tspans.length === 2) {
+                tspans[0].textContent = digits[0];
+                tspans[1].textContent = digits[1];
+            }
         }
     });
 
