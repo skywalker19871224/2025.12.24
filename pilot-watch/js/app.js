@@ -300,10 +300,7 @@ function generateSVG(type, id) {
                 <!-- Sleek horizontal frame for digital display -->
                 <rect x="152" y="109" width="36" height="22" rx="2" fill="rgba(0,0,0,0.4)" stroke="${digitColor}" stroke-width="0.5" opacity="0.3" />
                 
-                <text y="121" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="14" font-weight="bold" dominant-baseline="central">
-                    <tspan x="163" text-anchor="middle">0</tspan>
-                    <tspan x="177" text-anchor="middle">0</tspan>
-                </text>
+                <text x="170" y="121" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="central" style="letter-spacing: 2px; font-variant-numeric: tabular-nums;">00</text>
             `;
         }
     }
@@ -651,12 +648,7 @@ function animate() {
 
         // Digital Seconds update for No.01 Alpha & No.02 Beta
         if (watch.hands.digitalSec) {
-            const digits = s.toString().padStart(2, '0').split('');
-            const tspans = watch.hands.digitalSec.querySelectorAll('tspan');
-            if (tspans.length === 2) {
-                tspans[0].textContent = digits[0];
-                tspans[1].textContent = digits[1];
-            }
+            watch.hands.digitalSec.textContent = s.toString().padStart(2, '0');
         }
     });
 
