@@ -297,12 +297,6 @@ function generateSVG(type, id) {
         // No.01 Alpha: Digital Seconds Readout (Positioned near 3 o'clock)
         if (id === 'watch-1') {
             extra += `
-                <defs>
-                    <filter id="handGlow-${id}" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="1" result="blur" />
-                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                </defs>
                 <text x="170" y="125" class="digital-seconds" fill="var(--hud-cyan)" font-family="Orbitron" font-size="16" font-weight="bold" text-anchor="middle">00</text>
                 <text x="170" y="133" fill="var(--hud-cyan)" font-family="Orbitron" font-size="5" text-anchor="middle" opacity="0.5">SEC</text>
                 
@@ -554,14 +548,11 @@ function getHandsSVG(type) {
             sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="20" stroke="#ffcc00" stroke-width="1" />`;
             break;
 
-        case 'eicas_alpha': // No.01: Digital + EICAS Hybrid + Flowing Effect
+        case 'eicas_alpha': // No.01: Digital + EICAS Hybrid
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
-            // Flowing second hand with trail and glow
             sStyle = `
-                <g class="hand-s" filter="url(#handGlow-watch-1)">
-                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="3" opacity="0.1" transform="rotate(-1.5, 120, 120)" />
-                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="2" opacity="0.2" transform="rotate(-0.8, 120, 120)" />
+                <g class="hand-s">
                     <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
                     <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
                 </g>
@@ -621,8 +612,8 @@ function animate() {
         if (watch.hands.minute) setRotation(watch.hands.minute, m_angle);
         if (watch.hands.second) {
             // Some watches have smooth seconds, some have ticking
-            // No.03 (eicas_stealth) is now smooth like No.06 (chrono_pro etc handled below)
-            if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787' || watch.type === 'eicas_stealth') {
+            // No.01 (eicas_alpha) is now smooth like No.06 (chrono_pro etc handled below)
+            if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787' || watch.type === 'eicas_stealth' || watch.type === 'eicas_alpha') {
                 setRotation(watch.hands.second, s_angle);
             } else {
                 setRotation(watch.hands.second, s * 6);
