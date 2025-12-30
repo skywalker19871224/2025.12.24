@@ -542,7 +542,10 @@ function getHandsSVG(type) {
         case 'fuel':
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
-            sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="30" stroke="var(--hud-cyan)" stroke-width="1.5" />`;
+
+            // Default EICAS second hand is cyan, but watch-9 is orange per user request
+            const sColor = (id === 'watch-9') ? 'orange' : 'var(--hud-cyan)';
+            sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="30" stroke="${sColor}" stroke-width="1.5" />`;
             break;
 
         case 'night': // Lume Stick
