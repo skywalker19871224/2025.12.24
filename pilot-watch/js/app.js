@@ -607,11 +607,29 @@ function setRotation(el, deg, cx = 120, cy = 120) {
 
 function updateFanFill(el, val) {
     const cx = 120, cy = 120, r = 55;
-    const deg = (val / 100) * 220;
-    const rad = deg * (Math.PI / 180);
-    const ex = cx + r * Math.cos(rad);
-    const ey = cy + r * Math.sin(rad);
-    const largeArcFlag = deg > 180 ? 1 : 0;
-    const pathD = `M ${cx} ${cy} L ${cx + r} ${cy} A ${r} ${r} 0 ${largeArcFlag} 1 ${ex} ${ey} Z`;
+    const startAngle = -90; // 12 o'clock position
+    const sweepAngle = (val / 100) * 360;
+    const endAngle = startAngle + sweepAngle;
+
+    const startRad = startAngle * (Math.PI / 180);
+    const endRad = endAngle * (Math.PI / 180);
+
+    const sx = cx + r * Math.cos(startRad);
+    const sy = cy + r * Math.sin(startRad);
+    const ex = cx + r * Math.cos(endRad);
+    const ey = cy + r * Math.sin(endRad);
+
+    const largeArcFlag = sweepAngle > 180 ? 1 : 0;
+
+    // Handle the case where sweepAngle is very close to 0 or 360 to prevent path errors
+    let pathD;
+    if (sweepAngle >= 359.9) {
+        pathD = `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r} Z`; // Full circle
+    } else if (sweepAngle <= 0.1) {
+        pathD = `M ${cx} ${cy} Z`; // Empty
+    } else {
+        pathD = `M ${cx} ${cy} L ${sx} ${sy} A ${r} ${r} 0 ${largeArcFlag} 1 ${ex} ${ey} Z`;
+    }
+
     el.setAttribute('d', pathD);
 }
