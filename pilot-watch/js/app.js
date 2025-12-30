@@ -291,10 +291,55 @@ function generateSVG(type, id) {
         let digitColor = 'var(--hud-cyan)';
 
         // Define colors per model based on ALPHA standard inheritance
-        if (id === 'watch-1') { /* ALPHA: Cyan (Default) */ }
-        else if (type === 'eicas_beta') { color = 'rgba(255, 165, 0, 0.15)'; digitColor = 'orange'; }
-        else if (type === 'eicas_gamma') { color = 'rgba(0, 255, 128, 0.15)'; digitColor = '#00ff80'; }
-        else if (type === 'eicas_delta') { color = 'rgba(180, 0, 255, 0.15)'; digitColor = '#b400ff'; }
+        if (id === 'watch-1') { /* ALPHA: Cyan (Default) - Pure, clean look */ }
+        else if (type === 'eicas_beta') {
+            color = 'rgba(255, 165, 0, 0.15)';
+            digitColor = 'orange';
+            // BETA Add-on: Honeycomb Mesh (Structural/Tough)
+            extra += `
+                <defs>
+                    <pattern id="honeycomb" x="0" y="0" width="20" height="34.6" patternUnits="userSpaceOnUse">
+                        <path d="M10 0 L20 5.77 L20 17.32 L10 23.09 L0 17.32 L0 5.77 Z" fill="none" stroke="orange" stroke-width="0.5" opacity="0.15"/>
+                    </pattern>
+                </defs>
+                <circle cx="120" cy="120" r="85" fill="url(#honeycomb)" />
+                <circle cx="120" cy="120" r="88" fill="none" stroke="orange" stroke-width="1" opacity="0.3" stroke-dasharray="4,4" />
+            `;
+        }
+        else if (type === 'eicas_gamma') {
+            color = 'rgba(0, 255, 128, 0.15)';
+            digitColor = '#00ff80';
+            // GAMMA Add-on: Tactical Scope (Precision)
+            extra += `
+                <!-- Crosshair -->
+                <line x1="120" y1="40" x2="120" y2="200" stroke="#00ff80" stroke-width="0.5" opacity="0.3" />
+                <line x1="40" y1="120" x2="200" y2="120" stroke="#00ff80" stroke-width="0.5" opacity="0.3" />
+                <!-- Reticle Circles -->
+                <circle cx="120" cy="120" r="40" fill="none" stroke="#00ff80" stroke-width="0.5" opacity="0.2" />
+                <circle cx="120" cy="120" r="70" fill="none" stroke="#00ff80" stroke-width="0.5" opacity="0.1" stroke-dasharray="10,5" />
+                <!-- Corner Brackets -->
+                <path d="M 80 80 L 70 80 L 70 90" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
+                <path d="M 160 80 L 170 80 L 170 90" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
+                <path d="M 80 160 L 70 160 L 70 150" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
+                <path d="M 160 160 L 170 160 L 170 150" fill="none" stroke="#00ff80" stroke-width="1" opacity="0.5" />
+            `;
+        }
+        else if (type === 'eicas_delta') {
+            color = 'rgba(180, 0, 255, 0.15)';
+            digitColor = '#b400ff';
+            // DELTA Add-on: Cyber Data Rings (Analytics)
+            extra += `
+                <!-- Analytical rings -->
+                <circle cx="120" cy="120" r="60" fill="none" stroke="#b400ff" stroke-width="0.5" opacity="0.1" />
+                <circle cx="120" cy="120" r="62" fill="none" stroke="#b400ff" stroke-width="2" opacity="0.05" stroke-dasharray="2,10" />
+                <circle cx="120" cy="120" r="75" fill="none" stroke="#b400ff" stroke-width="8" opacity="0.03" />
+                <!-- Rotating data bits illusion (static for now) -->
+                <circle cx="120" cy="120" r="45" fill="none" stroke="#b400ff" stroke-width="1" opacity="0.15" stroke-dasharray="1,5" />
+                <!-- Vertical data line -->
+                <line x1="100" y1="120" x2="100" y2="180" stroke="#b400ff" stroke-width="0.5" opacity="0.2" />
+                <text x="96" y="150" fill="#b400ff" font-family="monospace" font-size="4" opacity="0.4" transform="rotate(-90 96 150)">SYS.ANALYSIS</text>
+            `;
+        }
         else if (id === 'watch-2') { color = 'rgba(255, 165, 0, 0.15)'; digitColor = 'orange'; } // Legacy No.02 support
 
         // Initial path set to 12 o'clock (cx, cy-r) to match sync logic
