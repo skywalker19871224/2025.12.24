@@ -298,10 +298,10 @@ function generateSVG(type, id) {
         if (id === 'watch-1' || id === 'watch-2') {
             const digitColor = (id === 'watch-2') ? 'orange' : 'var(--hud-cyan)';
             extra += `
-                <text x="170" y="125" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="16" font-weight="bold" text-anchor="middle">00</text>
+                <!-- Sleek horizontal frame for digital display -->
+                <rect x="152" y="109" width="36" height="22" rx="2" fill="rgba(0,0,0,0.4)" stroke="${digitColor}" stroke-width="0.5" opacity="0.3" />
                 
-                <!-- Subtle frame for digital display -->
-                <rect x="155" y="108" width="30" height="30" rx="3" fill="none" stroke="${digitColor}" stroke-width="0.5" opacity="0.2" />
+                <text x="170" y="121" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="central">00</text>
             `;
         }
     }
