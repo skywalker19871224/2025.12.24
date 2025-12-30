@@ -138,6 +138,8 @@ function generateSVG(type, id) {
     }
 
     if (type === 'chrono_pro') {
+        const jst = new Date(Date.now() + (9 * 60 * 60 * 1000));
+        const day = jst.getUTCDate();
         extra += `
             <defs>
                 <radialGradient id="sunray" cx="50%" cy="50%" r="50%">
@@ -150,21 +152,21 @@ function generateSVG(type, id) {
             <!-- Tachymeter Scale -->
             <circle cx="120" cy="120" r="108" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="15" />
             <text x="120" y="25" fill="rgba(255,255,255,0.4)" font-size="6" text-anchor="middle">TACHYMETRE 400</text>
-
+ 
             <!-- 3 Sub Dials -->
             <circle cx="120" cy="70" r="22" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.1)" />
             <text x="120" y="58" fill="#aaa" font-size="6" text-anchor="middle">30</text>
             <line class="hand-sub1" x1="120" y1="70" x2="120" y2="55" stroke="var(--hud-cyan)" stroke-width="1.5" />
-
+ 
             <circle cx="120" cy="170" r="22" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.1)" />
             <text x="120" y="182" fill="#aaa" font-size="6" text-anchor="middle">12</text>
             <line class="hand-sub2" x1="120" y1="170" x2="120" y2="155" stroke="var(--hud-cyan)" stroke-width="1.5" />
-
+ 
             <circle cx="75" cy="120" r="18" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.1)" />
             <line class="hand-sub3" x1="75" y1="120" x2="75" y2="105" stroke="white" stroke-width="1" />
             
             <rect x="165" y="112" width="20" height="16" fill="#111" stroke="#444" />
-            <text x="175" y="124" fill="white" font-size="10" font-family="monospace" text-anchor="middle">27</text>
+            <text x="175" y="124" fill="white" font-size="10" font-family="monospace" text-anchor="middle">${day}</text>
         `;
 
         for (let i = 0; i < 12; i++) {
@@ -189,6 +191,12 @@ function generateSVG(type, id) {
         const lightGold = '#E8E0C5'; // Pale Silk Gold
         const darkGold = '#8C7B45'; // Darker Muted Gold
 
+        const jst = new Date(Date.now() + (9 * 60 * 60 * 1000));
+        const year = jst.getUTCFullYear();
+        const month = String(jst.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(jst.getUTCDate()).padStart(2, '0');
+        const dateStr = `${year}.${month}.${day}`;
+
         extra += `
             <defs>
                 <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -209,8 +217,8 @@ function generateSVG(type, id) {
             <!-- Inner Ring (Subtle) -->
             <circle cx="120" cy="120" r="95" fill="none" stroke="${gold}" stroke-width="0.5" opacity="0.2" />
             
-            <!-- Script Engraving: 2025.12.31 (More subtle) -->
-            <text x="120" y="165" fill="${gold}" font-family="'Playfair Display', serif" font-style="italic" font-size="12" text-anchor="middle" opacity="0.5">2025.12.31</text>
+            <!-- Script Engraving: JST Date (Dynamic) -->
+            <text x="120" y="165" fill="${gold}" font-family="'Playfair Display', serif" font-style="italic" font-size="12" text-anchor="middle" opacity="0.5">${dateStr}</text>
             
             <!-- Logo area (White/Silver for balance) -->
             <text x="120" y="80" fill="white" font-family="Orbitron" font-size="9" font-weight="bold" letter-spacing="4" text-anchor="middle" opacity="0.9">ANTIGRAVITY</text>
@@ -587,10 +595,12 @@ function getHandsSVG(type) {
 
 function animate() {
     const now = new Date();
-    const h = now.getHours();
-    const m = now.getMinutes();
-    const s = now.getSeconds();
-    const ms = now.getMilliseconds();
+    // Force Japan Standard Time (JST) = UTC + 9
+    const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+    const h = jst.getUTCHours();
+    const m = jst.getUTCMinutes();
+    const s = jst.getUTCSeconds();
+    const ms = jst.getUTCMilliseconds();
 
     watchData.forEach(watch => {
         const s_angle = (s + ms / 1000) * 6;
