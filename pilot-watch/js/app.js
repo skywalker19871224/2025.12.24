@@ -294,13 +294,14 @@ function generateSVG(type, id) {
             <path d="M ${cx + r} 120 A ${r} ${r} 0 0 0 120 ${cy - r}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="2,2"/>
         `;
 
-        // No.01 Alpha: Digital Seconds Readout (Positioned near 3 o'clock)
-        if (id === 'watch-1') {
+        // No.01 Alpha & No.02 Beta: Digital Seconds Readout (Positioned near 3 o'clock)
+        if (id === 'watch-1' || id === 'watch-2') {
+            const digitColor = (id === 'watch-2') ? 'orange' : 'var(--hud-cyan)';
             extra += `
-                <text x="170" y="125" class="digital-seconds" fill="var(--hud-cyan)" font-family="Orbitron" font-size="16" font-weight="bold" text-anchor="middle">00</text>
+                <text x="170" y="125" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="16" font-weight="bold" text-anchor="middle">00</text>
                 
                 <!-- Subtle frame for digital display -->
-                <rect x="155" y="108" width="30" height="30" rx="3" fill="none" stroke="var(--hud-cyan)" stroke-width="0.5" opacity="0.2" />
+                <rect x="155" y="108" width="30" height="30" rx="3" fill="none" stroke="${digitColor}" stroke-width="0.5" opacity="0.2" />
             `;
         }
     }
