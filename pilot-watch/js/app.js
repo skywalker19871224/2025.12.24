@@ -590,9 +590,11 @@ function animate() {
             setRotation(watch.hands.sub4, pwr, 160, 120);
         }
 
-        // Fan fill animation for gauge types
+        // Fan fill animation for gauge types (Synced with seconds)
         if (watch.hands.fan) {
-            updateFanFill(watch.hands.fan, (Math.sin(Date.now() / 2000) + 1) * 50);
+            // Calculate percentage based on current second (0-59)
+            const secPercent = (s / 60) * 100;
+            updateFanFill(watch.hands.fan, secPercent);
         }
     });
 
