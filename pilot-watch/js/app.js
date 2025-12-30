@@ -1,70 +1,60 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.watch-grid');
+    if (!grid) return;
+
+    // 0. Assign data-id to each card for tracking
+    Array.from(grid.children).forEach(card => {
+        const face = card.querySelector('.watch-face');
+        if (face && face.id) {
+            card.setAttribute('data-id', face.id);
+        }
+    });
 
     // 1. Restore Order from LocalStorage
     const savedOrder = localStorage.getItem('watchOrder');
-    if (savedOrder && grid) {
-        const orderIds = JSON.parse(savedOrder);
-        const cards = Array.from(grid.children);
-        const cardMap = {};
+    if (savedOrder) {
+        try {
+            const orderIds = JSON.parse(savedOrder);
+            const cards = Array.from(grid.children);
+            const cardMap = {};
 
-        // Map cards by their watch-face ID
-        cards.forEach(card => {
-            const face = card.querySelector('.watch-face');
-            if (face && face.id) {
-                cardMap[face.id] = card;
-            }
-        });
+            cards.forEach(card => {
+                const id = card.getAttribute('data-id');
+                if (id) cardMap[id] = card;
+            });
 
-        // Re-append cards in saved order
-        orderIds.forEach(id => {
-            if (cardMap[id]) {
-                grid.appendChild(cardMap[id]);
-            }
-        });
+            // Reorder according to saved sequence
+            orderIds.forEach(id => {
+                if (cardMap[id]) {
+                    grid.appendChild(cardMap[id]);
+                }
+            });
 
-        // Append any new cards that weren't in storage
-        cards.forEach(card => {
-            const face = card.querySelector('.watch-face');
-            if (face && !orderIds.includes(face.id)) {
-                grid.appendChild(card);
-            }
-        });
+            // Re-append any cards that weren't in the saved order (new additions)
+            cards.forEach(card => {
+                if (!grid.contains(card)) {
+                    grid.appendChild(card);
+                }
+            });
+        } catch (e) {
+            console.error("Failed to restore watch order:", e);
+        }
     }
 
     initWatches();
     requestAnimationFrame(animate);
 
-    // 2. Initialize SortableJS with Persistence
-    if (grid && typeof Sortable !== 'undefined') {
+    // 2. Initialize SortableJS with more reliable save trigger
+    if (typeof Sortable !== 'undefined') {
         new Sortable(grid, {
             animation: 300,
             ghostClass: 'sortable-ghost',
             easing: "cubic-bezier(1, 0, 0, 1)",
-            store: {
-                /**
-                 * Save the order of elements. Called onEnd (when the item is dropped).
-                 * @param {Sortable} sortable
-                 */
-                set: function (sortable) {
-                    const order = sortable.toArray();
-                    localStorage.setItem('watchOrder', JSON.stringify(order));
-                },
-
-                /**
-                 * Get the order of elements. Called onInit.
-                 * (We handle manual restoration above for better control, so we just return [])
-                 */
-                get: function (sortable) {
-                    return [];
-                }
-            },
-            dataIdAttr: 'data-id', // We need to set this attribute on elements for toArray() to work
-            onSort: function (evt) {
-                // Manual backup save just in case
-                const cards = Array.from(grid.children);
-                const ids = cards.map(c => c.querySelector('.watch-face').id);
-                localStorage.setItem('watchOrder', JSON.stringify(ids));
+            onEnd: () => {
+                const order = Array.from(grid.children)
+                    .map(card => card.getAttribute('data-id'))
+                    .filter(id => id);
+                localStorage.setItem('watchOrder', JSON.stringify(order));
             }
         });
     }
