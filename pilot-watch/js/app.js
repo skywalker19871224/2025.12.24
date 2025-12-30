@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     initWatches();
     requestAnimationFrame(animate);
+
+    // Initialize SortableJS for Drag & Drop
+    const grid = document.querySelector('.watch-grid');
+    if (grid && typeof Sortable !== 'undefined') {
+        new Sortable(grid, {
+            animation: 300,
+            ghostClass: 'sortable-ghost',
+            easing: "cubic-bezier(1, 0, 0, 1)"
+        });
+    }
 });
 
 const watchData = [];

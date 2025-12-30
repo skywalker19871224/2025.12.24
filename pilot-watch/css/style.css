@@ -88,6 +88,18 @@ body {
     position: relative;
     overflow: hidden;
     counter-increment: card-counter;
+    cursor: grab;
+    /* Indicates draggable */
+}
+
+.watch-card:active {
+    cursor: grabbing;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--hud-cyan);
 }
 
 .watch-card::before {
