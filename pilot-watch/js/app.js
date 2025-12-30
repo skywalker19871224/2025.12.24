@@ -276,10 +276,11 @@ function generateSVG(type, id) {
         `;
     }
 
-    if (type === 'fuel' || type === 'eicas') {
+    if (type === 'fuel' || type === 'eicas' || type === 'eicas_stealth') {
+        const r = (id === 'watch-9' || id === 'watch-3') ? 90 : 55;
         extra += `
-            <path class="fan-fill" d="M 120 120 L 175 120 A 55 55 0 0 1 175 120 Z" fill="rgba(0, 242, 255, 0.2)" />
-            <path d="M 175 120 A 55 55 0 0 0 120 65" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="2,2"/>
+            <path class="fan-fill" data-radius="${r}" d="M 120 120 L ${cx + r} 120 A ${r} ${r} 0 0 1 ${cx + r} 120 Z" fill="rgba(0, 242, 255, 0.2)" />
+            <path d="M ${cx + r} 120 A ${r} ${r} 0 0 0 120 ${cy - r}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="2,2"/>
         `;
     }
 
@@ -619,7 +620,8 @@ function setRotation(el, deg, cx = 120, cy = 120) {
 }
 
 function updateFanFill(el, val) {
-    const cx = 120, cy = 120, r = 55;
+    const cx = 120, cy = 120;
+    const r = parseFloat(el.dataset.radius) || 55;
     const startAngle = -90; // 12 o'clock position
     const sweepAngle = (val / 100) * 360;
     const endAngle = startAngle + sweepAngle;
