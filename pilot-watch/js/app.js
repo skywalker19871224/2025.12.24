@@ -525,6 +525,18 @@ function getHandsSVG(type) {
             sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="20" stroke="#ffcc00" stroke-width="1" />`;
             break;
 
+        case 'eicas_stealth': // No.03: Custom Stealth EICAS
+            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
+            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
+            // Cyan second hand matching the "Masterpiece" style (No.04 / Old No.01)
+            sStyle = `
+                <g class="hand-s">
+                    <line x1="120" y1="140" x2="120" y2="20" stroke="#00F2FF" stroke-width="1.5" />
+                    <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
+                </g>
+            `;
+            break;
+
         case 'eicas': // Needle style (matching gauges)
         case 'fuel':
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
@@ -564,7 +576,8 @@ function animate() {
         if (watch.hands.minute) setRotation(watch.hands.minute, m_angle);
         if (watch.hands.second) {
             // Some watches have smooth seconds, some have ticking
-            if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787') {
+            // No.03 (eicas_stealth) is now smooth like No.06 (chrono_pro etc handled below)
+            if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787' || watch.type === 'eicas_stealth') {
                 setRotation(watch.hands.second, s_angle);
             } else {
                 setRotation(watch.hands.second, s * 6);
