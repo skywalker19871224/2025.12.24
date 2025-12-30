@@ -25,7 +25,8 @@ function initWatches() {
                 sub2: container.querySelector('.hand-sub2'), // Hours (Bottom)
                 sub3: container.querySelector('.hand-sub3'), // Small Sec (Left)
                 sub4: container.querySelector('.hand-sub4'), // Power (Right)
-                fan: container.querySelector('.fan-fill')
+                fan: container.querySelector('.fan-fill'),
+                digitalSec: container.querySelector('.digital-seconds')
             }
         });
     });
@@ -276,12 +277,20 @@ function generateSVG(type, id) {
         `;
     }
 
-    if (type === 'fuel' || type === 'eicas' || type === 'eicas_stealth') {
+    if (type === 'fuel' || type === 'eicas' || type === 'eicas_stealth' || type === 'eicas_alpha') {
         const r = (id === 'watch-9' || id === 'watch-3' || id === 'watch-1' || id === 'watch-2') ? 90 : 55;
         extra += `
-            <path class="fan-fill" data-radius="${r}" d="M 120 120 L ${cx + r} 120 A ${r} ${r} 0 0 1 ${cx + r} 120 Z" fill="rgba(0, 242, 255, 0.1)" />
+            <path class="fan-fill" data-radius="${r}" d="M 120 120 L ${cx + r} 120 A ${r} ${r} 0 0 1 ${cx + r} 120 Z" fill="rgba(0, 242, 255, 0.2)" />
             <path d="M ${cx + r} 120 A ${r} ${r} 0 0 0 120 ${cy - r}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="2,2"/>
         `;
+
+        // No.01 Alpha: Digital Seconds Readout
+        if (id === 'watch-1') {
+            extra += `
+                <text x="120" y="145" class="digital-seconds" fill="var(--hud-cyan)" font-family="Orbitron" font-size="24" font-weight="bold" text-anchor="middle">00</text>
+                <text x="120" y="155" fill="var(--hud-cyan)" font-family="Orbitron" font-size="6" text-anchor="middle" opacity="0.5">SEC</text>
+            `;
+        }
     }
 
     // ANA 787 Concept Logic
@@ -526,6 +535,17 @@ function getHandsSVG(type) {
             sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="20" stroke="#ffcc00" stroke-width="1" />`;
             break;
 
+        case 'eicas_alpha': // No.01: Digital + EICAS Hybrid
+            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
+            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
+            sStyle = `
+                <g class="hand-s">
+                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
+                    <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
+                </g>
+            `;
+            break;
+
         case 'eicas_stealth': // No.03: Custom Stealth EICAS
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
@@ -610,6 +630,11 @@ function animate() {
             const smoothSec = s + (ms / 1000);
             const secPercent = (smoothSec / 60) * 100;
             updateFanFill(watch.hands.fan, secPercent);
+        }
+
+        // Digital Seconds update for No.01 Alpha
+        if (watch.hands.digitalSec) {
+            watch.hands.digitalSec.textContent = s.toString().padStart(2, '0');
         }
     });
 
