@@ -303,17 +303,17 @@ function generateSVG(type, id) {
         // Define colors per model based on ALPHA standard inheritance
         if (id === 'watch-1') { /* ALPHA: Cyan (Default) - Pure, clean look */ }
         else if (type === 'eicas_beta') {
-            color = 'rgba(255, 165, 0, 0.15)';
-            digitColor = 'orange';
-            // BETA Add-on: Honeycomb Mesh (Structural/Tough)
+            color = 'rgba(0, 242, 255, 0.2)'; // Revert to Cyan base
+            digitColor = '#DFFF00'; // Match Hands (Volt Yellow)
+            // BETA Add-on: Honeycomb Mesh (Cyan)
             extra += `
                 <defs>
                     <pattern id="honeycomb" x="0" y="0" width="20" height="34.6" patternUnits="userSpaceOnUse">
-                        <path d="M10 0 L20 5.77 L20 17.32 L10 23.09 L0 17.32 L0 5.77 Z" fill="none" stroke="orange" stroke-width="0.5" opacity="0.15"/>
+                        <path d="M10 0 L20 5.77 L20 17.32 L10 23.09 L0 17.32 L0 5.77 Z" fill="none" stroke="var(--hud-cyan)" stroke-width="0.5" opacity="0.15"/>
                     </pattern>
                 </defs>
                 <circle cx="120" cy="120" r="85" fill="url(#honeycomb)" />
-                <circle cx="120" cy="120" r="88" fill="none" stroke="orange" stroke-width="1" opacity="0.3" stroke-dasharray="4,4" />
+                <circle cx="120" cy="120" r="88" fill="none" stroke="var(--hud-cyan)" stroke-width="1" opacity="0.3" stroke-dasharray="4,4" />
             `;
         }
         else if (type === 'eicas_gamma') {
@@ -642,12 +642,24 @@ function getHandsSVG(type) {
             break;
 
         case 'eicas_alpha': // No.01: Digital + EICAS Hybrid (Cyan)
-        case 'eicas_beta':  // No.02: New Beta (Orange)
         case 'eicas_gamma': // No.03: New Gamma (Green)
         case 'eicas_delta': // No.04: New Delta (Purple)
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
             // All inherit the Standard Orange Sweep Hand from ALPHA
+            sStyle = `
+                <g class="hand-s">
+                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
+                    <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
+                </g>
+            `;
+            break;
+
+        case 'eicas_beta':  // No.02: New Beta (Cyan Base + Volt Yellow Hands)
+            // Volt Yellow (#DFFF00) Hour/Minute Hands
+            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="#DFFF00" stroke-width="4" stroke-linecap="square" />`;
+            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="#DFFF00" stroke-width="2" stroke-linecap="square" />`;
+            // Standard Orange Sweep Hand
             sStyle = `
                 <g class="hand-s">
                     <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
