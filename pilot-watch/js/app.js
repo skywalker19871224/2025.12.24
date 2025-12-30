@@ -284,18 +284,27 @@ function generateSVG(type, id) {
         `;
     }
 
-    if (type === 'fuel' || type === 'eicas' || type === 'eicas_stealth' || type === 'eicas_alpha') {
-        const r = (id === 'watch-9' || id === 'watch-3' || id === 'watch-1' || id === 'watch-2') ? 90 : 55;
-        const color = (id === 'watch-2') ? 'rgba(255, 165, 0, 0.15)' : 'rgba(0, 242, 255, 0.2)';
+    if (type === 'fuel' || type === 'eicas' || type === 'eicas_stealth' || type === 'eicas_alpha' || type === 'eicas_beta' || type === 'eicas_gamma' || type === 'eicas_delta') {
+        const r = 90; // All new EICAS series use large gauge
+
+        let color = 'rgba(0, 242, 255, 0.2)'; // Default Cyan
+        let digitColor = 'var(--hud-cyan)';
+
+        // Define colors per model based on ALPHA standard inheritance
+        if (id === 'watch-1') { /* ALPHA: Cyan (Default) */ }
+        else if (type === 'eicas_beta') { color = 'rgba(255, 165, 0, 0.15)'; digitColor = 'orange'; }
+        else if (type === 'eicas_gamma') { color = 'rgba(0, 255, 128, 0.15)'; digitColor = '#00ff80'; }
+        else if (type === 'eicas_delta') { color = 'rgba(180, 0, 255, 0.15)'; digitColor = '#b400ff'; }
+        else if (id === 'watch-2') { color = 'rgba(255, 165, 0, 0.15)'; digitColor = 'orange'; } // Legacy No.02 support
+
         // Initial path set to 12 o'clock (cx, cy-r) to match sync logic
         extra += `
             <path class="fan-fill" data-radius="${r}" d="M 120 120 L ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy - r} Z" fill="${color}" />
             <path d="M ${cx + r} 120 A ${r} ${r} 0 0 0 120 ${cy - r}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="2,2"/>
         `;
 
-        // No.01 Alpha & No.02 Beta: Digital Seconds Readout (Positioned near 3 o'clock)
-        if (id === 'watch-1' || id === 'watch-2') {
-            const digitColor = (id === 'watch-2') ? 'orange' : 'var(--hud-cyan)';
+        // Digital Seconds Readout (Standardized for Alpha/Beta/Gamma/Delta)
+        if (type === 'eicas_alpha' || type === 'eicas_beta' || type === 'eicas_gamma' || type === 'eicas_delta' || id === 'watch-1' || id === 'watch-2') {
             extra += `
                 <!-- Sleek horizontal frame for digital display -->
                 <rect x="152" y="109" width="36" height="22" rx="2" fill="rgba(0,0,0,0.4)" stroke="${digitColor}" stroke-width="0.5" opacity="0.3" />
@@ -547,9 +556,13 @@ function getHandsSVG(type) {
             sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="20" stroke="#ffcc00" stroke-width="1" />`;
             break;
 
-        case 'eicas_alpha': // No.01: Digital + EICAS Hybrid
+        case 'eicas_alpha': // No.01: Digital + EICAS Hybrid (Cyan)
+        case 'eicas_beta':  // No.02: New Beta (Orange)
+        case 'eicas_gamma': // No.03: New Gamma (Green)
+        case 'eicas_delta': // No.04: New Delta (Purple)
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
+            // All inherit the Standard Orange Sweep Hand from ALPHA
             sStyle = `
                 <g class="hand-s">
                     <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
@@ -611,8 +624,10 @@ function animate() {
         if (watch.hands.minute) setRotation(watch.hands.minute, m_angle);
         if (watch.hands.second) {
             // Some watches have smooth seconds, some have ticking
-            // No.01 (eicas_alpha) is now smooth like No.06 (chrono_pro etc handled below)
-            if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787' || watch.type === 'eicas_stealth' || watch.type === 'eicas_alpha') {
+            // No.01 (eicas_alpha) and descendants are now smooth like No.06
+            if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787' ||
+                watch.type === 'eicas_stealth' || watch.type === 'eicas_alpha' ||
+                watch.type === 'eicas_beta' || watch.type === 'eicas_gamma' || watch.type === 'eicas_delta') {
                 setRotation(watch.hands.second, s_angle);
             } else {
                 setRotation(watch.hands.second, s * 6);
