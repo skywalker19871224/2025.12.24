@@ -279,7 +279,7 @@ function generateSVG(type, id) {
     if (type === 'fuel' || type === 'eicas' || type === 'eicas_stealth') {
         const r = (id === 'watch-9' || id === 'watch-3' || id === 'watch-1' || id === 'watch-2') ? 90 : 55;
         extra += `
-            <path class="fan-fill" data-radius="${r}" d="M 120 120 L ${cx + r} 120 A ${r} ${r} 0 0 1 ${cx + r} 120 Z" fill="rgba(0, 242, 255, 0.2)" />
+            <path class="fan-fill" data-radius="${r}" d="M 120 120 L ${cx + r} 120 A ${r} ${r} 0 0 1 ${cx + r} 120 Z" fill="rgba(0, 242, 255, 0.1)" />
             <path d="M ${cx + r} 120 A ${r} ${r} 0 0 0 120 ${cy - r}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="2,2"/>
         `;
     }
