@@ -529,10 +529,10 @@ function getHandsSVG(type) {
         case 'eicas_stealth': // No.03: Custom Stealth EICAS
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
-            // Cyan second hand matching the "Masterpiece" style (No.04 / Old No.01)
+            // Second hand color matched to No.06 (orange)
             sStyle = `
                 <g class="hand-s">
-                    <line x1="120" y1="140" x2="120" y2="20" stroke="#00F2FF" stroke-width="1.5" />
+                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
                     <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
                 </g>
             `;
@@ -542,10 +542,7 @@ function getHandsSVG(type) {
         case 'fuel':
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
-
-            // Default EICAS second hand is cyan, but watch-9 is orange per user request
-            const sColor = (id === 'watch-9') ? 'orange' : 'var(--hud-cyan)';
-            sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="30" stroke="${sColor}" stroke-width="1.5" />`;
+            sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="30" stroke="var(--hud-cyan)" stroke-width="1.5" />`;
             break;
 
         case 'night': // Lume Stick
