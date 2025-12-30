@@ -406,25 +406,32 @@ function generateSVG(type, id) {
                 <text x="65" y="155" fill="#00ff80" font-family="monospace" font-size="4" opacity="0.6">1.7m</text>
 
                 <!-- OSD Text info -->
-                <text x="120" y="190" fill="#00ff80" font-family="monospace" font-size="6" text-anchor="middle" letter-spacing="2" opacity="0.8">NVG MODE: ACTIVE</text>
+            <text x="120" y="190" fill="#00ff80" font-family="monospace" font-size="6" text-anchor="middle" letter-spacing="2" opacity="0.8">NVG MODE: ACTIVE</text>
                 <text x="40" y="115" fill="#00ff80" font-family="monospace" font-size="4" text-anchor="end" opacity="0.6">WIND: 4.2</text>
                 <text x="200" y="115" fill="#00ff80" font-family="monospace" font-size="4" text-anchor="start" opacity="0.6">ELEV: +1.5</text>
             `;
         }
         else if (type === 'eicas_delta') {
-            color = 'rgba(180, 0, 255, 0.15)';
-            digitColor = '#b400ff';
-            // DELTA Add-on: Cyber Data Rings (Analytics)
+            color = 'rgba(255, 176, 0, 0.15)'; // Amber Caution
+            digitColor = '#FFB000'; // Amber
+            // DELTA Add-on: Tactical Advisory (Amber Scale)
             extra += `
-                <!-- Analytical rings -->
-                <circle cx="120" cy="120" r="60" fill="none" stroke="#b400ff" stroke-width="0.5" opacity="0.1" />
-                <circle cx="120" cy="120" r="62" fill="none" stroke="#b400ff" stroke-width="2" opacity="0.05" stroke-dasharray="2,10" />
-                <circle cx="120" cy="120" r="75" fill="none" stroke="#b400ff" stroke-width="8" opacity="0.03" />
-                <!-- Rotating data bits illusion (static for now) -->
-                <circle cx="120" cy="120" r="45" fill="none" stroke="#b400ff" stroke-width="1" opacity="0.15" stroke-dasharray="1,5" />
-                <!-- Vertical data line -->
-                <line x1="100" y1="120" x2="100" y2="180" stroke="#b400ff" stroke-width="0.5" opacity="0.2" />
-                <text x="96" y="150" fill="#b400ff" font-family="monospace" font-size="4" opacity="0.4" transform="rotate(-90 96 150)">SYS.ANALYSIS</text>
+                <!-- Warning Brackets -->
+                <path d="M 40 40 L 20 40 L 20 60" fill="none" stroke="#FFB000" stroke-width="1.5" opacity="0.5" />
+                <path d="M 200 40 L 220 40 L 220 60" fill="none" stroke="#FFB000" stroke-width="1.5" opacity="0.5" />
+                <path d="M 40 200 L 20 200 L 20 180" fill="none" stroke="#FFB000" stroke-width="1.5" opacity="0.5" />
+                <path d="M 200 200 L 220 200 L 220 180" fill="none" stroke="#FFB000" stroke-width="1.5" opacity="0.5" />
+                
+                <!-- Vertical Advisory Scales (Left & Right) -->
+                <line x1="15" y1="80" x2="15" y2="160" stroke="#FFB000" stroke-width="0.5" opacity="0.4" />
+                <line x1="225" y1="80" x2="225" y2="160" stroke="#FFB000" stroke-width="0.5" opacity="0.4" />
+                ${Array.from({ length: 5 }).map((_, i) => `
+                    <line x1="15" y1="${80 + i * 20}" x2="22" y2="${80 + i * 20}" stroke="#FFB000" stroke-width="0.5" opacity="0.4" />
+                    <line x1="218" y1="${80 + i * 20}" x2="225" y2="${80 + i * 20}" stroke="#FFB000" stroke-width="0.5" opacity="0.4" />
+                `).join('')}
+                
+                <!-- Center Advisory Text -->
+                <text x="120" y="210" fill="#FFB000" font-family="Orbitron" font-size="7" font-weight="bold" text-anchor="middle" letter-spacing="1" opacity="0.7">SYSTEM ADVISORY</text>
             `;
         }
         else if (id === 'watch-2') { color = 'rgba(255, 165, 0, 0.15)'; digitColor = 'orange'; } // Legacy No.02 support
