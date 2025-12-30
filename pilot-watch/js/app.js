@@ -183,6 +183,69 @@ function generateSVG(type, id) {
         }
     }
 
+    if (type === 'chrono_gold') {
+        const gold = '#D4AF37'; // Classic Gold
+        const lightGold = '#FFD700'; // Champagne Gold
+        const darkGold = '#A67C00'; // Deep Gold
+
+        extra += `
+            <defs>
+                <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="${lightGold}" />
+                    <stop offset="50%" stop-color="${gold}" />
+                    <stop offset="100%" stop-color="${darkGold}" />
+                </linearGradient>
+                <radialGradient id="goldSunray" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#2a2418" />
+                    <stop offset="100%" stop-color="#0a0805" />
+                </radialGradient>
+            </defs>
+            
+            <!-- Dial Background with Sunray -->
+            <circle cx="120" cy="120" r="110" fill="url(#goldSunray)" stroke="url(#goldGradient)" stroke-width="3" />
+            
+            <!-- Inner Ring -->
+            <circle cx="120" cy="120" r="95" fill="none" stroke="${gold}" stroke-width="0.5" opacity="0.4" />
+            
+            <!-- Script Engraving: 2025.12.31 -->
+            <text x="120" y="160" fill="${gold}" font-family="'Playfair Display', serif" font-style="italic" font-size="14" text-anchor="middle" opacity="0.8">2025.12.31</text>
+            
+            <!-- Logo area -->
+            <text x="120" y="80" fill="url(#goldGradient)" font-family="Orbitron" font-size="10" font-weight="bold" letter-spacing="3" text-anchor="middle">ANTIGRAVITY</text>
+            <text x="120" y="90" fill="${gold}" font-family="Outfit" font-size="5" letter-spacing="1" text-anchor="middle" opacity="0.6">AUTOMATIC CHRONOMETER</text>
+
+            <!-- 3 Champagne Sub Dials -->
+            <circle cx="120" cy="65" r="22" fill="rgba(212, 175, 55, 0.05)" stroke="${gold}" stroke-width="1" opacity="0.6" />
+            <line class="hand-sub1" x1="120" y1="65" x2="120" y2="48" stroke="${lightGold}" stroke-width="1.5" />
+
+            <circle cx="120" cy="175" r="22" fill="rgba(212, 175, 55, 0.05)" stroke="${gold}" stroke-width="1" opacity="0.6" />
+            <line class="hand-sub2" x1="120" y1="175" x2="120" y2="158" stroke="${lightGold}" stroke-width="1.5" />
+
+            <circle cx="65" cy="120" r="18" fill="rgba(212, 175, 55, 0.05)" stroke="${gold}" stroke-width="1" opacity="0.6" />
+            <line class="hand-sub3" x1="65" y1="120" x2="65" y2="105" stroke="${lightGold}" stroke-width="1" />
+        `;
+
+        // Elegant Gold Ticks
+        for (let i = 0; i < 12; i++) {
+            const angle = i * 30;
+            const rOut = 108;
+            const rIn = 98;
+            const x1 = cx + rOut * Math.cos((angle - 90) * Math.PI / 180);
+            const y1 = cy + rOut * Math.sin((angle - 90) * Math.PI / 180);
+            const x2 = cx + rIn * Math.cos((angle - 90) * Math.PI / 180);
+            const y2 = cy + rIn * Math.sin((angle - 90) * Math.PI / 180);
+            extra += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="butt" />`;
+
+            // Numbers
+            const rNum = 85;
+            const xNum = cx + rNum * Math.cos((angle - 90) * Math.PI / 180);
+            const yNum = cy + rNum * Math.sin((angle - 90) * Math.PI / 180);
+            if (i % 3 === 0 && i !== 0) { // Only 3, 6, 9
+                extra += `<text x="${xNum}" y="${yNum}" fill="${lightGold}" font-family="Playfair Display" font-weight="bold" font-size="12" text-anchor="middle" dominant-baseline="middle">${i}</text>`;
+            }
+        }
+    }
+
     if (type === 'chrono') {
         // Sub dials placeholders
         extra += `
@@ -434,6 +497,28 @@ function getHandsSVG(type) {
                     <circle cx="120" cy="20" r="2" fill="#CC0000" />
                 </g>
             `;
+            break;
+
+        case 'chrono_gold': // Elegant Gold Edition
+            // Hour Hand (Leaf shaped)
+            hStyle = `
+                <g class="hand-h">
+                    <path d="M120 120 L114 90 Q120 60 126 90 Z" fill="#D4AF37" stroke="#FFD700" stroke-width="0.5" />
+                    <line x1="120" y1="120" x2="120" y2="80" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+                </g>`;
+            // Minute Hand (Leaf shaped)
+            mStyle = `
+                <g class="hand-m">
+                    <path d="M120 120 L115 50 Q120 20 125 50 Z" fill="#D4AF37" stroke="#FFD700" stroke-width="0.5" />
+                    <line x1="120" y1="120" x2="120" y2="40" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+                </g>`;
+            // Second Hand (Needle with circular counterweight)
+            sStyle = `
+                <g class="hand-s">
+                    <line x1="120" y1="135" x2="120" y2="20" stroke="#FFD700" stroke-width="1" />
+                    <circle cx="120" cy="120" r="3" fill="#D4AF37" stroke="#FFD700" stroke-width="1" />
+                    <circle cx="120" cy="130" r="2.5" fill="none" stroke="#FFD700" stroke-width="1" />
+                </g>`;
             break;
 
         case 'stealth': // Technical Thin (Renamed/Replaced or kept if other items needed it, but user replaced Stealth card)
