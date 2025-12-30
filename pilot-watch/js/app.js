@@ -1,14 +1,71 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.querySelector('.watch-grid');
+
+    // 1. Restore Order from LocalStorage
+    const savedOrder = localStorage.getItem('watchOrder');
+    if (savedOrder && grid) {
+        const orderIds = JSON.parse(savedOrder);
+        const cards = Array.from(grid.children);
+        const cardMap = {};
+
+        // Map cards by their watch-face ID
+        cards.forEach(card => {
+            const face = card.querySelector('.watch-face');
+            if (face && face.id) {
+                cardMap[face.id] = card;
+            }
+        });
+
+        // Re-append cards in saved order
+        orderIds.forEach(id => {
+            if (cardMap[id]) {
+                grid.appendChild(cardMap[id]);
+            }
+        });
+
+        // Append any new cards that weren't in storage
+        cards.forEach(card => {
+            const face = card.querySelector('.watch-face');
+            if (face && !orderIds.includes(face.id)) {
+                grid.appendChild(card);
+            }
+        });
+    }
+
     initWatches();
     requestAnimationFrame(animate);
 
-    // Initialize SortableJS for Drag & Drop
-    const grid = document.querySelector('.watch-grid');
+    // 2. Initialize SortableJS with Persistence
     if (grid && typeof Sortable !== 'undefined') {
         new Sortable(grid, {
             animation: 300,
             ghostClass: 'sortable-ghost',
-            easing: "cubic-bezier(1, 0, 0, 1)"
+            easing: "cubic-bezier(1, 0, 0, 1)",
+            store: {
+                /**
+                 * Save the order of elements. Called onEnd (when the item is dropped).
+                 * @param {Sortable} sortable
+                 */
+                set: function (sortable) {
+                    const order = sortable.toArray();
+                    localStorage.setItem('watchOrder', JSON.stringify(order));
+                },
+
+                /**
+                 * Get the order of elements. Called onInit.
+                 * (We handle manual restoration above for better control, so we just return [])
+                 */
+                get: function (sortable) {
+                    return [];
+                }
+            },
+            dataIdAttr: 'data-id', // We need to set this attribute on elements for toArray() to work
+            onSort: function (evt) {
+                // Manual backup save just in case
+                const cards = Array.from(grid.children);
+                const ids = cards.map(c => c.querySelector('.watch-face').id);
+                localStorage.setItem('watchOrder', JSON.stringify(ids));
+            }
         });
     }
 });
