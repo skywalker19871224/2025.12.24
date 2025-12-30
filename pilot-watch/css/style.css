@@ -121,6 +121,11 @@ body {
     text-align: center;
 }
 
+/* Watch 5 (EICAS LEGACY) Title Override */
+.watch-grid .watch-card:nth-child(5) .watch-title {
+    color: orange;
+}
+
 .watch-title {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.8rem;
