@@ -604,10 +604,11 @@ function animate() {
             setRotation(watch.hands.sub4, pwr, 160, 120);
         }
 
-        // Fan fill animation for gauge types (Synced with seconds)
+        // Fan fill animation for gauge types (Synced with smooth seconds)
         if (watch.hands.fan) {
-            // Calculate percentage based on current second (0-59)
-            const secPercent = (s / 60) * 100;
+            // Use s + ms to make the Gauge expansion smooth as the sweep hand
+            const smoothSec = s + (ms / 1000);
+            const secPercent = (smoothSec / 60) * 100;
             updateFanFill(watch.hands.fan, secPercent);
         }
     });
