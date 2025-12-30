@@ -300,7 +300,7 @@ function generateSVG(type, id) {
                 <!-- Sleek horizontal frame for digital display -->
                 <rect x="152" y="109" width="36" height="22" rx="2" fill="rgba(0,0,0,0.4)" stroke="${digitColor}" stroke-width="0.5" opacity="0.3" />
                 
-                <text x="170" y="121" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="central" style="letter-spacing: 2px; font-variant-numeric: tabular-nums;">00</text>
+                <text x="170" y="121" class="digital-seconds" fill="${digitColor}" font-family="Orbitron" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="central" style="letter-spacing: 1px; font-variant-numeric: tabular-nums;">00</text>
             `;
         }
     }
