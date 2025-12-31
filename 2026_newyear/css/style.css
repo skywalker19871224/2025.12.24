@@ -1,0 +1,250 @@
+:root {
+    --primary-red: #c0392b;
+    --accent-gold: #d4af37;
+    --bg-dark: #0a0a0a;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent-cyan: #00f2ff;
+    /* Legacy link */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', 'Noto Serif JP', serif;
+    background-color: var(--bg-dark);
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Image with Parallax-like feel */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../assets/bg.png') center/cover no-repeat;
+    filter: brightness(0.7);
+    z-index: -2;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: -1;
+}
+
+#particle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.dashboard {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    z-index: 10;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(212, 175, 55, 0.2);
+    border-color: var(--accent-gold);
+}
+
+/* Header Section */
+.hero {
+    text-align: center;
+}
+
+.main-vignette {
+    display: inline-block;
+    padding: 3rem 5rem;
+}
+
+.sub-detail {
+    font-size: 0.9rem;
+    letter-spacing: 0.5rem;
+    color: var(--accent-gold);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 6rem;
+    font-weight: 700;
+    letter-spacing: -0.2rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.greeting {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.en-greeting {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.3rem;
+    opacity: 0.8;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.stat-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.value {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.kanji {
+    font-family: 'Noto Serif JP', serif;
+    color: var(--accent-gold);
+}
+
+.unit {
+    font-size: 1rem;
+    margin-left: 0.2rem;
+    opacity: 0.6;
+}
+
+.label-detail {
+    font-size: 0.6rem;
+    letter-spacing: 0.1rem;
+    opacity: 0.4;
+    margin-top: 0.2rem;
+}
+
+/* Footer Section */
+.bottom-info {
+    text-align: center;
+}
+
+.quote-card {
+    display: inline-block;
+    padding: 1rem 3rem;
+}
+
+.quote-card p {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+.quote-card small {
+    opacity: 0.5;
+    letter-spacing: 0.1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fadeIn {
+    animation: fadeIn 1.5s ease forwards;
+}
+
+.slideUp {
+    animation: slideUp 1s ease forwards;
+    opacity: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 4rem;
+    }
+
+    .greeting {
+        font-size: 1.8rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard {
+        height: auto;
+        overflow-y: auto;
+        padding: 2rem 0;
+    }
+}
