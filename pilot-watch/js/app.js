@@ -453,6 +453,83 @@ function generateSVG(type, id) {
         }
     }
 
+    if (type === 'chrono_fusion') {
+        const ceramic = '#0a0a0a';
+        const titanium = '#aaa';
+
+        extra += `
+            <defs>
+                <radialGradient id="fusionDial" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#1a1a1a" />
+                    <stop offset="100%" stop-color="#050505" />
+                </radialGradient>
+                <linearGradient id="metalIndex" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#eee" />
+                    <stop offset="50%" stop-color="#fff" />
+                    <stop offset="100%" stop-color="#888" />
+                </linearGradient>
+            </defs>
+            
+            <!-- Bezel Area -->
+            <circle cx="120" cy="120" r="114" fill="${ceramic}" stroke="#222" stroke-width="2" />
+            <circle cx="120" cy="120" r="92" fill="#000" />
+            
+            <!-- Dial (Skeleton Effect Base) -->
+            <circle cx="120" cy="120" r="90" fill="url(#fusionDial)" />
+            
+            <!-- Mechanical Underlay (Simplified gears/lines) -->
+            <g opacity="0.2">
+                <circle cx="120" cy="120" r="45" fill="none" stroke="${titanium}" stroke-width="0.5" />
+                <path d="M 60 120 L 180 120 M 120 60 L 120 180" stroke="${titanium}" stroke-width="0.5" />
+                <circle cx="120" cy="120" r="30" fill="none" stroke="${titanium}" stroke-width="1.5" stroke-dasharray="1,3" />
+            </g>
+
+            <!-- H-Screws on Bezel -->
+            ${[30, 90, 150, 210, 270, 330].map(angle => {
+            const rx = cx + 103 * Math.cos((angle - 90) * Math.PI / 180);
+            const ry = cy + 103 * Math.sin((angle - 90) * Math.PI / 180);
+            return `
+                    <g transform="translate(${rx},${ry})">
+                        <circle cx="0" cy="0" r="4" fill="#333" stroke="#000" stroke-width="0.5" />
+                        <path d="M -2 -1.5 L 2 -1.5 M -2 1.5 L 2 1.5 M 0 -1.5 L 0 1.5" stroke="#888" stroke-width="0.8" /> <!-- H-Shape -->
+                    </g>
+                `;
+        }).join('')}
+
+            <!-- 2 Sub Dials (3 & 9 o'clock) -->
+            <!-- Left (9): Small Seconds -->
+            <g transform="translate(75, 120)">
+                <circle cx="0" cy="0" r="18" fill="rgba(255,255,255,0.03)" stroke="#333" stroke-width="1" />
+                <line class="hand-sub3" x1="0" y1="0" x2="0" y2="-14" stroke="#eee" stroke-width="1.2" />
+                ${Array.from({ length: 4 }).map((_, i) => {
+            const angle = i * 90;
+            return `<line x1="${16 * Math.cos(angle * Math.PI / 180)}" y1="${16 * Math.sin(angle * Math.PI / 180)}" x2="${18 * Math.cos(angle * Math.PI / 180)}" y2="${18 * Math.sin(angle * Math.PI / 180)}" stroke="#444" stroke-width="1" />`;
+        }).join('')}
+            </g>
+            <!-- Right (3): Chrono Minutes -->
+            <g transform="translate(165, 120)">
+                <circle cx="0" cy="0" r="18" fill="rgba(255,255,255,0.03)" stroke="#333" stroke-width="1" />
+                <line class="hand-sub4" x1="0" y1="0" x2="0" y2="-14" stroke="#eee" stroke-width="1.2" />
+                <text y="24" fill="#444" font-size="5" text-anchor="middle">30</text>
+            </g>
+
+            <!-- Indices (Applied Batons) -->
+            ${Array.from({ length: 12 }).map((_, i) => {
+            const angle = i * 30;
+            if (i === 3 || i === 9) return ''; // Skip sub-dial positions
+            const rOut = 90;
+            const rIn = 78;
+            const x1 = cx + rOut * Math.cos((angle - 90) * Math.PI / 180);
+            const y1 = cy + rOut * Math.sin((angle - 90) * Math.PI / 180);
+            const x2 = cx + rIn * Math.cos((angle - 90) * Math.PI / 180);
+            const y2 = cy + rIn * Math.sin((angle - 90) * Math.PI / 180);
+            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="url(#metalIndex)" stroke-width="3" />`;
+        }).join('')}
+
+            <text x="120" y="65" fill="#fff" font-family="Orbitron" font-size="7" letter-spacing="1" text-anchor="middle" opacity="0.6">HU-SPEC</text>
+        `;
+    }
+
     // ANA 787 Concept Logic
     if (type === 'ana787') {
         // Triton Blue: #002984, Mohican Blue: #76A4D9
@@ -680,6 +757,29 @@ function getHandsSVG(type) {
                 </g>`;
             break;
 
+        case 'chrono_fusion':
+            // Polished Silver Sword Hands
+            hStyle = `
+                <g class="hand-h">
+                    <path d="M 120 120 L 115 115 L 120 70 L 125 115 Z" fill="#eee" stroke="#888" stroke-width="0.5" />
+                    <line x1="120" y1="120" x2="120" y2="70" stroke="#888" stroke-width="0.3" />
+                </g>
+            `;
+            mStyle = `
+                <g class="hand-m">
+                    <path d="M 120 120 L 116 116 L 120 35 L 124 116 Z" fill="#eee" stroke="#888" stroke-width="0.5" />
+                    <line x1="120" y1="120" x2="120" y2="35" stroke="#888" stroke-width="0.3" />
+                </g>
+            `;
+            sStyle = `
+                <g class="hand-s">
+                    <line x1="120" y1="145" x2="120" y2="20" stroke="#aaa" stroke-width="1" />
+                    <circle cx="120" cy="140" r="3" fill="none" stroke="#aaa" stroke-width="1" /> <!-- Counterweight -->
+                    <circle cx="120" cy="120" r="3" fill="#111" stroke="#888" stroke-width="0.5" />
+                </g>
+            `;
+            break;
+
         case 'stealth': // Technical Thin (Renamed/Replaced or kept if other items needed it, but user replaced Stealth card)
         case 'precision':
         case 'prototype':
@@ -775,10 +875,10 @@ function animate() {
         if (watch.hands.minute) setRotation(watch.hands.minute, m_angle);
         if (watch.hands.second) {
             // Some watches have smooth seconds, some have ticking
-            // No.01 (eicas_alpha) and descendants are now smooth like No.06
             if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787' ||
                 watch.type === 'eicas_stealth' || watch.type === 'eicas_alpha' ||
-                watch.type === 'eicas_beta' || watch.type === 'eicas_gamma' || watch.type === 'eicas_delta') {
+                watch.type === 'eicas_beta' || watch.type === 'eicas_gamma' ||
+                watch.type === 'eicas_delta' || watch.type === 'chrono_fusion') {
                 setRotation(watch.hands.second, s_angle);
             } else {
                 setRotation(watch.hands.second, s * 6);
@@ -795,13 +895,15 @@ function animate() {
             setRotation(watch.hands.sub2, (h % 12) * 30, 120, 175);
         }
         if (watch.hands.sub3) {
-            // Left: Small Seconds (realtime)
-            setRotation(watch.hands.sub3, s_angle, 65, 120);
+            // Left (9 o'clock)
+            const cx_sub3 = (watch.type === 'chrono_fusion') ? 75 : 65;
+            setRotation(watch.hands.sub3, s_angle, cx_sub3, 120);
         }
         if (watch.hands.sub4) {
-            // Right: Power Reserve (fake breathe)
+            // Right (3 o'clock)
+            const cx_sub4 = (watch.type === 'chrono_fusion') ? 165 : 160;
             const pwr = (Math.sin(Date.now() / 5000) + 1) * 30 - 30; // Oscillate
-            setRotation(watch.hands.sub4, pwr, 160, 120);
+            setRotation(watch.hands.sub4, pwr, cx_sub4, 120);
         }
 
         // Fan fill animation for gauge types (Synced with smooth seconds)
