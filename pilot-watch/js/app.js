@@ -816,21 +816,7 @@ function getHandsSVG(type) {
             sStyle = `<line class="hand-s" x1="120" y1="120" x2="120" y2="20" stroke="#ffcc00" stroke-width="1" />`;
             break;
 
-        case 'eicas_alpha': // No.01: Digital + EICAS Hybrid (Cyan)
-        case 'eicas_gamma': // No.03: New Gamma (Green)
-        case 'eicas_delta': // No.04: New Delta (Purple)
-            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
-            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
-            // All inherit the Standard Orange Sweep Hand from ALPHA
-            sStyle = `
-                <g class="hand-s">
-                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
-                    <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
-                </g>
-            `;
-            break;
-
-        case 'eicas_beta':  // No.02: New Beta (JAL style hands)
+        case 'eicas_alpha': // No.02 (UI): High contrast black & red hands (JAL style)
             // High contrast black hands
             hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="65" stroke="#111" stroke-width="4" stroke-linecap="square" />`;
             mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="30" stroke="#111" stroke-width="3" stroke-linecap="square" />`;
@@ -840,6 +826,29 @@ function getHandsSVG(type) {
                     <line x1="120" y1="140" x2="120" y2="20" stroke="#CC0000" stroke-width="1.5" />
                     <circle cx="120" cy="120" r="3" fill="#111" />
                     <circle cx="120" cy="20" r="2" fill="#CC0000" />
+                </g>
+            `;
+            break;
+
+        case 'eicas_gamma': // No.04 (UI): New Gamma (Green)
+        case 'eicas_delta': // No.05 (UI): New Delta
+            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" />`;
+            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" />`;
+            sStyle = `
+                <g class="hand-s">
+                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
+                    <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
+                </g>
+            `;
+            break;
+        case 'eicas_beta':  // No.03 (UI): Original Volt Yellow Hands
+            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="#DFFF00" stroke-width="4" stroke-linecap="square" />`;
+            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="#DFFF00" stroke-width="2" stroke-linecap="square" />`;
+            // Standard Orange Sweep Hand
+            sStyle = `
+                <g class="hand-s">
+                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
+                    <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
                 </g>
             `;
             break;
