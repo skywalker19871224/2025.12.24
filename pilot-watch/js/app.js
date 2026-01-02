@@ -830,15 +830,16 @@ function getHandsSVG(type) {
             `;
             break;
 
-        case 'eicas_beta':  // No.02: New Beta (Cyan Base + Volt Yellow Hands)
-            // Volt Yellow (#DFFF00) Hour/Minute Hands
-            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="#DFFF00" stroke-width="4" stroke-linecap="square" />`;
-            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="#DFFF00" stroke-width="2" stroke-linecap="square" />`;
-            // Standard Orange Sweep Hand
+        case 'eicas_beta':  // No.02: New Beta (JAL style hands)
+            // High contrast black hands
+            hStyle = `<line class="hand-h" x1="120" y1="120" x2="120" y2="65" stroke="#111" stroke-width="4" stroke-linecap="square" />`;
+            mStyle = `<line class="hand-m" x1="120" y1="120" x2="120" y2="30" stroke="#111" stroke-width="3" stroke-linecap="square" />`;
+            // Red Second Hand
             sStyle = `
                 <g class="hand-s">
-                    <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
-                    <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
+                    <line x1="120" y1="140" x2="120" y2="20" stroke="#CC0000" stroke-width="1.5" />
+                    <circle cx="120" cy="120" r="3" fill="#111" />
+                    <circle cx="120" cy="20" r="2" fill="#CC0000" />
                 </g>
             `;
             break;
