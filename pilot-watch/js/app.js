@@ -453,9 +453,11 @@ function generateSVG(type, id) {
         }
     }
 
-    if (type === 'chrono_fusion') {
-        const ceramic = '#0a0a0a';
+    if (type === 'chrono_fusion' || type === 'fusion_bronze') {
+        const ceramic = (type === 'chrono_fusion') ? '#0a0a0a' : '#8b7d6b';
         const titanium = '#aaa';
+
+        const dialColor = (type === 'chrono_fusion') ? 'url(#fusionDial)' : 'url(#buchererBlue)';
 
         extra += `
             <defs>
@@ -463,26 +465,36 @@ function generateSVG(type, id) {
                     <stop offset="0%" stop-color="#1a1a1a" />
                     <stop offset="100%" stop-color="#050505" />
                 </radialGradient>
+                <radialGradient id="buchererBlue" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#003366" />
+                    <stop offset="100%" stop-color="#001a33" />
+                </radialGradient>
                 <linearGradient id="metalIndex" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#eee" />
                     <stop offset="50%" stop-color="#fff" />
                     <stop offset="100%" stop-color="#888" />
                 </linearGradient>
+                <linearGradient id="bronzeIndex" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#e3c5a8" />
+                    <stop offset="50%" stop-color="#c5a687" />
+                    <stop offset="100%" stop-color="#8b735b" />
+                </linearGradient>
             </defs>
             
             <!-- Bezel Area -->
-            <circle cx="120" cy="120" r="114" fill="${ceramic}" stroke="#222" stroke-width="2" />
+            <circle cx="120" cy="120" r="114" fill="${ceramic}" stroke="#222" stroke-width="0.5" />
             <circle cx="120" cy="120" r="92" fill="#000" />
             
-            <!-- Dial (Skeleton Effect Base) -->
-            <circle cx="120" cy="120" r="90" fill="url(#fusionDial)" />
+            <!-- Dial -->
+            <circle cx="120" cy="120" r="90" fill="${dialColor}" />
             
-            <!-- Mechanical Underlay (Simplified gears/lines) -->
+            <!-- Mechanical Underlay (Only for chrono_fusion) -->
+            ${type === 'chrono_fusion' ? `
             <g opacity="0.2">
                 <circle cx="120" cy="120" r="45" fill="none" stroke="${titanium}" stroke-width="0.5" />
                 <path d="M 60 120 L 180 120 M 120 60 L 120 180" stroke="${titanium}" stroke-width="0.5" />
                 <circle cx="120" cy="120" r="30" fill="none" stroke="${titanium}" stroke-width="1.5" stroke-dasharray="1,3" />
-            </g>
+            </g>` : ''}
 
             <!-- H-Screws on Bezel -->
             ${[30, 90, 150, 210, 270, 330].map(angle => {
@@ -490,12 +502,13 @@ function generateSVG(type, id) {
             const ry = cy + 103 * Math.sin((angle - 90) * Math.PI / 180);
             return `
                     <g transform="translate(${rx},${ry})">
-                        <circle cx="0" cy="0" r="4" fill="#333" stroke="#000" stroke-width="0.5" />
-                        <path d="M -2 -1.5 L 2 -1.5 M -2 1.5 L 2 1.5 M 0 -1.5 L 0 1.5" stroke="#888" stroke-width="0.8" /> <!-- H-Shape -->
+                        <circle cx="0" cy="0" r="4" fill="${type === 'chrono_fusion' ? '#333' : '#7a6a58'}" stroke="#000" stroke-width="0.5" />
+                        <path d="M -2 -1.5 L 2 -1.5 M -2 1.5 L 2 1.5 M 0 -1.5 L 0 1.5" stroke="${type === 'chrono_fusion' ? '#888' : '#e3c5a8'}" stroke-width="0.8" /> <!-- H-Shape -->
                     </g>
                 `;
         }).join('')}
 
+            ${type === 'chrono_fusion' ? `
             <!-- 2 Sub Dials (3 & 9 o'clock) -->
             <!-- Left (9): Small Seconds -->
             <g transform="translate(75, 120)">
@@ -511,22 +524,26 @@ function generateSVG(type, id) {
                 <circle cx="0" cy="0" r="18" fill="rgba(255,255,255,0.03)" stroke="#333" stroke-width="1" />
                 <line class="hand-sub4" x1="0" y1="0" x2="0" y2="-14" stroke="#eee" stroke-width="1.2" />
                 <text y="24" fill="#444" font-size="5" text-anchor="middle">30</text>
-            </g>
+            </g>` : ''}
 
-            <!-- Indices (Applied Batons) -->
+            <!-- Indices -->
             ${Array.from({ length: 12 }).map((_, i) => {
             const angle = i * 30;
-            if (i === 3 || i === 9) return ''; // Skip sub-dial positions
+            if (type === 'chrono_fusion' && (i === 3 || i === 9)) return ''; // Skip sub-dial positions
             const rOut = 90;
             const rIn = 78;
             const x1 = cx + rOut * Math.cos((angle - 90) * Math.PI / 180);
             const y1 = cy + rOut * Math.sin((angle - 90) * Math.PI / 180);
             const x2 = cx + rIn * Math.cos((angle - 90) * Math.PI / 180);
             const y2 = cy + rIn * Math.sin((angle - 90) * Math.PI / 180);
-            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="url(#metalIndex)" stroke-width="3" />`;
+            const indexColor = (type === 'chrono_fusion') ? 'url(#metalIndex)' : 'url(#bronzeIndex)';
+            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${indexColor}" stroke-width="3" />`;
         }).join('')}
 
-            <text x="120" y="65" fill="#fff" font-family="Orbitron" font-size="7" letter-spacing="1" text-anchor="middle" opacity="0.6">HU-SPEC</text>
+            ${type === 'fusion_bronze' ? `
+                <text x="120" y="65" fill="#c5a687" font-family="Orbitron" font-size="7" letter-spacing="1" text-anchor="middle" opacity="0.8">HUBLOT</text>
+                <text x="120" y="74" fill="#c5a687" font-family="Orbitron" font-size="4" letter-spacing="1" text-anchor="middle" opacity="0.6">CLASSIC FUSION</text>
+            ` : `<text x="120" y="65" fill="#fff" font-family="Orbitron" font-size="7" letter-spacing="1" text-anchor="middle" opacity="0.6">HU-SPEC</text>`}
         `;
     }
 
@@ -758,24 +775,28 @@ function getHandsSVG(type) {
             break;
 
         case 'chrono_fusion':
-            // Polished Silver Sword Hands
+        case 'fusion_bronze':
+            // Polished Silver (fusion) or Bronze (fusion_bronze) Sword Hands
+            const handFill = (type === 'chrono_fusion') ? '#eee' : '#c5a687';
+            const handStroke = (type === 'chrono_fusion') ? '#888' : '#8b735b';
+            const secColor = (type === 'chrono_fusion') ? '#aaa' : '#e3c5a8';
             hStyle = `
                 <g class="hand-h">
-                    <path d="M 120 120 L 115 115 L 120 70 L 125 115 Z" fill="#eee" stroke="#888" stroke-width="0.5" />
-                    <line x1="120" y1="120" x2="120" y2="70" stroke="#888" stroke-width="0.3" />
+                    <path d="M 120 120 L 115 115 L 120 70 L 125 115 Z" fill="${handFill}" stroke="${handStroke}" stroke-width="0.5" />
+                    <line x1="120" y1="120" x2="120" y2="70" stroke="${handStroke}" stroke-width="0.3" />
                 </g>
             `;
             mStyle = `
                 <g class="hand-m">
-                    <path d="M 120 120 L 116 116 L 120 35 L 124 116 Z" fill="#eee" stroke="#888" stroke-width="0.5" />
-                    <line x1="120" y1="120" x2="120" y2="35" stroke="#888" stroke-width="0.3" />
+                    <path d="M 120 120 L 116 116 L 120 35 L 124 116 Z" fill="${handFill}" stroke="${handStroke}" stroke-width="0.5" />
+                    <line x1="120" y1="120" x2="120" y2="35" stroke="${handStroke}" stroke-width="0.3" />
                 </g>
             `;
             sStyle = `
                 <g class="hand-s">
-                    <line x1="120" y1="145" x2="120" y2="20" stroke="#aaa" stroke-width="1" />
-                    <circle cx="120" cy="140" r="3" fill="none" stroke="#aaa" stroke-width="1" /> <!-- Counterweight -->
-                    <circle cx="120" cy="120" r="3" fill="#111" stroke="#888" stroke-width="0.5" />
+                    <line x1="120" y1="145" x2="120" y2="20" stroke="${secColor}" stroke-width="1" />
+                    <circle cx="120" cy="140" r="3" fill="none" stroke="${secColor}" stroke-width="1" /> <!-- Counterweight -->
+                    <circle cx="120" cy="120" r="3" fill="#111" stroke="${handStroke}" stroke-width="0.5" />
                 </g>
             `;
             break;
@@ -878,7 +899,7 @@ function animate() {
             if (watch.type === 'stealth' || watch.type === 'precision' || watch.type === 'ana787' ||
                 watch.type === 'eicas_stealth' || watch.type === 'eicas_alpha' ||
                 watch.type === 'eicas_beta' || watch.type === 'eicas_gamma' ||
-                watch.type === 'eicas_delta' || watch.type === 'chrono_fusion') {
+                watch.type === 'eicas_delta' || watch.type === 'chrono_fusion' || watch.type === 'fusion_bronze') {
                 setRotation(watch.hands.second, s_angle);
             } else {
                 setRotation(watch.hands.second, s * 6);
