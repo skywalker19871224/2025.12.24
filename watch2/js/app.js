@@ -22,7 +22,7 @@ function initWatches() {
             const watchObj = {
                 id: id,
                 clockId: `clock-${index + 1}`,
-                isRunning: (index === 0), // Only Watch 1 starts running automatically
+                isRunning: false, // Default to stopped on reload
                 accumulatedTime: 0,
                 lastTick: Date.now(),
                 duration: durations[index],
@@ -41,7 +41,7 @@ function initWatches() {
                 const stopBtn = document.getElementById('stop-btn-1');
 
                 if (startBtn && stopBtn) {
-                    startBtn.classList.add('active'); // Initially Match Watch 1 state
+                    stopBtn.classList.add('active'); // Initially Match stopped state
 
                     startBtn.addEventListener('click', () => {
                         // Find the currently active or first non-finished watch to resume
