@@ -84,7 +84,7 @@ function initWatches() {
 function generateDeltaSVG(id) {
     const cx = 120, cy = 120;
     const amber = '#FFB000';
-    const amberBg = 'rgba(255, 176, 0, 0.15)';
+    const amberBg = 'rgba(255, 176, 0, 0.4)';
 
     let ticks = '';
     for (let i = 0; i < 60; i++) {
