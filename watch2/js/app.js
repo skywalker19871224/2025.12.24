@@ -56,13 +56,13 @@ function generateDeltaSVG(id) {
         const y1 = cy + r1 * Math.sin((angle - 90) * Math.PI / 180);
         const x2 = cx + r2 * Math.cos((angle - 90) * Math.PI / 180);
         const y2 = cy + r2 * Math.sin((angle - 90) * Math.PI / 180);
-        ticks += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${amber}" stroke-width="${i % 5 === 0 ? 1.5 : 0.5}" opacity="${i % 5 === 0 ? 0.8 : 0.3}" />`;
+        ticks += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${amber}" stroke-width="${i % 5 === 0 ? 2.0 : 1.0}" opacity="${i % 5 === 0 ? 0.8 : 0.3}" />`;
     }
 
     return `
         <svg viewBox="0 0 240 240">
-            <circle cx="120" cy="120" r="110" fill="none" stroke="#222" stroke-width="1" />
-            <circle cx="120" cy="120" r="114" fill="none" stroke="#333" stroke-width="0.5" />
+            <circle cx="120" cy="120" r="110" fill="none" stroke="#222" stroke-width="1.5" />
+            <circle cx="120" cy="120" r="114" fill="none" stroke="#333" stroke-width="1.0" />
 
             <!-- Fan Fill (Timer Progress) -->
             <path class="fan-fill" d="M 120 120 L 120 30 A 90 90 0 0 1 120 30 Z" fill="${amberBg}" />
@@ -70,28 +70,28 @@ function generateDeltaSVG(id) {
             <g>${ticks}</g>
 
             <!-- Warning Brackets -->
-            <path d="M 40 40 L 20 40 L 20 60" fill="none" stroke="${amber}" stroke-width="1.5" opacity="0.3" />
-            <path d="M 200 40 L 220 40 L 220 60" fill="none" stroke="${amber}" stroke-width="1.5" opacity="0.3" />
-            <path d="M 40 200 L 20 200 L 20 180" fill="none" stroke="${amber}" stroke-width="1.5" opacity="0.3" />
-            <path d="M 200 200 L 220 200 L 220 180" fill="none" stroke="${amber}" stroke-width="1.5" opacity="0.3" />
+            <path d="M 40 40 L 20 40 L 20 60" fill="none" stroke="${amber}" stroke-width="2.0" opacity="0.3" />
+            <path d="M 200 40 L 220 40 L 220 60" fill="none" stroke="${amber}" stroke-width="2.0" opacity="0.3" />
+            <path d="M 40 200 L 20 200 L 20 180" fill="none" stroke="${amber}" stroke-width="2.0" opacity="0.3" />
+            <path d="M 200 200 L 220 200 L 220 180" fill="none" stroke="${amber}" stroke-width="2.0" opacity="0.3" />
             
             <!-- Vertical Advisory Scales -->
-            <line x1="15" y1="80" x2="15" y2="160" stroke="${amber}" stroke-width="0.5" opacity="0.4" />
-            <line x1="225" y1="80" x2="225" y2="160" stroke="${amber}" stroke-width="0.5" opacity="0.4" />
+            <line x1="15" y1="80" x2="15" y2="160" stroke="${amber}" stroke-width="1.0" opacity="0.4" />
+            <line x1="225" y1="80" x2="225" y2="160" stroke="${amber}" stroke-width="1.0" opacity="0.4" />
             ${[0, 1, 2, 3, 4].map(i => `
-                <line x1="15" y1="${80 + i * 20}" x2="22" y2="${80 + i * 20}" stroke="${amber}" stroke-width="0.5" opacity="0.2" />
-                <line x1="218" y1="${80 + i * 20}" x2="225" y2="${80 + i * 20}" stroke="${amber}" stroke-width="0.5" opacity="0.2" />
+                <line x1="15" y1="${80 + i * 20}" x2="22" y2="${80 + i * 20}" stroke="${amber}" stroke-width="1.0" opacity="0.2" />
+                <line x1="218" y1="${80 + i * 20}" x2="225" y2="${80 + i * 20}" stroke="${amber}" stroke-width="1.0" opacity="0.2" />
             `).join('')}
 
             <text x="120" y="210" fill="${amber}" font-family="Orbitron" font-size="7" font-weight="bold" text-anchor="middle" letter-spacing="1" opacity="0.5">TIMER MISSION</text>
 
             <!-- Hands -->
-            <line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4" stroke-linecap="square" opacity="0.8" />
-            <line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2" stroke-linecap="square" opacity="0.8" />
+            <line class="hand-h" x1="120" y1="120" x2="120" y2="70" stroke="white" stroke-width="4.5" stroke-linecap="square" opacity="0.8" />
+            <line class="hand-m" x1="120" y1="120" x2="120" y2="40" stroke="white" stroke-width="2.5" stroke-linecap="square" opacity="0.8" />
             
             <g class="hand-s">
-                <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="1.5" />
-                <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1" />
+                <line x1="120" y1="140" x2="120" y2="20" stroke="orange" stroke-width="2.0" />
+                <circle cx="120" cy="120" r="4" fill="#050b1a" stroke="white" stroke-width="1.5" />
             </g>
 
             <circle cx="120" cy="120" r="2" fill="black" />
