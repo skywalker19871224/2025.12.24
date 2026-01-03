@@ -191,11 +191,19 @@ function animate() {
             }
         }
 
-        // Hand Rotations
+        // actual JST for Hour/Minute Hands
+        const actualNow = new Date();
+        const jst = new Date(actualNow.getTime() + (9 * 60 * 60 * 1000));
+        const realH = jst.getUTCHours();
+        const realM = jst.getUTCMinutes();
+        const realS = jst.getUTCSeconds();
+
+        const h_angle = (realH % 12) * 30 + realM * 0.5;
+        const m_angle = realM * 6 + realS * 0.1;
+
+        // Mission Time for Second Hand (visual feedback for countdown)
         const displayTime = watch.accumulatedTime;
         const s_angle = (displayTime % 60) * 6;
-        const m_angle = (displayTime / 60) * 6;
-        const h_angle = (displayTime / 3600) * 30;
 
         if (watch.hands.hour) setRotation(watch.hands.hour, h_angle);
         if (watch.hands.minute) setRotation(watch.hands.minute, m_angle);
