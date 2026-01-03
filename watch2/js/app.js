@@ -58,6 +58,21 @@ function initWatches() {
                         stopBtn.classList.add('active');
                         startBtn.classList.remove('active');
                     });
+
+                    // Add adjustment button logic
+                    document.querySelectorAll('.adj-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const adj = parseInt(btn.getAttribute('data-adj'));
+                            // Find the active or next available watch
+                            const activeWatch = watches.find(w => w.isRunning) || watches.find(w => w.accumulatedTime < w.duration) || watches[0];
+
+                            if (activeWatch) {
+                                // In countdown: +10 means "Add 10s back to the clock" -> Decrease accumulatedTime
+                                // adj is 10, accumulatedTime - 10.
+                                activeWatch.accumulatedTime = Math.max(0, Math.min(activeWatch.duration, activeWatch.accumulatedTime - adj));
+                            }
+                        });
+                    });
                 }
             }
 
