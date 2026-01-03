@@ -1,0 +1,98 @@
+:root {
+    --bg-color: #ffffff;
+    --card-bg: #ffffff;
+    --accent-blue: #00aaff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Inter', -apple-system, sans-serif;
+    min-height: 100vh;
+}
+
+/* Header Styles */
+.app-header {
+    height: 50px;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.setting-btn {
+    padding: 5px 12px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+}
+
+.header-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #444;
+}
+
+.menu-btn {
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.menu-btn span {
+    width: 18px;
+    height: 2px;
+    background: #888;
+    display: block;
+}
+
+/* Main Display Focus */
+.watch-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 100px 20px;
+    width: 100%;
+}
+
+.watch-card {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.digital-main {
+    font-family: 'Outfit', sans-serif;
+    font-size: 85px;
+    font-weight: 800;
+    color: var(--accent-blue);
+    line-height: 1;
+    margin-bottom: 20px;
+    letter-spacing: -2px;
+}
+
+.date-sub {
+    font-size: 18px;
+    color: #666;
+    font-weight: 400;
+}
