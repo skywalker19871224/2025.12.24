@@ -4,38 +4,77 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const watches = [];
-const DEFAULT_LIMIT = 30 * 60; // 1800 seconds (30 minutes)
 
 function initWatches() {
     const ids = ['watch-1', 'watch-2', 'watch-3'];
+    // Setting specific durations for the mission sequence
+    const durations = [
+        10 * 60, // Watch 1: 10 minutes
+        20 * 60, // Watch 2: 20 minutes
+        30 * 60  // Watch 3: 30 minutes
+    ];
+
     ids.forEach((id, index) => {
         const container = document.getElementById(id);
         if (container) {
             container.innerHTML = generateDeltaSVG(id);
 
-            // Stagger start times for demonstration (optional, but makes them "independent")
-            // In a real app, users would click to start.
-            const startTime = Date.now();
-
-            watches.push({
+            const watchObj = {
                 id: id,
                 clockId: `clock-${index + 1}`,
-                startTime: startTime,
-                duration: DEFAULT_LIMIT,
+                isRunning: (index === 0), // Only Watch 1 starts running automatically
+                accumulatedTime: 0,
+                lastTick: Date.now(),
+                duration: durations[index],
                 hands: {
                     hour: container.querySelector('.hand-h'),
                     minute: container.querySelector('.hand-m'),
                     second: container.querySelector('.hand-s'),
                     fan: container.querySelector('.fan-fill')
                 }
-            });
+            };
+            watches.push(watchObj);
 
-            // Add click to reset timer
+            // Special Setup for Watch 1 (Global Controls)
+            if (id === 'watch-1') {
+                const startBtn = document.getElementById('start-btn-1');
+                const stopBtn = document.getElementById('stop-btn-1');
+
+                if (startBtn && stopBtn) {
+                    startBtn.classList.add('active'); // Initially Match Watch 1 state
+
+                    startBtn.addEventListener('click', () => {
+                        // Find the currently active or first non-finished watch to resume
+                        const activeWatch = watches.find(w => w.accumulatedTime < w.duration) || watches[0];
+                        activeWatch.isRunning = true;
+                        activeWatch.lastTick = Date.now();
+                        startBtn.classList.add('active');
+                        stopBtn.classList.remove('active');
+                    });
+
+                    stopBtn.addEventListener('click', () => {
+                        // Stop all watches
+                        watches.forEach(w => w.isRunning = false);
+                        stopBtn.classList.add('active');
+                        startBtn.classList.remove('active');
+                    });
+                }
+            }
+
+            // Double click face to reset entire sequence
             const card = container.closest('.watch-item');
             if (card) {
-                card.addEventListener('click', () => {
-                    const w = watches.find(item => item.id === id);
-                    if (w) w.startTime = Date.now();
+                card.addEventListener('dblclick', () => {
+                    watches.forEach((w, i) => {
+                        w.accumulatedTime = 0;
+                        w.isRunning = (i === 0);
+                        w.lastTick = Date.now();
+                    });
+                    // Reset UI buttons
+                    const startBtn = document.getElementById('start-btn-1');
+                    const stopBtn = document.getElementById('stop-btn-1');
+                    if (startBtn) startBtn.classList.add('active');
+                    if (stopBtn) stopBtn.classList.remove('active');
                 });
             }
         }
@@ -102,9 +141,25 @@ function generateDeltaSVG(id) {
 function animate() {
     const now = Date.now();
 
-    watches.forEach(watch => {
-        const elapsed = (now - watch.startTime) / 1000;
-        const remaining = Math.max(0, watch.duration - elapsed);
+    watches.forEach((watch, index) => {
+        if (watch.isRunning) {
+            watch.accumulatedTime += (now - watch.lastTick) / 1000;
+
+            // Sequential logic: When this watch finishes
+            if (watch.accumulatedTime >= watch.duration) {
+                watch.accumulatedTime = watch.duration;
+                watch.isRunning = false;
+
+                // Start the next watch if it exists
+                if (index + 1 < watches.length) {
+                    watches[index + 1].isRunning = true;
+                    watches[index + 1].lastTick = Date.now();
+                }
+            }
+        }
+        watch.lastTick = now;
+
+        const remaining = Math.max(0, watch.duration - watch.accumulatedTime);
 
         // Digital Countdown (MM:SS)
         const mins = Math.floor(remaining / 60);
@@ -112,14 +167,13 @@ function animate() {
         const clockEl = document.getElementById(watch.clockId);
         if (clockEl) {
             clockEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            // Change color when time is low
-            if (remaining < 60) clockEl.style.color = '#ff3333';
+            if (remaining < 60 && remaining > 0) clockEl.style.color = '#ff3333';
+            else if (remaining === 0) clockEl.style.color = '#00ff88'; // Green when complete
             else clockEl.style.color = '';
         }
 
-        // Timer Progress Angle (0 to 360)
-        // 30 mins = 360 degrees. 
-        const progressRatio = Math.min(1, elapsed / watch.duration);
+        // Timer Progress Angle
+        const progressRatio = Math.min(1, watch.accumulatedTime / watch.duration);
         const progressAngle = progressRatio * 360;
 
         // Fan Fill Update
@@ -131,17 +185,17 @@ function animate() {
             const largeArcFlag = progressAngle > 180 ? 1 : 0;
 
             if (progressAngle >= 359.9) {
-                // Completely full circle path
                 watch.hands.fan.setAttribute('d', `M 120 120 m -90, 0 a 90,90 0 1,0 180,0 a 90,90 0 1,0 -180,0`);
             } else {
                 watch.hands.fan.setAttribute('d', `M 120 120 L 120 30 A 90 90 0 ${largeArcFlag} 1 ${x} ${y} Z`);
             }
         }
 
-        // Hand Rotations (Visual feedback for seconds)
-        const s_angle = (elapsed % 60) * 6;
-        const m_angle = (elapsed / 60) * 6; // Completes 1 circle in 60 mins
-        const h_angle = (elapsed / 3600) * 30; // 1 hour per 30 deg
+        // Hand Rotations
+        const displayTime = watch.accumulatedTime;
+        const s_angle = (displayTime % 60) * 6;
+        const m_angle = (displayTime / 60) * 6;
+        const h_angle = (displayTime / 3600) * 30;
 
         if (watch.hands.hour) setRotation(watch.hands.hour, h_angle);
         if (watch.hands.minute) setRotation(watch.hands.minute, m_angle);

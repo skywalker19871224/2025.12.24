@@ -108,6 +108,48 @@ body {
     line-height: 1;
 }
 
+/* Timer Controls */
+.timer-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.control-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.ctrl-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--accent-amber);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.ctrl-btn:hover {
+    background: rgba(255, 176, 0, 0.1);
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 10px rgba(255, 176, 0, 0.2);
+}
+
+.ctrl-btn:active {
+    transform: scale(0.95);
+}
+
+.ctrl-btn.active {
+    background: var(--accent-amber);
+    color: #000;
+}
+
 /* Animations for Analog Parts */
 .hand-sub1 {
     transform-origin: center;
