@@ -11,7 +11,7 @@ function initWatches() {
     const durations = [
         10 * 60, // Watch 1: 10 minutes
         20 * 60, // Watch 2: 20 minutes
-        30 * 60  // Watch 3: 30 minutes
+        10 * 60  // Watch 3: 10 minutes (changed from 30)
     ];
 
     ids.forEach((id, index) => {
