@@ -67,9 +67,8 @@ function initWatches() {
                             const activeWatch = watches.find(w => w.isRunning) || watches.find(w => w.accumulatedTime < w.duration) || watches[0];
 
                             if (activeWatch) {
-                                // In countdown: +10 means "Add 10s back to the clock" -> Decrease accumulatedTime
-                                // adj is 10, accumulatedTime - 10.
-                                activeWatch.accumulatedTime = Math.max(0, Math.min(activeWatch.duration, activeWatch.accumulatedTime - adj));
+                                // +adj adds to progress (skips forward), -adj subtracts from progress (goes back)
+                                activeWatch.accumulatedTime = Math.max(0, Math.min(activeWatch.duration, activeWatch.accumulatedTime + adj));
                             }
                         });
                     });
