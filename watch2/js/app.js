@@ -191,14 +191,18 @@ function animate() {
             }
         }
 
-        // actual JST is no longer used for hands per request
-        // Hand Rotations (Linked to Mission Time)
-        // Minute hand matches the Fan (1 lap = full duration)
-        const m_angle = progressRatio * 360;
-        // Hour hand (standard 1/12 ratio for scale)
-        const h_angle = m_angle / 12;
-        // Second hand (visual feedback of counting, 60s per lap)
-        const s_angle = (watch.accumulatedTime % 60) * 6;
+        // actual JST for Hour/Minute Hands
+        const actualNow = new Date();
+        const jst = new Date(actualNow.getTime() + (9 * 60 * 60 * 1000));
+        const realH = jst.getUTCHours();
+        const realM = jst.getUTCMinutes();
+        const realS = jst.getUTCSeconds();
+
+        const h_angle = (realH % 12) * 30 + realM * 0.5;
+        const m_angle = realM * 6 + realS * 0.1;
+
+        // Orange hand follows the Fan tip (Mission Progress)
+        const s_angle = progressAngle;
 
         if (watch.hands.hour) setRotation(watch.hands.hour, h_angle);
         if (watch.hands.minute) setRotation(watch.hands.minute, m_angle);
