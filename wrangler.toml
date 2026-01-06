@@ -1,6 +1,10 @@
 name = "2025-12-24"
 pages_build_output_dir = "."
 
+[[kv_namespaces]]
+binding = "STRIP_DATA"
+id = "e5d87a3383d040dbb20191a8994bd8b5"
+
 # ========================================
 # Safety Guardrails (アカウント固定設定)
 # ========================================

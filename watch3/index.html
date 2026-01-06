@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Timer - Watch3</title>
+    <meta name="description"
+        content="A premium digital timer for precise time management. Set 45 minutes or custom intervals down to the second.">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Ionicons for icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="timer-frame">
+            <div class="display" id="timer-display">
+                <div class="time-unit" id="set-hou">
+                    <span class="time-val" id="hours">00</span>
+                    <span class="unit-label">HRS</span>
+                </div>
+                <span class="separator">:</span>
+                <div class="time-unit" id="set-min">
+                    <span class="time-val" id="minutes">45</span>
+                    <span class="unit-label">MIN</span>
+                </div>
+                <span class="separator">:</span>
+                <div class="time-unit" id="set-sec">
+                    <span class="time-val" id="seconds">00</span>
+                    <span class="unit-label">SEC</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="reset-btn">
+                    <ion-icon name="refresh-outline"></ion-icon>
+                    RESET
+                </button>
+                <button class="btn btn-primary" id="start-btn">
+                    <ion-icon name="play" id="play-icon"></ion-icon>
+                    <span id="start-text">START</span>
+                </button>
+                <button class="btn" id="settings-btn">
+                    <ion-icon name="settings-outline"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Decorative Progress Ring Background Overlay -->
+            <div class="progress-container">
+                <svg class="progress-ring" width="400" height="400">
+                    <circle id="progress-ring-circle" class="progress-ring-circle" stroke-width="4"
+                        stroke="currentColor" fill="transparent" r="190" cx="200" cy="200" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings" id="settings-modal">
+        <div class="settings-card">
+            <h2 class="settings-title">Set Timer</h2>
+            <div class="input-group">
+                <input type="number" id="input-hours" class="time-input" placeholder="00" min="0" max="99">
+                <input type="number" id="input-minutes" class="time-input" placeholder="45" min="0" max="59">
+                <input type="number" id="input-seconds" class="time-input" placeholder="00" min="0" max="59">
+            </div>
+            <div class="controls">
+                <button class="btn" id="cancel-settings">CANCEL</button>
+                <button class="btn btn-primary" id="save-settings">APPLY</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -9,9 +9,9 @@ function initWatches() {
     const ids = ['watch-1', 'watch-2', 'watch-3'];
     // Setting specific durations for the mission sequence
     const durations = [
-        10 * 60, // Watch 1: 10 minutes
-        20 * 60, // Watch 2: 20 minutes
-        10 * 60  // Watch 3: 10 minutes (changed from 30)
+        30 * 60, // Watch 1: 30 minutes
+        5 * 60,  // Watch 2: 5 minutes
+        10 * 60  // Watch 3: 10 minutes
     ];
 
     ids.forEach((id, index) => {

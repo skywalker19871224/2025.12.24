@@ -26,9 +26,14 @@
         </header>
 
         <section class="input-section">
-            <p style="margin-bottom: 1rem;">StripHoursの `charData` をここに貼り付けてください</p>
-            <textarea id="dataInput" placeholder="例: charData = { ... };"></textarea>
-            <button class="btn-primary" id="analyzeBtn">データを分析</button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p>外部サイト (StripHours) から最新の配信データを自動取得します</p>
+                <button class="btn-primary" id="refreshBtn">
+                    <span id="btnText">最新データに更新</span>
+                    <span id="spinner" class="hidden">...</span>
+                </button>
+            </div>
+            <div id="statusMsg" style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary);"></div>
         </section>
 
         <section id="dashboard" class="hidden">
