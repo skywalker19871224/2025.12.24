@@ -20,7 +20,10 @@ if [ "$1" == "toggle" ]; then
 fi
 
 if [ "$1" == "open_chrome" ]; then
-    open -a "Google Chrome" "https://ja.stripchat.com/$MODEL"
+    # 現在のモデルをAPIから取得して開く
+    API_URL="https://2025-12-24.pages.dev/api/live-status"
+    D_MODEL=$(curl -s "${API_URL}" | grep -o '"model":"[^"]*' | cut -d'"' -f4)
+    open -a "Google Chrome" "https://ja.stripchat.com/$D_MODEL"
     exit
 fi
 
@@ -35,12 +38,15 @@ if [ "$ACTIVE" != "true" ]; then
 fi
 
 # ライブデータの取得 (watch2のAPIを利用)
+# モデル指定を外すことで、API側が「最後にデータが届いた人」を自動で返す
 API_URL="https://2025-12-24.pages.dev/api/live-status"
-DATA=$(curl -s "${API_URL}?model=$MODEL")
+DATA=$(curl -s "${API_URL}")
 
 VIEWERS=$(echo $DATA | grep -o '"viewers":"[^"]*' | cut -d'"' -f4)
 USERS=$(echo $DATA | grep -o '"users":\[[^]]*\]' | sed 's/"users":\[//;s/\]//;s/"//g')
-if [ -z "$USERS" ]; then
+CURRENT_MODEL=$(echo $DATA | grep -o '"model":"[^"]*' | cut -d'"' -f4)
+
+if [ -z "$USERS" ] || [ "$USERS" == "[]" ]; then
     USERS_COUNT=0
 else
     # カンマの数からユーザー数をカウント
@@ -50,13 +56,13 @@ fi
 
 # メニューバー表示
 if [ -z "$VIEWERS" ] || [ "$VIEWERS" == "---" ] || [ "$VIEWERS" == "0" ]; then
-    echo "👀 準備中"
+    echo "👀 待機中"
 else
     echo "👀 $VIEWERS  💰 $USERS_COUNT"
 fi
 
 echo "---"
-echo "対象モデル: $MODEL"
+echo "対象モデル: $CURRENT_MODEL"
 echo "状態: モニタリング中 | color=green"
 echo "---"
 echo "現在のコイン持ちユーザー:"
