@@ -54,11 +54,11 @@ else
     USERS_COUNT=$((USERS_COUNT + 1))
 fi
 
-# メニューバー表示 (フォントサイズ最大化)
+# メニューバー表示 (ストチャ・レッドで目立たせる)
 if [ -z "$VIEWERS" ] || [ "$VIEWERS" == "---" ] || [ "$VIEWERS" == "0" ]; then
-    echo "👀 待機中 | size=14"
+    echo "👀 待機中 | size=14 color=#FF305C"
 else
-    echo "👀 $VIEWERS  💰 $USERS_COUNT | size=14 font=Helvetica-Bold"
+    echo "👀 $VIEWERS  💰 $USERS_COUNT | size=14 font=Helvetica-Bold color=#FF305C"
 fi
 
 echo "---"
