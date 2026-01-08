@@ -229,3 +229,63 @@ function animate() {
 function setRotation(el, angle) {
     el.setAttribute('transform', `rotate(${angle}, 120, 120)`);
 }
+
+// Stripchat Monitoring Logic
+let monitorModel = "";
+let monitorInterval = null;
+
+const urlInput = document.getElementById('target-url');
+if (urlInput) {
+    urlInput.addEventListener('change', (e) => {
+        const url = e.target.value.trim();
+        if (!url) return;
+
+        // Extract model name from URL (e.g., stripchat.com/hato_sable)
+        const match = url.match(/stripchat\.com\/([^/?#]+)/);
+        if (match && match[1]) {
+            monitorModel = match[1];
+            startMonitoring();
+        }
+    });
+}
+
+function startMonitoring() {
+    if (monitorInterval) clearInterval(monitorInterval);
+    fetchLiveStatus(); // Initial fetch
+    monitorInterval = setInterval(fetchLiveStatus, 5000); // Every 5 seconds
+}
+
+async function fetchLiveStatus() {
+    if (!monitorModel) return;
+    try {
+        const response = await fetch(`/api/live-status?model=${monitorModel}`);
+        const data = await response.json();
+
+        updateMonitorUI(data);
+    } catch (e) {
+        console.error("Failed to fetch live status:", e);
+    }
+}
+
+function updateMonitorUI(data) {
+    const viewersEl = document.getElementById('live-viewers');
+    const userListEl = document.getElementById('live-user-list');
+
+    if (viewersEl) {
+        viewersEl.textContent = data.viewers || "OFF";
+        // If viewers > 0, glow more
+        if (parseInt(data.viewers) > 0) {
+            viewersEl.style.color = "#00f2ff";
+        } else {
+            viewersEl.style.color = "rgba(255, 255, 255, 0.1)";
+        }
+    }
+
+    if (userListEl) {
+        if (!data.users || data.users.length === 0) {
+            userListEl.innerHTML = "<li>NO COIN USERS</li>";
+        } else {
+            userListEl.innerHTML = data.users.map(user => `<li>${user}</li>`).join('');
+        }
+    }
+}

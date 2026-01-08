@@ -176,3 +176,99 @@ body {
     transform-origin: center;
     transition: none;
 }
+/* Stripchat Monitor Styles */
+.strip-monitor {
+    max-width: 320px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.05);
+    border: 1px solid rgba(0, 242, 255, 0.2);
+}
+
+.monitor-header {
+    width: 100%;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    color: #00f2ff;
+    border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.monitor-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.viewer-count {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.viewer-count .label {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+}
+
+.viewer-count .value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: #00f2ff;
+    text-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+}
+
+.coin-users {
+    width: 100%;
+}
+
+.coin-users .label {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    display: block;
+    margin-bottom: 5px;
+}
+
+#live-user-list {
+    list-style: none;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    color: #fff;
+    max-height: 100px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+#live-user-list li {
+    padding: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #00f2ff;
+}
+
+.monitor-footer {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.url-input {
+    width: 100%;
+    background: #000;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+}
+
+.url-input:focus {
+    border-color: #00f2ff;
+    background: rgba(0, 242, 255, 0.05);
+}

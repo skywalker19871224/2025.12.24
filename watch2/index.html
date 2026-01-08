@@ -52,6 +52,26 @@
             <div class="watch-face" id="watch-3"></div>
             <div class="digital-display" id="clock-3">00:00:00</div>
         </div>
+
+        <!-- Stripchat Live Monitor Widget (The "Cushion" Display) -->
+        <div class="watch-item strip-monitor">
+            <div class="monitor-header">STRIP LIVE MONITOR</div>
+            <div class="monitor-main">
+                <div class="viewer-count">
+                    <span class="label">VIEWERS</span>
+                    <span id="live-viewers" class="value">---</span>
+                </div>
+                <div class="coin-users">
+                    <span class="label">COIN USERS</span>
+                    <ul id="live-user-list">
+                        <li>WAITING DATA...</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="monitor-footer">
+                <input type="text" id="target-url" placeholder="https://stripchat.com/..." class="url-input">
+            </div>
+        </div>
     </main>
 
     <script src="js/app.js"></script>
