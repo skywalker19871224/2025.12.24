@@ -54,27 +54,17 @@ else
     USERS_COUNT=$((USERS_COUNT + 1))
 fi
 
-# メニューバー表示
+# メニューバー表示 (フォントサイズ最大化)
 if [ -z "$VIEWERS" ] || [ "$VIEWERS" == "---" ] || [ "$VIEWERS" == "0" ]; then
-    echo "👀 待機中"
+    echo "👀 待機中 | size=14"
 else
-    echo "👀 $VIEWERS  💰 $USERS_COUNT"
+    echo "👀 $VIEWERS  💰 $USERS_COUNT | size=14 font=Helvetica-Bold"
 fi
 
 echo "---"
 echo "対象モデル: $CURRENT_MODEL"
 echo "状態: モニタリング中 | color=green"
 echo "---"
-echo "現在のコイン持ちユーザー:"
-IFS=',' read -ra ADDR <<< "$USERS"
-for i in "${ADDR[@]}"; do
-    if [ ! -z "$i" ]; then echo "💰 $i"; fi
-done
-
-if [ -z "$USERS" ] || [ "$USERS" == "[]" ]; then
-    echo "（入室ユーザーなし）"
-fi
-
 echo "---"
 echo "Chromeで配信ページを開く | bash='$0' param1=open_chrome terminal=false"
 echo "監視を一時停止する | bash='$0' param1=toggle terminal=false refresh=true"
