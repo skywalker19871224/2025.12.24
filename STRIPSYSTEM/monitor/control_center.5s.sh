@@ -5,8 +5,7 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 CONFIG="$DIR/config.json"
 
-# 設定の読み込み (jqがない場合を想定した簡易抽出)
-MODEL=$(grep -o '"model":"[^"]*' "$CONFIG" | cut -d'"' -f4)
+# 設定の読み込み
 ACTIVE=$(grep -o '"active":[a-z]*' "$CONFIG" | cut -d':' -f2)
 
 # 引数がある場合はアクション（スイッチ切り替え等）を実行
@@ -65,9 +64,8 @@ echo "---"
 echo "対象モデル: $CURRENT_MODEL"
 echo "状態: モニタリング中 | color=green"
 echo "---"
-echo "---"
 echo "Chromeで配信ページを開く | bash='$0' param1=open_chrome terminal=false"
 echo "監視を一時停止する | bash='$0' param1=toggle terminal=false refresh=true"
 echo "---"
-echo "EICAS 計器ダッシュボードを開く | href=https://2025-12-24.pages.dev/watch2"
+echo "EICAS 計器ダッシュボードを開く | href=https://2025-12-24.pages.dev/STRIPSYSTEM/dashboards/watch2"
 echo "今すぐ再読み込み | refresh=true"

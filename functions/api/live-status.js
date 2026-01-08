@@ -1,20 +1,29 @@
 export async function onRequest(context) {
     const { request, env } = context;
     const { searchParams } = new URL(request.url);
-    const model = searchParams.get('model');
+    const modelParam = searchParams.get('model');
 
     // GET: 最新のライブステータスを返す
     if (request.method === "GET") {
+        // model指定がない場合は、最後に更新されたモデル名を取得
+        const model = modelParam || await env.STRIP_DATA.get('latest_active_model');
+
         if (!model) {
-            return new Response(JSON.stringify({ error: "Model required" }), { status: 400 });
+            return new Response(JSON.stringify({ viewers: "---", users: [], model: "NONE" }), {
+                headers: { "Content-Type": "application/json" }
+            });
         }
+
         const data = await env.STRIP_DATA.get(`live_${model}`);
-        return new Response(data || JSON.stringify({ viewers: "---", users: [] }), {
+        let responseData = data ? JSON.parse(data) : { viewers: "0", users: [] };
+        responseData.model = model; // どのモデルのデータかを含める
+
+        return new Response(JSON.stringify(responseData), {
             headers: { "Content-Type": "application/json" }
         });
     }
 
-    // POST: 外部（虫眼鏡スクリプト）からのデータを受け取ってKVに保存
+    // POST: データ受信
     if (request.method === "POST") {
         try {
             const body = await request.json();
@@ -28,8 +37,14 @@ export async function onRequest(context) {
                 updatedAt: new Date().toISOString()
             };
 
+            // データの保存
             await env.STRIP_DATA.put(`live_${model}`, JSON.stringify(payload), {
-                expirationTtl: 300 // 5分で自動消去（ライブデータなので）
+                expirationTtl: 300
+            });
+
+            // 「最新の有効なモデル」を記憶
+            await env.STRIP_DATA.put('latest_active_model', model, {
+                expirationTtl: 300
             });
 
             return new Response(JSON.stringify({ success: true }), {
