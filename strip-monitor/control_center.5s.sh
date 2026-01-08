@@ -28,9 +28,9 @@ fi
 
 # 非アクティブなら
 if [ "$ACTIVE" != "true" ]; then
-    echo "👀 STBY"
+    echo "👀 停止中"
     echo "---"
-    echo "Activate Monitor | bash='$0' param1=toggle terminal=false refresh=true"
+    echo "モニタリングを開始する | bash='$0' param1=toggle terminal=false refresh=true"
     exit
 fi
 
@@ -40,27 +40,38 @@ DATA=$(curl -s "${API_URL}?model=$MODEL")
 
 VIEWERS=$(echo $DATA | grep -o '"viewers":"[^"]*' | cut -d'"' -f4)
 USERS=$(echo $DATA | grep -o '"users":\[[^]]*\]' | sed 's/"users":\[//;s/\]//;s/"//g')
+if [ -z "$USERS" ]; then
+    USERS_COUNT=0
+else
+    # カンマの数からユーザー数をカウント
+    USERS_COUNT=$(echo "$USERS" | tr -cd ',' | wc -c)
+    USERS_COUNT=$((USERS_COUNT + 1))
+fi
 
 # メニューバー表示
 if [ -z "$VIEWERS" ] || [ "$VIEWERS" == "---" ] || [ "$VIEWERS" == "0" ]; then
-    echo "👀 0"
+    echo "👀 準備中"
 else
-    echo "👀 $VIEWERS"
+    echo "👀 $VIEWERS  💰 $USERS_COUNT"
 fi
 
 echo "---"
-echo "Model: $MODEL"
-echo "Status: Active | color=green"
+echo "対象モデル: $MODEL"
+echo "状態: モニタリング中 | color=green"
 echo "---"
-echo "Users:"
+echo "現在のコイン持ちユーザー:"
 IFS=',' read -ra ADDR <<< "$USERS"
 for i in "${ADDR[@]}"; do
     if [ ! -z "$i" ]; then echo "💰 $i"; fi
 done
 
+if [ -z "$USERS" ] || [ "$USERS" == "[]" ]; then
+    echo "（入室ユーザーなし）"
+fi
+
 echo "---"
-echo "Launch in Chrome | bash='$0' param1=open_chrome terminal=false"
-echo "Deactivate Monitor | bash='$0' param1=toggle terminal=false refresh=true"
+echo "Chromeで配信ページを開く | bash='$0' param1=open_chrome terminal=false"
+echo "監視を一時停止する | bash='$0' param1=toggle terminal=false refresh=true"
 echo "---"
-echo "Open watch2 Dashboard | href=https://2025-12-24.pages.dev/watch2"
-echo "Refresh All | refresh=true"
+echo "EICAS 計器ダッシュボードを開く | href=https://2025-12-24.pages.dev/watch2"
+echo "今すぐ再読み込み | refresh=true"
