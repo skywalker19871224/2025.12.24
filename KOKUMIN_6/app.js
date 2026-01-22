@@ -1,7 +1,10 @@
 
 // KOKUMIN_6 Core Application Logic
+// Version: 1.0.0
 
 let canvas;
+let undoStack = [];
+let isRedoing = false;
 
 const initCanvas = () => {
     const wrapper = document.getElementById('canvas-wrapper');
@@ -15,7 +18,7 @@ const initCanvas = () => {
     canvasElement.height = height;
 
     canvas = new fabric.Canvas('main-canvas', {
-        backgroundColor: '#f5b500',
+        backgroundColor: '#ffffff',
         selection: true,
         preserveObjectStacking: true,
         allowTouchScrolling: false,
@@ -30,8 +33,11 @@ const initCanvas = () => {
     setupInteractions();
     setupControls();
 
-    canvas.on('object:added', () => refreshLayersOnTab());
-    canvas.on('object:removed', () => refreshLayersOnTab());
+    // History Tracking
+    canvas.on('object:added', () => { if (!isRedoing) saveHistory(); refreshLayersOnTab(); });
+    canvas.on('object:removed', () => { if (!isRedoing) saveHistory(); refreshLayersOnTab(); });
+    canvas.on('object:modified', () => { if (!isRedoing) saveHistory(); refreshLayersOnTab(); });
+
     canvas.on('selection:created', (e) => {
         refreshLayersOnTab();
         updateControls(e.selected[0]);
@@ -44,6 +50,26 @@ const initCanvas = () => {
 
     canvas.on('mouse:down', () => {
         canvas.calcOffset();
+    });
+
+    // Save initial state
+    saveHistory();
+};
+
+const saveHistory = () => {
+    if (undoStack.length >= 20) undoStack.shift();
+    undoStack.push(JSON.stringify(canvas.toJSON()));
+};
+
+const undo = () => {
+    if (undoStack.length <= 1) return;
+    isRedoing = true;
+    undoStack.pop(); // Remove current state
+    const previousState = undoStack[undoStack.length - 1];
+    canvas.loadFromJSON(previousState, () => {
+        canvas.renderAll();
+        isRedoing = false;
+        refreshLayersOnTab();
     });
 };
 
@@ -69,16 +95,20 @@ const setupControls = () => {
 
     opacitySlider.oninput = (e) => {
         const obj = canvas.getActiveObject();
+        const val = e.target.value;
+        document.getElementById('val-opacity').innerText = val;
         if (obj) {
-            obj.set('opacity', e.target.value / 100);
+            obj.set('opacity', val / 100);
             canvas.requestRenderAll();
         }
     };
 
     scaleSlider.oninput = (e) => {
         const obj = canvas.getActiveObject();
+        const val = e.target.value;
+        document.getElementById('val-scale').innerText = val;
         if (obj) {
-            const scale = e.target.value / 100;
+            const scale = val / 100;
             obj.scale(scale);
             canvas.requestRenderAll();
         }
@@ -87,24 +117,31 @@ const setupControls = () => {
 
 const updateControls = (obj) => {
     if (!obj) return;
-    document.getElementById('slider-opacity').value = obj.opacity * 100;
-    document.getElementById('slider-scale').value = (obj.scaleX || 1) * 100;
+    const opacity = Math.round(obj.opacity * 100);
+    const scale = Math.round((obj.scaleX || 1) * 100);
+
+    document.getElementById('slider-opacity').value = opacity;
+    document.getElementById('val-opacity').innerText = opacity;
+
+    document.getElementById('slider-scale').value = scale;
+    document.getElementById('val-scale').innerText = scale;
 };
 
 const setupDeleteControl = () => {
-    const deleteIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z' fill='%23ff0000'/%3E%3C/svg%3E";
+    // White trash can icon
+    const trashIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z' fill='%23ffffff'/%3E%3C/svg%3E`;
     const img = document.createElement('img');
-    img.src = deleteIcon;
+    img.src = trashIcon;
 
     fabric.Object.prototype.controls.deleteControl = new fabric.Control({
         x: 0.5,
         y: -0.5,
-        offsetY: -16,
-        offsetX: 16,
+        offsetY: -20,
+        offsetX: 20,
         cursorStyle: 'pointer',
         mouseUpHandler: deleteObject,
-        render: renderIcon(img),
-        cornerSize: 24
+        render: renderDeleteIcon(img),
+        cornerSize: 28
     });
 };
 
@@ -115,13 +152,28 @@ function deleteObject(eventData, transform) {
     canvas.requestRenderAll();
 }
 
-function renderIcon(img) {
+function renderDeleteIcon(img) {
     return function (ctx, left, top, styleOverride, fabricObject) {
         const size = this.cornerSize;
         ctx.save();
         ctx.translate(left, top);
         ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
-        ctx.drawImage(img, -size / 2, -size / 2, size, size);
+
+        // Draw shadow/background circle (Dark Gray)
+        ctx.beginPath();
+        ctx.arc(0, 0, size / 2, 0, Math.PI * 2, false);
+        ctx.fillStyle = 'rgba(60, 60, 60, 0.9)'; // Sleek Dark Gray
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetY = 2;
+        ctx.fill();
+
+        // Stroke for the circle
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.drawImage(img, -size / 2 + 6, -size / 2 + 6, size - 12, size - 12);
         ctx.restore();
     };
 }
@@ -181,6 +233,15 @@ const setupInteractions = () => {
 
     document.getElementById('btn-save-draft').onclick = () => saveSession('draft');
     document.getElementById('btn-save-tpl').onclick = () => saveSession('template');
+    document.getElementById('btn-undo').onclick = () => undo();
+
+    // Key Shortcuts
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+            e.preventDefault();
+            undo();
+        }
+    });
 };
 
 const saveSession = (type) => {
@@ -247,7 +308,20 @@ const renderAssets = (tab) => {
         } else if (tab === 'background') {
             if (item.type === 'color') {
                 div.innerHTML = `<div style="width:30px;height:30px;background:${item.color};border-radius:4px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;font-weight:bold;">${item.label}</span>`;
-                div.onclick = () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas)); };
+                div.onclick = () => {
+                    const rect = new fabric.Rect({
+                        left: 0,
+                        top: 0,
+                        width: 1200,
+                        height: 675,
+                        fill: item.color,
+                        label: item.label
+                    });
+                    canvas.add(rect);
+                    rect.sendToBack();
+                    canvas.setActiveObject(rect);
+                    canvas.requestRenderAll();
+                };
             } else if (item.type === 'upload') {
                 div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">add_a_photo</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
                 div.onclick = () => document.getElementById('bg-upload-input').click();
@@ -323,7 +397,7 @@ const addKOKUMINText = (type, customText) => {
 
 const addImageToCanvas = (path, label) => {
     fabric.Image.fromURL(path, (img) => {
-        img.scale(0.5);
+        img.scale(0.2);
         img.set({ left: canvas.getCenter().left, top: canvas.getCenter().top, originX: 'center', originY: 'center', label: label });
         canvas.add(img);
         canvas.setActiveObject(img);
@@ -350,8 +424,18 @@ const setupImageUpload = () => {
         reader.onload = (f) => {
             fabric.Image.fromURL(f.target.result, (img) => {
                 const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-                img.set({ originX: 'center', originY: 'center', left: canvas.getCenter().left, top: canvas.getCenter().top, scaleX: scale, scaleY: scale });
-                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                img.set({
+                    originX: 'center',
+                    originY: 'center',
+                    left: canvas.getCenter().left,
+                    top: canvas.getCenter().top,
+                    scaleX: scale * 0.8,
+                    scaleY: scale * 0.8,
+                    label: '背景画像'
+                });
+                canvas.add(img);
+                img.sendToBack();
+                canvas.setActiveObject(img);
             });
         };
         reader.readAsDataURL(file);

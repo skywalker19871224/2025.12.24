@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KOKUMIN_6 | Design Pro</title>
+    <title>KOKUMIN_6 | Design Pro v1.0.0</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,16 +26,17 @@
         <!-- Top Management Bar (New) -->
         <header id="top-bar" class="glass-panel">
             <div class="header-left">
-                <button id="btn-save-draft" class="header-btn" title="下書き保存">
-                    <span class="material-symbols-rounded">save</span>
-                    <span>下書き</span>
-                </button>
-                <button id="btn-save-tpl" class="header-btn" title="テンプレ保存">
-                    <span class="material-symbols-rounded">star</span>
-                    <span>テンプレ</span>
-                </button>
+                <!-- Fixed left side -->
             </div>
             <div class="header-right">
+                <button id="btn-save-tpl" class="header-btn" title="テンプレ保存">
+                    <span class="material-symbols-rounded">star</span>
+                    <span>テンプレへ保存</span>
+                </button>
+                <button id="btn-save-draft" class="header-btn" title="下書き保存">
+                    <span class="material-symbols-rounded">save</span>
+                    <span>下書きへ保存</span>
+                </button>
                 <button id="btn-export" class="glass-btn primary">
                     <span class="material-symbols-rounded">download</span>
                     保存
@@ -45,6 +46,10 @@
 
         <!-- Canvas Area (Upper 65%) -->
         <div id="canvas-area">
+            <button id="btn-undo" class="floating-undo" title="元に戻す">
+                <span class="material-symbols-rounded">undo</span>
+            </button>
+
             <div id="canvas-wrapper">
                 <canvas id="main-canvas"></canvas>
             </div>
@@ -65,11 +70,13 @@
             <!-- 1. Attribute Sliders (Top) -->
             <div class="panel-section sliders">
                 <div class="slider-group">
-                    <label><span class="material-symbols-rounded">opacity</span> 透明度</label>
+                    <label><span class="material-symbols-rounded">opacity</span> 透明度 <span id="val-opacity"
+                            class="slider-val">100</span></label>
                     <input type="range" id="slider-opacity" min="0" max="100" value="100">
                 </div>
                 <div class="slider-group">
-                    <label><span class="material-symbols-rounded">format_size</span> サイズ</label>
+                    <label><span class="material-symbols-rounded">format_size</span> サイズ <span id="val-scale"
+                            class="slider-val">100</span></label>
                     <input type="range" id="slider-scale" min="10" max="200" value="100">
                 </div>
             </div>

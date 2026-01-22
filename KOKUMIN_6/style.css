@@ -55,22 +55,23 @@ body {
 .header-left,
 .header-right {
     display: flex;
-    gap: 12px;
+    gap: 8px;
 }
 
 .header-btn {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--glass-border);
     color: rgba(255, 255, 255, 0.8);
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 12px;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .header-btn:active {
@@ -98,6 +99,41 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+}
+
+/* Floating Undo Button */
+.floating-undo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 150;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    color: rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floating-undo:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.floating-undo:active {
+    transform: scale(0.95);
+}
+
+.floating-undo span {
+    font-size: 24px;
 }
 
 #canvas-wrapper {
@@ -211,7 +247,22 @@ body {
 .slider-group label {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.6);
-    width: 50px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.slider-group label span.material-symbols-rounded {
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+.slider-val {
+    margin-left: auto;
+    color: var(--color-kokumin-yellow);
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
 }
 
 input[type=range] {
