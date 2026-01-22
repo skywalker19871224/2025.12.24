@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KOKUMIN_6 | Design Lite</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+
+    <!-- Core Style -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fabric.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+
+<body>
+
+    <div id="app-container">
+        <!-- Canvas Area (Upper 65%) -->
+        <div id="canvas-area">
+            <div id="canvas-wrapper">
+                <canvas id="main-canvas"></canvas>
+            </div>
+
+            <!-- SNS Guide Overlay -->
+            <div id="guide-overlay" class="hidden">
+                <div class="guide-line center-x"></div>
+                <div class="guide-line center-y"></div>
+                <div class="safe-zone-label">X (Twitter) 16:9</div>
+            </div>
+
+            <!-- Floating Actions -->
+            <div class="floating-actions">
+                <button id="btn-export" class="glass-btn primary">
+                    <span class="material-symbols-rounded">download</span>
+                    保存
+                </button>
+                <input type="file" id="bg-upload-input" accept="image/*" hidden>
+                <button id="btn-upload-bg" class="glass-btn secondary">
+                    <span class="material-symbols-rounded">add_photo_alternate</span>
+                    背景変更
+                </button>
+            </div>
+        </div>
+
+        <!-- UI Panel (Lower 35%) - Glassmorphism -->
+        <div id="ui-panel" class="glass-panel">
+
+            <!-- 1. Attribute Sliders (Top) -->
+            <div class="panel-section sliders">
+                <div class="slider-group">
+                    <label><span class="material-symbols-rounded">opacity</span> 不透明度</label>
+                    <input type="range" id="slider-opacity" min="0" max="100" value="100">
+                </div>
+                <div class="slider-group">
+                    <label><span class="material-symbols-rounded">format_size</span> サイズ</label>
+                    <input type="range" id="slider-scale" min="10" max="200" value="100">
+                </div>
+            </div>
+
+            <!-- 2. Asset Selector (Middle) -->
+            <div class="panel-section assets-scroll">
+                <div class="asset-track" id="asset-track">
+                    <!-- Presets injected via JS -->
+                    <div class="asset-item add-text-preset" data-type="name-main">
+                        <div class="preview-text style-blue">名前(青)</div>
+                    </div>
+                    <div class="asset-item add-text-preset" data-type="name-sub">
+                        <div class="preview-text style-white">名前(白)</div>
+                    </div>
+                    <div class="asset-item add-text-preset" data-type="policy">
+                        <div class="preview-text style-red">キャッチ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Bottom Navigation (Tabs) -->
+            <nav class="bottom-nav">
+                <button class="nav-item active" data-tab="text">
+                    <span class="material-symbols-rounded">title</span>
+                    <span>文字</span>
+                </button>
+                <button class="nav-item" data-tab="usagi">
+                    <span class="nav-icon-wrapper usagi-nav-icon">
+                        <img src="USAGI/こくみんうさぎ_いいね.png" alt="うさぎ">
+                    </span>
+                    <span>うさぎ</span>
+                </button>
+                <button class="nav-item" data-tab="stamp">
+                    <span class="material-symbols-rounded">sticker</span>
+                    <span>スタンプ</span>
+                </button>
+                <button class="nav-item" data-tab="template">
+                    <span class="material-symbols-rounded">grid_view</span>
+                    <span>テンプレ</span>
+                </button>
+                <button class="nav-item" data-tab="layer">
+                    <span class="material-symbols-rounded">layers</span>
+                    <span>レイヤー</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
