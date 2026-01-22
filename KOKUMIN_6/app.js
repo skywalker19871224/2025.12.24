@@ -145,139 +145,162 @@ const resizeCanvas = () => {
     let w = containerWidth * 0.9;
     let h = w / ratio;
 
-    if (h > containerHeight * 0.9) {
-        h = containerHeight * 0.9;
-        w = h * ratio;
-    }
+    const resizeCanvas = () => {
+        const container = document.getElementById('canvas-area');
+        const wrapper = document.getElementById('canvas-wrapper');
+        if (!container || !wrapper) return;
 
-    const canvasObj = canvas.getElement();
-    canvasObj.style.width = w + 'px';
-    canvasObj.style.height = h + 'px';
-    wrapper.style.width = w + 'px';
-    wrapper.style.height = h + 'px';
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
 
-    const guide = document.getElementById('guide-overlay');
-    if (guide) {
-        guide.style.width = w + 'px';
-        guide.style.height = h + 'px';
-    }
-    canvas.calcOffset();
-};
+        const ratio = 16 / 9;
+        let w = containerWidth * 0.9;
+        let h = w / ratio;
 
-// --- Wheel Zoom & Interactions ---
-const setupInteractions = () => {
-    canvas.on('mouse:wheel', function (opt) {
-        const delta = opt.e.deltaY;
-        let zoom = canvas.getZoom();
-        zoom *= 0.999 ** delta;
-        if (zoom > 20) zoom = 20;
-        if (zoom < 0.01) zoom = 0.01;
-        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-        opt.e.preventDefault();
-        opt.e.stopPropagation();
-    });
-
-    document.getElementById('btn-save-draft').onclick = () => saveSession('draft');
-    document.getElementById('btn-save-tpl').onclick = () => saveSession('template');
-};
-
-const saveSession = (type) => {
-    const json = JSON.stringify(canvas.toJSON());
-    localStorage.setItem(`kokumin_save_${type}_` + Date.now(), json);
-    alert(`${type === 'draft' ? '下書き' : 'テンプレ'}としてローカルに保存しました。`);
-};
-
-const addWatermark = () => {
-    const text = new fabric.IText('国民民主党\nKOKUMIN_6', {
-        left: 600, top: 337, originX: 'center', originY: 'center',
-        fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
-        fill: '#043e80', opacity: 0.05, selectable: false,
-        evented: false,
-        name: 'ウォーターマーク'
-    });
-    canvas.add(text);
-};
-
-// --- Asset Data ---
-const usagiFiles = ["いいね", "えいえいおー", "おつかれさまです", "お願い（目キラキラ）", "お願い（祈願）", "きく", "しょぼん", "すわる", "にやり", "びっくり", "まる（友情の輪）", "ガッツポーズ", "ジャンプする", "ドン引き", "バツ", "フレッフレッ", "ペコリ", "万歳", "了解（敬礼）", "感泣", "拍手", "挙手", "演説する（訴える）", "空看板_3", "空看板を持つ_1", "空看板を持つ_2", "立ち向かう", "答えを出す", "考える（悩む）", "走る", "遠くを見る"];
-
-const assetsData = {
-    background: [
-        { type: 'color', label: 'オレンジ', color: '#f5b500' },
-        { type: 'color', label: 'ブルー', color: '#043e80' },
-        { type: 'color', label: '深い紺', color: '#003366' },
-        { type: 'upload', label: '写真から選ぶ', icon: 'add_a_photo' }
-    ],
-    text: [
-        { type: 'name-main', label: '丸山かつき', class: 'style-blue' },
-        { type: 'name-sub', label: '丸山かつき', class: 'style-white' },
-        { type: 'policy', label: '手取りを増やす', class: 'style-red' }
-    ],
-    usagi: usagiFiles.map(name => ({ type: 'usagi', label: name, path: `USAGI/こくみんうさぎ_${name}.png` })),
-    stamp: [{ type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' }],
-    template: [{ type: 'tpl-1', label: '演説会', icon: 'campaign' }],
-    layer: []
-};
-
-const renderAssets = (tab) => {
-    const track = document.getElementById('asset-track');
-    track.innerHTML = '';
-
-    if (tab === 'layer') {
-        track.style.flexDirection = 'column';
-        track.style.alignItems = 'stretch';
-        track.style.overflowX = 'hidden';
-        track.style.overflowY = 'auto';
-        renderLayers();
-    } else {
-        track.style.flexDirection = 'row';
-        track.style.alignItems = 'center';
-        track.style.overflowX = 'auto';
-        track.style.overflowY = 'hidden';
-    }
-
-    if (!assetsData[tab]) return;
-
-    assetsData[tab].forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'asset-item';
-        if (tab === 'text') {
-            div.innerHTML = `<div class="preview-text ${item.class}">${item.label}</div>`;
-            div.onclick = () => addKOKUMINText(item.type, item.label);
-        } else if (tab === 'usagi') {
-            div.innerHTML = `<img src="${item.path}" style="width:60px;height:60px;object-fit:contain;">`;
-            div.onclick = () => addImageToCanvas(item.path, item.label);
-        } else if (tab === 'background') {
-            if (item.type === 'color') {
-                div.innerHTML = `<div style="width:30px;height:30px;background:${item.color};border-radius:4px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;font-weight:bold;">${item.label}</span>`;
-                div.onclick = () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas)); };
-            } else if (item.type === 'upload') {
-                div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">add_a_photo</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
-                div.onclick = () => document.getElementById('bg-upload-input').click();
-            }
-        } else if (tab === 'stamp') {
-            div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">${item.icon}</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
-            div.onclick = () => addKOKUMINStamp(item.type);
+        if (h > containerHeight * 0.9) {
+            h = containerHeight * 0.9;
+            w = h * ratio;
         }
-        track.appendChild(div);
-    });
-};
 
-const renderLayers = () => {
-    const track = document.getElementById('asset-track');
-    track.innerHTML = '';
+        // Correctly resize Fabric's wrapper and both canvases (upper/lower)
+        if (canvas.wrapperEl) {
+            canvas.wrapperEl.style.width = w + 'px';
+            canvas.wrapperEl.style.height = h + 'px';
+        }
+        if (canvas.lowerCanvasEl) {
+            canvas.lowerCanvasEl.style.width = w + 'px';
+            canvas.lowerCanvasEl.style.height = h + 'px';
+        }
+        if (canvas.upperCanvasEl) {
+            canvas.upperCanvasEl.style.width = w + 'px';
+            canvas.upperCanvasEl.style.height = h + 'px';
+        }
 
-    const objects = canvas.getObjects().slice().reverse();
+        wrapper.style.width = w + 'px';
+        wrapper.style.height = h + 'px';
 
-    objects.forEach((obj, index) => {
-        if (obj.name === 'ウォーターマーク') return;
+        const guide = document.getElementById('guide-overlay');
+        if (guide) {
+            guide.style.width = w + 'px';
+            guide.style.height = h + 'px';
+        }
+        canvas.calcOffset();
+    };
 
-        const typeLabel = obj.type === 'i-text' ? 'テキスト' : (obj.type === 'image' ? (obj.label || '画像') : '要素');
-        const content = obj.text ? (obj.text.substring(0, 10) + (obj.text.length > 10 ? '...' : '')) : typeLabel;
+    // --- Wheel Zoom & Interactions ---
+    const setupInteractions = () => {
+        canvas.on('mouse:wheel', function (opt) {
+            const delta = opt.e.deltaY;
+            let zoom = canvas.getZoom();
+            zoom *= 0.999 ** delta;
+            if (zoom > 20) zoom = 20;
+            if (zoom < 0.01) zoom = 0.01;
+            canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+        });
 
-        const item = document.createElement('div');
-        item.className = 'layer-item' + (canvas.getActiveObject() === obj ? ' active' : '');
-        item.innerHTML = `
+        document.getElementById('btn-save-draft').onclick = () => saveSession('draft');
+        document.getElementById('btn-save-tpl').onclick = () => saveSession('template');
+    };
+
+    const saveSession = (type) => {
+        const json = JSON.stringify(canvas.toJSON());
+        localStorage.setItem(`kokumin_save_${type}_` + Date.now(), json);
+        alert(`${type === 'draft' ? '下書き' : 'テンプレ'}としてローカルに保存しました。`);
+    };
+
+    const addWatermark = () => {
+        const text = new fabric.IText('国民民主党\nKOKUMIN_6', {
+            left: 600, top: 337, originX: 'center', originY: 'center',
+            fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
+            fill: '#043e80', opacity: 0.05, selectable: false,
+            evented: false,
+            name: 'ウォーターマーク'
+        });
+        canvas.add(text);
+    };
+
+    // --- Asset Data ---
+    const usagiFiles = ["いいね", "えいえいおー", "おつかれさまです", "お願い（目キラキラ）", "お願い（祈願）", "きく", "しょぼん", "すわる", "にやり", "びっくり", "まる（友情の輪）", "ガッツポーズ", "ジャンプする", "ドン引き", "バツ", "フレッフレッ", "ペコリ", "万歳", "了解（敬礼）", "感泣", "拍手", "挙手", "演説する（訴える）", "空看板_3", "空看板を持つ_1", "空看板を持つ_2", "立ち向かう", "答えを出す", "考える（悩む）", "走る", "遠くを見る"];
+
+    const assetsData = {
+        background: [
+            { type: 'color', label: 'オレンジ', color: '#f5b500' },
+            { type: 'color', label: 'ブルー', color: '#043e80' },
+            { type: 'color', label: '深い紺', color: '#003366' },
+            { type: 'upload', label: '写真から選ぶ', icon: 'add_a_photo' }
+        ],
+        text: [
+            { type: 'name-main', label: '丸山かつき', class: 'style-blue' },
+            { type: 'name-sub', label: '丸山かつき', class: 'style-white' },
+            { type: 'policy', label: '手取りを増やす', class: 'style-red' }
+        ],
+        usagi: usagiFiles.map(name => ({ type: 'usagi', label: name, path: `USAGI/こくみんうさぎ_${name}.png` })),
+        stamp: [{ type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' }],
+        template: [{ type: 'tpl-1', label: '演説会', icon: 'campaign' }],
+        layer: []
+    };
+
+    const renderAssets = (tab) => {
+        const track = document.getElementById('asset-track');
+        track.innerHTML = '';
+
+        if (tab === 'layer') {
+            track.style.flexDirection = 'column';
+            track.style.alignItems = 'stretch';
+            track.style.overflowX = 'hidden';
+            track.style.overflowY = 'auto';
+            renderLayers();
+        } else {
+            track.style.flexDirection = 'row';
+            track.style.alignItems = 'center';
+            track.style.overflowX = 'auto';
+            track.style.overflowY = 'hidden';
+        }
+
+        if (!assetsData[tab]) return;
+
+        assetsData[tab].forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'asset-item';
+            if (tab === 'text') {
+                div.innerHTML = `<div class="preview-text ${item.class}">${item.label}</div>`;
+                div.onclick = () => addKOKUMINText(item.type, item.label);
+            } else if (tab === 'usagi') {
+                div.innerHTML = `<img src="${item.path}" style="width:60px;height:60px;object-fit:contain;">`;
+                div.onclick = () => addImageToCanvas(item.path, item.label);
+            } else if (tab === 'background') {
+                if (item.type === 'color') {
+                    div.innerHTML = `<div style="width:30px;height:30px;background:${item.color};border-radius:4px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;font-weight:bold;">${item.label}</span>`;
+                    div.onclick = () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas)); };
+                } else if (item.type === 'upload') {
+                    div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">add_a_photo</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
+                    div.onclick = () => document.getElementById('bg-upload-input').click();
+                }
+            } else if (tab === 'stamp') {
+                div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">${item.icon}</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
+                div.onclick = () => addKOKUMINStamp(item.type);
+            }
+            track.appendChild(div);
+        });
+    };
+
+    const renderLayers = () => {
+        const track = document.getElementById('asset-track');
+        track.innerHTML = '';
+
+        const objects = canvas.getObjects().slice().reverse();
+
+        objects.forEach((obj, index) => {
+            if (obj.name === 'ウォーターマーク') return;
+
+            const typeLabel = obj.type === 'i-text' ? 'テキスト' : (obj.type === 'image' ? (obj.label || '画像') : '要素');
+            const content = obj.text ? (obj.text.substring(0, 10) + (obj.text.length > 10 ? '...' : '')) : typeLabel;
+
+            const item = document.createElement('div');
+            item.className = 'layer-item' + (canvas.getActiveObject() === obj ? ' active' : '');
+            item.innerHTML = `
             <div class="layer-info">${content}</div>
             <div class="layer-actions">
                 <button class="layer-action-btn btn-up"><span class="material-symbols-rounded" style="font-size:18px;">expand_less</span></button>
@@ -287,105 +310,106 @@ const renderLayers = () => {
             </div>
         `;
 
-        item.onclick = (e) => {
-            if (e.target.closest('.layer-action-btn')) return;
+            item.onclick = (e) => {
+                if (e.target.closest('.layer-action-btn')) return;
+                canvas.setActiveObject(obj);
+                canvas.requestRenderAll();
+                renderLayers();
+            };
+
+            item.querySelector('.btn-up').onclick = () => { obj.bringForward(); renderLayers(); canvas.requestRenderAll(); };
+            item.querySelector('.btn-down').onclick = () => { obj.sendBackwards(); renderLayers(); canvas.requestRenderAll(); };
+            item.querySelector('.btn-lock').onclick = () => {
+                const isLocked = !obj.lockMovementX;
+                obj.set({ lockMovementX: isLocked, lockMovementY: isLocked, lockScalingX: isLocked, lockScalingY: isLocked, lockRotation: isLocked, hasControls: !isLocked });
+                renderLayers();
+                canvas.requestRenderAll();
+            };
+            item.querySelector('.btn-visibility').onclick = () => { obj.set('visible', !obj.visible); renderLayers(); canvas.requestRenderAll(); };
+
+            track.appendChild(item);
+        });
+    };
+
+    const addKOKUMINText = (type, customText) => {
+        const center = canvas.getCenter();
+        const content = customText || '丸山かつき';
+        let textObj;
+        if (type === 'name-main') {
+            textObj = new fabric.IText(content, { left: center.left, top: center.top, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 120, fill: '#043e80', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke' });
+            textObj.set('shadow', new fabric.Shadow({ color: '#043e80', blur: 0, offsetX: 4, offsetY: 4 }));
+        } else if (type === 'name-sub') {
+            textObj = new fabric.IText(content, { left: center.left, top: center.top + 100, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80, fill: '#ffffff', stroke: '#043e80', strokeWidth: 8, skewX: -10, paintFirst: 'stroke' });
+        } else if (type === 'policy') {
+            textObj = new fabric.Textbox('手取りを増やす。\nインフレに勝つ。', { left: center.left, top: center.top, originX: 'center', originY: 'center', width: 500, fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 60, fill: '#ffffff', backgroundColor: '#E60012', textAlign: 'center', padding: 20 });
+        }
+        canvas.add(textObj);
+        canvas.setActiveObject(textObj);
+    };
+
+    const addImageToCanvas = (path, label) => {
+        fabric.Image.fromURL(path, (img) => {
+            img.scale(0.5);
+            img.set({ left: canvas.getCenter().left, top: canvas.getCenter().top, originX: 'center', originY: 'center', label: label });
+            canvas.add(img);
+            canvas.setActiveObject(img);
+        });
+    };
+
+    const addKOKUMINStamp = (type) => {
+        const center = canvas.getCenter();
+        if (type === 'logo-placeholder') {
+            const rect = new fabric.Rect({ width: 100, height: 60, fill: '#f5b500', rx: 4, ry: 4 });
+            const text = new fabric.Text('国民\n民主党', { fontSize: 20, fontFamily: 'Noto Sans JP', fill: '#043e80', originX: 'center', originY: 'center', fontWeight: 'bold', top: 30, left: 50 });
+            const obj = new fabric.Group([rect, text], { left: center.left, top: center.top, originX: 'center', originY: 'center' });
+            canvas.add(obj);
             canvas.setActiveObject(obj);
-            canvas.requestRenderAll();
-            renderLayers();
-        };
-
-        item.querySelector('.btn-up').onclick = () => { obj.bringForward(); renderLayers(); canvas.requestRenderAll(); };
-        item.querySelector('.btn-down').onclick = () => { obj.sendBackwards(); renderLayers(); canvas.requestRenderAll(); };
-        item.querySelector('.btn-lock').onclick = () => {
-            const isLocked = !obj.lockMovementX;
-            obj.set({ lockMovementX: isLocked, lockMovementY: isLocked, lockScalingX: isLocked, lockScalingY: isLocked, lockRotation: isLocked, hasControls: !isLocked });
-            renderLayers();
-            canvas.requestRenderAll();
-        };
-        item.querySelector('.btn-visibility').onclick = () => { obj.set('visible', !obj.visible); renderLayers(); canvas.requestRenderAll(); };
-
-        track.appendChild(item);
-    });
-};
-
-const addKOKUMINText = (type, customText) => {
-    const center = canvas.getCenter();
-    const content = customText || '丸山かつき';
-    let textObj;
-    if (type === 'name-main') {
-        textObj = new fabric.IText(content, { left: center.left, top: center.top, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 120, fill: '#043e80', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke' });
-        textObj.set('shadow', new fabric.Shadow({ color: '#043e80', blur: 0, offsetX: 4, offsetY: 4 }));
-    } else if (type === 'name-sub') {
-        textObj = new fabric.IText(content, { left: center.left, top: center.top + 100, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80, fill: '#ffffff', stroke: '#043e80', strokeWidth: 8, skewX: -10, paintFirst: 'stroke' });
-    } else if (type === 'policy') {
-        textObj = new fabric.Textbox('手取りを増やす。\nインフレに勝つ。', { left: center.left, top: center.top, originX: 'center', originY: 'center', width: 500, fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 60, fill: '#ffffff', backgroundColor: '#E60012', textAlign: 'center', padding: 20 });
-    }
-    canvas.add(textObj);
-    canvas.setActiveObject(textObj);
-};
-
-const addImageToCanvas = (path, label) => {
-    fabric.Image.fromURL(path, (img) => {
-        img.scale(0.5);
-        img.set({ left: canvas.getCenter().left, top: canvas.getCenter().top, originX: 'center', originY: 'center', label: label });
-        canvas.add(img);
-        canvas.setActiveObject(img);
-    });
-};
-
-const addKOKUMINStamp = (type) => {
-    const center = canvas.getCenter();
-    if (type === 'logo-placeholder') {
-        const rect = new fabric.Rect({ width: 100, height: 60, fill: '#f5b500', rx: 4, ry: 4 });
-        const text = new fabric.Text('国民\n民主党', { fontSize: 20, fontFamily: 'Noto Sans JP', fill: '#043e80', originX: 'center', originY: 'center', fontWeight: 'bold', top: 30, left: 50 });
-        const obj = new fabric.Group([rect, text], { left: center.left, top: center.top, originX: 'center', originY: 'center' });
-        canvas.add(obj);
-        canvas.setActiveObject(obj);
-    }
-};
-
-const setupImageUpload = () => {
-    const input = document.getElementById('bg-upload-input');
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (f) => {
-            fabric.Image.fromURL(f.target.result, (img) => {
-                const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-                img.set({ originX: 'center', originY: 'center', left: canvas.getCenter().left, top: canvas.getCenter().top, scaleX: scale, scaleY: scale });
-                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-            });
-        };
-        reader.readAsDataURL(file);
+        }
     };
-};
 
-const setupExport = () => {
-    document.getElementById('btn-export').onclick = () => {
-        const link = document.createElement('a');
-        link.download = `kokumin_banner_${Date.now()}.png`;
-        link.href = canvas.toDataURL({ format: 'png', quality: 1, multiplier: 2 });
-        link.click();
-    };
-};
-
-const setupTabs = () => {
-    document.querySelectorAll('.nav-item').forEach(tab => {
-        if (!tab.dataset.tab) return;
-        tab.onclick = () => {
-            document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            renderAssets(tab.dataset.tab);
-            toggleSliderVisibility(tab.dataset.tab);
+    const setupImageUpload = () => {
+        const input = document.getElementById('bg-upload-input');
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (f) => {
+                fabric.Image.fromURL(f.target.result, (img) => {
+                    const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+                    img.set({ originX: 'center', originY: 'center', left: canvas.getCenter().left, top: canvas.getCenter().top, scaleX: scale, scaleY: scale });
+                    canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                });
+            };
+            reader.readAsDataURL(file);
         };
-    });
-    renderAssets('text');
-};
+    };
 
-window.onload = () => {
-    initCanvas();
-    setupImageUpload();
-    setupExport();
-    setupTabs();
+    const setupExport = () => {
+        document.getElementById('btn-export').onclick = () => {
+            const link = document.createElement('a');
+            link.download = `kokumin_banner_${Date.now()}.png`;
+            link.href = canvas.toDataURL({ format: 'png', quality: 1, multiplier: 2 });
+            link.click();
+        };
+    };
+
+    const setupTabs = () => {
+        document.querySelectorAll('.nav-item').forEach(tab => {
+            if (!tab.dataset.tab) return;
+            tab.onclick = () => {
+                document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderAssets(tab.dataset.tab);
+                toggleSliderVisibility(tab.dataset.tab);
+            };
+        });
+        renderAssets('text');
+    };
+
+    window.onload = () => {
+        initCanvas();
+        setupImageUpload();
+        setupExport();
+        setupTabs();
+    };
 };
