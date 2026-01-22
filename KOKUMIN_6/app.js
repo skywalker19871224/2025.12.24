@@ -24,7 +24,6 @@ const initCanvas = () => {
     });
 
     setupDeleteControl();
-    addWatermark();
     resizeCanvas();
 
     window.addEventListener('resize', resizeCanvas);
@@ -190,16 +189,7 @@ const saveSession = (type) => {
     alert(`${type === 'draft' ? '下書き' : 'テンプレ'}としてローカルに保存しました。`);
 };
 
-const addWatermark = () => {
-    const text = new fabric.IText('国民民主党\nKOKUMIN_6', {
-        left: 600, top: 337, originX: 'center', originY: 'center',
-        fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
-        fill: '#043e80', opacity: 0.05, selectable: false,
-        evented: false,
-        name: 'ウォーターマーク'
-    });
-    canvas.add(text);
-};
+
 
 const usagiFiles = ["いいね", "えいえいおー", "おつかれさまです", "お願い（目キラキラ）", "お願い（祈願）", "きく", "しょぼん", "すわる", "にやり", "びっくり", "まる（友情の輪）", "ガッツポーズ", "ジャンプする", "ドン引き", "バツ", "フレッフレッ", "ペコリ", "万歳", "了解（敬礼）", "感泣", "拍手", "挙手", "演説する（訴える）", "空看板_3", "空看板を持つ_1", "空看板を持つ_2", "立ち向かう", "答えを出す", "考える（悩む）", "走る", "遠くを見る"];
 
