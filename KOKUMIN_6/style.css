@@ -247,14 +247,17 @@ input[type=range]::-webkit-slider-runnable-track {
     display: flex;
     justify-content: space-around;
     padding: 10px 0 calc(10px + var(--spacing-safe-bottom)) 0;
-    background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(4, 62, 128, 0.9);
+    /* 国民民主党ブルー (不透明度90%) */
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-item {
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.6);
+    /* 未選択時は少し透過した白 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -264,7 +267,8 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 .nav-item.active {
-    color: var(--color-kokumin-blue);
+    color: var(--color-white);
+    /* アクティブ時の文字は白 */
 }
 
 .nav-item span.material-symbols-rounded,
@@ -283,8 +287,10 @@ input[type=range]::-webkit-slider-runnable-track {
 
 .nav-item.active span.material-symbols-rounded,
 .nav-item.active .nav-icon-wrapper {
-    background: var(--color-kokumin-blue);
-    color: var(--color-white);
+    background: var(--color-kokumin-yellow);
+    /* アクティブボタンはイエローに戻す */
+    color: var(--color-bg-dark);
+    /* 中のアイコンはダーク色 */
 }
 
 .usagi-nav-icon img {
