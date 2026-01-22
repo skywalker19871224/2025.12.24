@@ -264,7 +264,7 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 .nav-item.active {
-    color: var(--color-kokumin-yellow);
+    color: var(--color-kokumin-blue);
 }
 
 .nav-item span.material-symbols-rounded,
@@ -283,8 +283,8 @@ input[type=range]::-webkit-slider-runnable-track {
 
 .nav-item.active span.material-symbols-rounded,
 .nav-item.active .nav-icon-wrapper {
-    background: var(--color-kokumin-yellow);
-    color: var(--color-bg-dark);
+    background: var(--color-kokumin-blue);
+    color: var(--color-white);
 }
 
 .usagi-nav-icon img {
