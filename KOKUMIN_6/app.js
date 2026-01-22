@@ -18,7 +18,9 @@ const initCanvas = () => {
         backgroundColor: '#f5b500', // 国民民主党オレンジ
         selection: true,
         preserveObjectStacking: true,
-        allowTouchScrolling: false // Handle pinch ourselves
+        allowTouchScrolling: false,
+        hoverCursor: 'pointer',
+        moveCursor: 'move'
     });
 
     // Custom "Delete" Control Implementation
@@ -35,11 +37,27 @@ const initCanvas = () => {
     canvas.on('selection:created', () => refreshLayersOnTab());
     canvas.on('selection:updated', () => refreshLayersOnTab());
     canvas.on('selection:cleared', () => refreshLayersOnTab());
+
+    // Ensure mouse dragging is smooth
+    canvas.on('mouse:down', () => {
+        canvas.calcOffset(); // Ensure coordinates are fresh
+    });
 };
 
 const refreshLayersOnTab = () => {
-    const activeTab = document.querySelector('.nav-item.active').dataset.tab;
+    const activeNav = document.querySelector('.nav-item.active');
+    if (!activeNav) return;
+    const activeTab = activeNav.dataset.tab;
     if (activeTab === 'layer') renderLayers();
+};
+
+const toggleSliderVisibility = (tab) => {
+    const sliderSection = document.querySelector('.panel-section.sliders');
+    if (tab === 'layer') {
+        sliderSection.classList.add('hidden');
+    } else {
+        sliderSection.classList.remove('hidden');
+    }
 };
 
 // --- Custom Delete Control ---
@@ -81,6 +99,8 @@ function renderIcon(img) {
 const resizeCanvas = () => {
     const container = document.getElementById('canvas-area');
     const wrapper = document.getElementById('canvas-wrapper');
+    if (!container || !wrapper) return;
+
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
 
@@ -99,10 +119,12 @@ const resizeCanvas = () => {
     wrapper.style.width = w + 'px';
     wrapper.style.height = h + 'px';
 
-    // Also update guide overlay size
     const guide = document.getElementById('guide-overlay');
-    guide.style.width = w + 'px';
-    guide.style.height = h + 'px';
+    if (guide) {
+        guide.style.width = w + 'px';
+        guide.style.height = h + 'px';
+    }
+    canvas.calcOffset();
 };
 
 // --- Wheel Zoom & Interactions ---
@@ -118,7 +140,6 @@ const setupInteractions = () => {
         opt.e.stopPropagation();
     });
 
-    // Save Logic
     document.getElementById('btn-save-draft').onclick = () => saveSession('draft');
     document.getElementById('btn-save-tpl').onclick = () => saveSession('template');
 };
@@ -133,7 +154,9 @@ const addWatermark = () => {
     const text = new fabric.IText('国民民主党\nKOKUMIN_6', {
         left: 600, top: 337, originX: 'center', originY: 'center',
         fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
-        fill: '#043e80', opacity: 0.1, selectable: false, name: 'ウォーターマーク'
+        fill: '#043e80', opacity: 0.05, selectable: false,
+        evented: false, // Make it pass through all mouse events
+        name: 'ウォーターマーク'
     });
     canvas.add(text);
 };
@@ -156,22 +179,24 @@ const assetsData = {
     usagi: usagiFiles.map(name => ({ type: 'usagi', label: name, path: `USAGI/こくみんうさぎ_${name}.png` })),
     stamp: [{ type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' }],
     template: [{ type: 'tpl-1', label: '演説会', icon: 'campaign' }],
-    layer: [] // Dynamic
+    layer: []
 };
 
 const renderAssets = (tab) => {
     const track = document.getElementById('asset-track');
     track.innerHTML = '';
 
-    // Adjust layout for Layer tab (Full width scroll vs grid)
     if (tab === 'layer') {
         track.style.flexDirection = 'column';
         track.style.alignItems = 'stretch';
+        track.style.overflowX = 'hidden';
+        track.style.overflowY = 'auto';
         renderLayers();
-        return;
     } else {
         track.style.flexDirection = 'row';
         track.style.alignItems = 'center';
+        track.style.overflowX = 'auto';
+        track.style.overflowY = 'hidden';
     }
 
     if (!assetsData[tab]) return;
@@ -187,14 +212,14 @@ const renderAssets = (tab) => {
             div.onclick = () => addImageToCanvas(item.path, item.label);
         } else if (tab === 'background') {
             if (item.type === 'color') {
-                div.innerHTML = `<div style="width:40px;height:40px;background:${item.color};border-radius:8px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;font-weight:bold;">${item.label}</span>`;
+                div.innerHTML = `<div style="width:30px;height:30px;background:${item.color};border-radius:4px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;font-weight:bold;">${item.label}</span>`;
                 div.onclick = () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas)); };
             } else if (item.type === 'upload') {
-                div.innerHTML = `<span class="material-symbols-rounded" style="font-size:32px;color:rgba(255,255,255,0.8);">add_a_photo</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
+                div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">add_a_photo</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
                 div.onclick = () => document.getElementById('bg-upload-input').click();
             }
         } else if (tab === 'stamp') {
-            div.innerHTML = `<span class="material-symbols-rounded" style="font-size:32px;color:rgba(255,255,255,0.8);">${item.icon}</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
+            div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">${item.icon}</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
             div.onclick = () => addKOKUMINStamp(item.type);
         }
         track.appendChild(div);
@@ -205,24 +230,23 @@ const renderLayers = () => {
     const track = document.getElementById('asset-track');
     track.innerHTML = '';
 
-    // Get all objects, reversed so top is first
     const objects = canvas.getObjects().slice().reverse();
 
     objects.forEach((obj, index) => {
         if (obj.name === 'ウォーターマーク') return;
 
         const typeLabel = obj.type === 'i-text' ? 'テキスト' : (obj.type === 'image' ? (obj.label || '画像') : '要素');
-        const content = obj.text ? (obj.text.substring(0, 10) + '...') : typeLabel;
+        const content = obj.text ? (obj.text.substring(0, 10) + (obj.text.length > 10 ? '...' : '')) : typeLabel;
 
         const item = document.createElement('div');
         item.className = 'layer-item' + (canvas.getActiveObject() === obj ? ' active' : '');
         item.innerHTML = `
             <div class="layer-info">${content}</div>
             <div class="layer-actions">
-                <button class="layer-action-btn btn-up" title="前面へ"><span class="material-symbols-rounded">expand_less</span></button>
-                <button class="layer-action-btn btn-down" title="背面へ"><span class="material-symbols-rounded">expand_more</span></button>
-                <button class="layer-action-btn btn-lock" title="ロック">${obj.lockMovementX ? '<span class="material-symbols-rounded">lock</span>' : '<span class="material-symbols-rounded">lock_open</span>'}</button>
-                <button class="layer-action-btn btn-visibility" title="表示/非表示">${obj.visible ? '<span class="material-symbols-rounded">visibility</span>' : '<span class="material-symbols-rounded">visibility_off</span>'}</button>
+                <button class="layer-action-btn btn-up" title="前面へ"><span class="material-symbols-rounded" style="font-size:16px;">expand_less</span></button>
+                <button class="layer-action-btn btn-down" title="背面へ"><span class="material-symbols-rounded" style="font-size:16px;">expand_more</span></button>
+                <button class="layer-action-btn btn-lock" title="ロック">${obj.lockMovementX ? '<span class="material-symbols-rounded" style="font-size:16px;">lock</span>' : '<span class="material-symbols-rounded" style="font-size:16px;">lock_open</span>'}</button>
+                <button class="layer-action-btn btn-visibility" title="表示/非表示">${obj.visible ? '<span class="material-symbols-rounded" style="font-size:16px;">visibility</span>' : '<span class="material-symbols-rounded" style="font-size:16px;">visibility_off</span>'}</button>
             </div>
         `;
 
@@ -233,8 +257,8 @@ const renderLayers = () => {
             renderLayers();
         };
 
-        item.querySelector('.btn-up').onclick = () => { obj.bringForward(); renderLayers(); };
-        item.querySelector('.btn-down').onclick = () => { obj.sendBackwards(); renderLayers(); };
+        item.querySelector('.btn-up').onclick = () => { obj.bringForward(); renderLayers(); canvas.requestRenderAll(); };
+        item.querySelector('.btn-down').onclick = () => { obj.sendBackwards(); renderLayers(); canvas.requestRenderAll(); };
         item.querySelector('.btn-lock').onclick = () => {
             const isLocked = !obj.lockMovementX;
             obj.set({ lockMovementX: isLocked, lockMovementY: isLocked, lockScalingX: isLocked, lockScalingY: isLocked, lockRotation: isLocked, hasControls: !isLocked });
@@ -316,6 +340,7 @@ const setupTabs = () => {
             document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             renderAssets(tab.dataset.tab);
+            toggleSliderVisibility(tab.dataset.tab);
         };
     });
     renderAssets('text');

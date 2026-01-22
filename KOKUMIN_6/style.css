@@ -140,13 +140,13 @@ body {
 .layer-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     background: rgba(255, 255, 255, 0.05);
-    padding: 10px 16px;
-    border-radius: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
     border: 1px solid var(--glass-border);
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -158,8 +158,8 @@ body {
 
 .layer-info {
     flex: 1;
-    font-size: 13px;
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -221,16 +221,23 @@ body {
     z-index: 100;
 }
 
+/* UI Section Toggles */
+.panel-section.sliders.hidden {
+    display: none;
+}
+
 .panel-section.sliders {
     padding: 0 24px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
+    /* Reduced */
 }
 
 .slider-group {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    /* Reduced */
 }
 
 .slider-group label {
