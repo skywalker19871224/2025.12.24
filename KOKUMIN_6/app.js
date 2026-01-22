@@ -15,7 +15,7 @@ const initCanvas = () => {
     canvasElement.height = height;
 
     canvas = new fabric.Canvas('main-canvas', {
-        backgroundColor: '#FFD700', // KOKUMIN Yellow Default
+        backgroundColor: '#f5b500', // 国民民主党オレンジ
         selection: true,
         preserveObjectStacking: true
     });
@@ -51,7 +51,7 @@ const addWatermark = () => {
     const text = new fabric.IText('国民民主党\nKOKUMIN_6', {
         left: 600, top: 337, originX: 'center', originY: 'center',
         fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
-        fill: '#00529B', opacity: 0.2, selectable: false
+        fill: '#043e80', opacity: 0.2, selectable: false
     });
     canvas.add(text);
 };
@@ -126,14 +126,14 @@ const addKOKUMINText = (type, customText) => {
         textObj = new fabric.IText(content, {
             left: center.left, top: center.top, originX: 'center', originY: 'center',
             fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 120,
-            fill: '#00529B', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke'
+            fill: '#043e80', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke'
         });
-        textObj.set('shadow', new fabric.Shadow({ color: '#00529B', blur: 0, offsetX: 4, offsetY: 4 }));
+        textObj.set('shadow', new fabric.Shadow({ color: '#043e80', blur: 0, offsetX: 4, offsetY: 4 }));
     } else if (type === 'name-sub') {
         textObj = new fabric.IText(content, {
             left: center.left, top: center.top + 100, originX: 'center', originY: 'center',
             fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
-            fill: '#ffffff', stroke: '#00529B', strokeWidth: 8, skewX: -10, paintFirst: 'stroke'
+            fill: '#ffffff', stroke: '#043e80', strokeWidth: 8, skewX: -10, paintFirst: 'stroke'
         });
     } else if (type === 'policy') {
         textObj = new fabric.Textbox('手取りを増やす。\nインフレに勝つ。', {
@@ -168,8 +168,8 @@ const addImageToCanvas = (path) => {
 const addKOKUMINStamp = (type) => {
     const center = canvas.getCenter();
     if (type === 'logo-placeholder') {
-        const rect = new fabric.Rect({ width: 100, height: 60, fill: '#FFD700', rx: 4, ry: 4 });
-        const text = new fabric.Text('国民\n民主党', { fontSize: 20, fontFamily: 'Noto Sans JP', fill: '#00529B', originX: 'center', originY: 'center', fontWeight: 'bold', top: 30, left: 50 });
+        const rect = new fabric.Rect({ width: 100, height: 60, fill: '#f5b500', rx: 4, ry: 4 });
+        const text = new fabric.Text('国民\n民主党', { fontSize: 20, fontFamily: 'Noto Sans JP', fill: '#043e80', originX: 'center', originY: 'center', fontWeight: 'bold', top: 30, left: 50 });
         const obj = new fabric.Group([rect, text], { left: center.left, top: center.top, originX: 'center', originY: 'center' });
         canvas.add(obj);
         canvas.setActiveObject(obj);

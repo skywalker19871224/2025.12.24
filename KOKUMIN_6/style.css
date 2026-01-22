@@ -1,8 +1,8 @@
 /* CSS Variables - KOKUMIN Brand & Glassmorphism */
 :root {
     --color-bg-dark: #0f172a;
-    --color-kokumin-yellow: #FFD700;
-    --color-kokumin-blue: #00529B;
+    --color-kokumin-yellow: #f5b500;
+    --color-kokumin-blue: #043e80;
     --color-kokumin-red: #E60012;
     --color-white: #ffffff;
 
@@ -148,6 +148,7 @@ staffers {
 input[type=range] {
     flex: 1;
     -webkit-appearance: none;
+    appearance: none;
     background: transparent;
 }
 
