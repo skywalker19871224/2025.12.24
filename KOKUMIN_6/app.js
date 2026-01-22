@@ -30,12 +30,19 @@ const initCanvas = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     setupInteractions();
+    setupControls(); // Restore Sliders
 
     // Watch for changes to update Layers
     canvas.on('object:added', () => refreshLayersOnTab());
     canvas.on('object:removed', () => refreshLayersOnTab());
-    canvas.on('selection:created', () => refreshLayersOnTab());
-    canvas.on('selection:updated', () => refreshLayersOnTab());
+    canvas.on('selection:created', (e) => {
+        refreshLayersOnTab();
+        updateControls(e.selected[0]);
+    });
+    canvas.on('selection:updated', (e) => {
+        refreshLayersOnTab();
+        updateControls(e.selected[0]);
+    });
     canvas.on('selection:cleared', () => refreshLayersOnTab());
 
     // Ensure mouse dragging is smooth
@@ -58,6 +65,36 @@ const toggleSliderVisibility = (tab) => {
     } else {
         sliderSection.classList.remove('hidden');
     }
+};
+
+// --- Slider Controls ---
+const setupControls = () => {
+    const opacitySlider = document.getElementById('slider-opacity');
+    const scaleSlider = document.getElementById('slider-scale');
+
+    opacitySlider.oninput = (e) => {
+        const obj = canvas.getActiveObject();
+        if (obj) {
+            obj.set('opacity', e.target.value / 100);
+            canvas.requestRenderAll();
+        }
+    };
+
+    scaleSlider.oninput = (e) => {
+        const obj = canvas.getActiveObject();
+        if (obj) {
+            const scale = e.target.value / 100;
+            obj.scale(scale);
+            canvas.requestRenderAll();
+        }
+    };
+};
+
+const updateControls = (obj) => {
+    if (!obj) return;
+    document.getElementById('slider-opacity').value = obj.opacity * 100;
+    // For scale, we take the average or scaleX
+    document.getElementById('slider-scale').value = (obj.scaleX || 1) * 100;
 };
 
 // --- Custom Delete Control ---
@@ -155,7 +192,7 @@ const addWatermark = () => {
         left: 600, top: 337, originX: 'center', originY: 'center',
         fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
         fill: '#043e80', opacity: 0.05, selectable: false,
-        evented: false, // Make it pass through all mouse events
+        evented: false,
         name: 'ウォーターマーク'
     });
     canvas.add(text);
@@ -243,10 +280,10 @@ const renderLayers = () => {
         item.innerHTML = `
             <div class="layer-info">${content}</div>
             <div class="layer-actions">
-                <button class="layer-action-btn btn-up" title="前面へ"><span class="material-symbols-rounded" style="font-size:16px;">expand_less</span></button>
-                <button class="layer-action-btn btn-down" title="背面へ"><span class="material-symbols-rounded" style="font-size:16px;">expand_more</span></button>
-                <button class="layer-action-btn btn-lock" title="ロック">${obj.lockMovementX ? '<span class="material-symbols-rounded" style="font-size:16px;">lock</span>' : '<span class="material-symbols-rounded" style="font-size:16px;">lock_open</span>'}</button>
-                <button class="layer-action-btn btn-visibility" title="表示/非表示">${obj.visible ? '<span class="material-symbols-rounded" style="font-size:16px;">visibility</span>' : '<span class="material-symbols-rounded" style="font-size:16px;">visibility_off</span>'}</button>
+                <button class="layer-action-btn btn-up"><span class="material-symbols-rounded" style="font-size:18px;">expand_less</span></button>
+                <button class="layer-action-btn btn-down"><span class="material-symbols-rounded" style="font-size:18px;">expand_more</span></button>
+                <button class="layer-action-btn btn-lock">${obj.lockMovementX ? '<span class="material-symbols-rounded" style="font-size:18px;">lock</span>' : '<span class="material-symbols-rounded" style="font-size:18px;">lock_open</span>'}</button>
+                <button class="layer-action-btn btn-visibility">${obj.visible ? '<span class="material-symbols-rounded" style="font-size:18px;">visibility</span>' : '<span class="material-symbols-rounded" style="font-size:18px;">visibility_off</span>'}</button>
             </div>
         `;
 
