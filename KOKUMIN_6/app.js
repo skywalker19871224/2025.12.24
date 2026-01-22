@@ -112,7 +112,11 @@ const renderAssets = (tab) => {
             div.onclick = () => addImageToCanvas(item.path);
         } else if (tab === 'background') {
             if (item.type === 'color') {
-                div.innerHTML = `<div style="width:40px;height:40px;background:${item.color};border-radius:8px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;">${item.label}</span>`;
+                div.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div style="width:40px;height:40px;background:${item.color};border-radius:8px;border:1px solid rgba(255,255,255,0.2);"></div>
+                    <span style="font-size:10px;font-weight:bold;">${item.label}</span>
+                </div>`;
                 div.onclick = () => {
                     canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
                     canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas));
