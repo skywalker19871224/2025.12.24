@@ -67,6 +67,12 @@ const usagiFiles = [
 ];
 
 const assetsData = {
+    background: [
+        { type: 'color', label: 'オレンジ', color: '#f5b500' },
+        { type: 'color', label: 'ブルー', color: '#043e80' },
+        { type: 'color', label: '深い紺', color: '#003366' },
+        { type: 'upload', label: '写真から選ぶ', icon: 'add_a_photo' }
+    ],
     text: [
         { type: 'name-main', label: '丸山かつき', class: 'style-blue' },
         { type: 'name-sub', label: '丸山かつき', class: 'style-white' },
@@ -104,6 +110,21 @@ const renderAssets = (tab) => {
         } else if (tab === 'usagi') {
             div.innerHTML = `<img src="${item.path}" style="width:60px;height:60px;object-fit:contain;">`;
             div.onclick = () => addImageToCanvas(item.path);
+        } else if (tab === 'background') {
+            if (item.type === 'color') {
+                div.innerHTML = `<div style="width:40px;height:40px;background:${item.color};border-radius:8px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;">${item.label}</span>`;
+                div.onclick = () => {
+                    canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
+                    canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas));
+                };
+            } else if (item.type === 'upload') {
+                div.innerHTML = `
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,0.8);">
+                        <span class="material-symbols-rounded" style="font-size:32px;">${item.icon}</span>
+                        <span style="font-size:10px;font-weight:bold;">${item.label}</span>
+                    </div>`;
+                div.onclick = () => document.getElementById('bg-upload-input').click();
+            }
         } else if (tab === 'stamp') {
             div.innerHTML = `
                 <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,0.8);">
@@ -196,15 +217,7 @@ const setupControls = () => {
 };
 
 const setupImageUpload = () => {
-    const btn = document.getElementById('btn-upload-bg');
-    const navBtn = document.getElementById('nav-bg-change'); // New nav button
     const input = document.getElementById('bg-upload-input');
-
-    const triggerUpload = () => input.click();
-
-    if (btn) btn.onclick = triggerUpload;
-    if (navBtn) navBtn.onclick = triggerUpload; // Link navigation button
-
     input.onchange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -231,6 +244,7 @@ const setupExport = () => {
 
 const setupTabs = () => {
     document.querySelectorAll('.nav-item').forEach(tab => {
+        if (!tab.dataset.tab) return;
         tab.onclick = () => {
             document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
