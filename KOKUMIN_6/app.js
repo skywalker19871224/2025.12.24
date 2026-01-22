@@ -197,8 +197,14 @@ const setupControls = () => {
 
 const setupImageUpload = () => {
     const btn = document.getElementById('btn-upload-bg');
+    const navBtn = document.getElementById('nav-bg-change'); // New nav button
     const input = document.getElementById('bg-upload-input');
-    btn.onclick = () => input.click();
+
+    const triggerUpload = () => input.click();
+
+    if (btn) btn.onclick = triggerUpload;
+    if (navBtn) navBtn.onclick = triggerUpload; // Link navigation button
+
     input.onchange = (e) => {
         const file = e.target.files[0];
         if (!file) return;

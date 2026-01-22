@@ -3,6 +3,7 @@
     --color-bg-dark: #0f172a;
     --color-kokumin-yellow: #f5b500;
     --color-kokumin-blue: #043e80;
+    --color-deep-blue: #003366;
     --color-kokumin-red: #E60012;
     --color-white: #ffffff;
 
@@ -247,8 +248,8 @@ input[type=range]::-webkit-slider-runnable-track {
     display: flex;
     justify-content: space-around;
     padding: 10px 0 calc(10px + var(--spacing-safe-bottom)) 0;
-    background: rgba(4, 62, 128, 0.9);
-    /* 国民民主党ブルー (不透明度90%) */
+    background: var(--color-deep-blue);
+    /* 深い国民ブルー */
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
