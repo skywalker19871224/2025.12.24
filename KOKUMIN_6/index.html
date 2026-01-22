@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KOKUMIN_6 | Design Lite</title>
+    <title>KOKUMIN_6 | Design Pro</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0" />
 
     <!-- Core Style -->
     <link rel="stylesheet" href="style.css">
@@ -23,6 +23,26 @@
 <body>
 
     <div id="app-container">
+        <!-- Top Management Bar (New) -->
+        <header id="top-bar" class="glass-panel">
+            <div class="header-left">
+                <button id="btn-save-draft" class="header-btn" title="下書き保存">
+                    <span class="material-symbols-rounded">save</span>
+                    <span>下書き</span>
+                </button>
+                <button id="btn-save-tpl" class="header-btn" title="テンプレ保存">
+                    <span class="material-symbols-rounded">star</span>
+                    <span>テンプレ</span>
+                </button>
+            </div>
+            <div class="header-right">
+                <button id="btn-export" class="glass-btn primary">
+                    <span class="material-symbols-rounded">download</span>
+                    保存
+                </button>
+            </div>
+        </header>
+
         <!-- Canvas Area (Upper 65%) -->
         <div id="canvas-area">
             <div id="canvas-wrapper">
@@ -35,18 +55,8 @@
                 <div class="guide-line center-y"></div>
             </div>
 
-            <!-- Floating Actions -->
-            <div class="floating-actions">
-                <button id="btn-export" class="glass-btn primary">
-                    <span class="material-symbols-rounded">download</span>
-                    保存
-                </button>
-                <input type="file" id="bg-upload-input" accept="image/*" hidden>
-                <button id="btn-upload-bg" class="glass-btn secondary">
-                    <span class="material-symbols-rounded">add_photo_alternate</span>
-                    背景変更
-                </button>
-            </div>
+            <!-- Hidden Input for Uploads -->
+            <input type="file" id="bg-upload-input" accept="image/*" hidden>
         </div>
 
         <!-- UI Panel (Lower 35%) - Glassmorphism -->
@@ -55,7 +65,7 @@
             <!-- 1. Attribute Sliders (Top) -->
             <div class="panel-section sliders">
                 <div class="slider-group">
-                    <label><span class="material-symbols-rounded">opacity</span> 不透明度</label>
+                    <label><span class="material-symbols-rounded">opacity</span> 透明度</label>
                     <input type="range" id="slider-opacity" min="0" max="100" value="100">
                 </div>
                 <div class="slider-group">
@@ -68,15 +78,6 @@
             <div class="panel-section assets-scroll">
                 <div class="asset-track" id="asset-track">
                     <!-- Presets injected via JS -->
-                    <div class="asset-item add-text-preset" data-type="name-main">
-                        <div class="preview-text style-blue">名前(青)</div>
-                    </div>
-                    <div class="asset-item add-text-preset" data-type="name-sub">
-                        <div class="preview-text style-white">名前(白)</div>
-                    </div>
-                    <div class="asset-item add-text-preset" data-type="policy">
-                        <div class="preview-text style-red">キャッチ</div>
-                    </div>
                 </div>
             </div>
 

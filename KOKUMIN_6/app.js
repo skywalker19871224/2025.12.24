@@ -17,13 +17,66 @@ const initCanvas = () => {
     canvas = new fabric.Canvas('main-canvas', {
         backgroundColor: '#f5b500', // 国民民主党オレンジ
         selection: true,
-        preserveObjectStacking: true
+        preserveObjectStacking: true,
+        allowTouchScrolling: false // Handle pinch ourselves
     });
+
+    // Custom "Delete" Control Implementation
+    setupDeleteControl();
 
     addWatermark();
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    setupInteractions();
+
+    // Watch for changes to update Layers
+    canvas.on('object:added', () => refreshLayersOnTab());
+    canvas.on('object:removed', () => refreshLayersOnTab());
+    canvas.on('selection:created', () => refreshLayersOnTab());
+    canvas.on('selection:updated', () => refreshLayersOnTab());
+    canvas.on('selection:cleared', () => refreshLayersOnTab());
 };
+
+const refreshLayersOnTab = () => {
+    const activeTab = document.querySelector('.nav-item.active').dataset.tab;
+    if (activeTab === 'layer') renderLayers();
+};
+
+// --- Custom Delete Control ---
+const setupDeleteControl = () => {
+    const deleteIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z' fill='%23ff0000'/%3E%3C/svg%3E";
+    const img = document.createElement('img');
+    img.src = deleteIcon;
+
+    fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+        x: 0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: 16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: deleteObject,
+        render: renderIcon(img),
+        cornerSize: 24
+    });
+};
+
+function deleteObject(eventData, transform) {
+    const target = transform.target;
+    const canvas = target.canvas;
+    canvas.remove(target);
+    canvas.requestRenderAll();
+}
+
+function renderIcon(img) {
+    return function (ctx, left, top, styleOverride, fabricObject) {
+        const size = this.cornerSize;
+        ctx.save();
+        ctx.translate(left, top);
+        ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+        ctx.drawImage(img, -size / 2, -size / 2, size, size);
+        ctx.restore();
+    };
+}
 
 const resizeCanvas = () => {
     const container = document.getElementById('canvas-area');
@@ -45,26 +98,48 @@ const resizeCanvas = () => {
     canvasObj.style.height = h + 'px';
     wrapper.style.width = w + 'px';
     wrapper.style.height = h + 'px';
+
+    // Also update guide overlay size
+    const guide = document.getElementById('guide-overlay');
+    guide.style.width = w + 'px';
+    guide.style.height = h + 'px';
+};
+
+// --- Wheel Zoom & Interactions ---
+const setupInteractions = () => {
+    canvas.on('mouse:wheel', function (opt) {
+        const delta = opt.e.deltaY;
+        let zoom = canvas.getZoom();
+        zoom *= 0.999 ** delta;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.01) zoom = 0.01;
+        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+    });
+
+    // Save Logic
+    document.getElementById('btn-save-draft').onclick = () => saveSession('draft');
+    document.getElementById('btn-save-tpl').onclick = () => saveSession('template');
+};
+
+const saveSession = (type) => {
+    const json = JSON.stringify(canvas.toJSON());
+    localStorage.setItem(`kokumin_save_${type}_` + Date.now(), json);
+    alert(`${type === 'draft' ? '下書き' : 'テンプレ'}としてローカルに保存しました。`);
 };
 
 const addWatermark = () => {
     const text = new fabric.IText('国民民主党\nKOKUMIN_6', {
         left: 600, top: 337, originX: 'center', originY: 'center',
         fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
-        fill: '#043e80', opacity: 0.2, selectable: false
+        fill: '#043e80', opacity: 0.1, selectable: false, name: 'ウォーターマーク'
     });
     canvas.add(text);
 };
 
-// --- Asset Data (Usagi files) ---
-const usagiFiles = [
-    "いいね", "えいえいおー", "おつかれさまです", "お願い（目キラキラ）", "お願い（祈願）",
-    "きく", "しょぼん", "すわる", "にやり", "びっくり", "まる（友情の輪）",
-    "ガッツポーズ", "ジャンプする", "ドン引き", "バツ", "フレッフレッ",
-    "ペコリ", "万歳", "了解（敬礼）", "感泣", "拍手", "挙手",
-    "演説する（訴える）", "空看板_3", "空看板を持つ_1", "空看板を持つ_2",
-    "立ち向かう", "答えを出す", "考える（悩む）", "走る", "遠くを見る"
-];
+// --- Asset Data ---
+const usagiFiles = ["いいね", "えいえいおー", "おつかれさまです", "お願い（目キラキラ）", "お願い（祈願）", "きく", "しょぼん", "すわる", "にやり", "びっくり", "まる（友情の輪）", "ガッツポーズ", "ジャンプする", "ドン引き", "バツ", "フレッフレッ", "ペコリ", "万歳", "了解（敬礼）", "感泣", "拍手", "挙手", "演説する（訴える）", "空看板_3", "空看板を持つ_1", "空看板を持つ_2", "立ち向かう", "答えを出す", "考える（悩む）", "走る", "遠くを見る"];
 
 const assetsData = {
     background: [
@@ -78,67 +153,97 @@ const assetsData = {
         { type: 'name-sub', label: '丸山かつき', class: 'style-white' },
         { type: 'policy', label: '手取りを増やす', class: 'style-red' }
     ],
-    usagi: usagiFiles.map(name => ({
-        type: 'usagi',
-        label: name,
-        path: `USAGI/こくみんうさぎ_${name}.png`
-    })),
-    stamp: [
-        { type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' }
-    ],
-    template: [
-        { type: 'tpl-1', label: '演説会', icon: 'campaign' }
-    ],
-    layer: []
+    usagi: usagiFiles.map(name => ({ type: 'usagi', label: name, path: `USAGI/こくみんうさぎ_${name}.png` })),
+    stamp: [{ type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' }],
+    template: [{ type: 'tpl-1', label: '演説会', icon: 'campaign' }],
+    layer: [] // Dynamic
 };
-
-// --- Core Logic ---
 
 const renderAssets = (tab) => {
     const track = document.getElementById('asset-track');
     track.innerHTML = '';
+
+    // Adjust layout for Layer tab (Full width scroll vs grid)
+    if (tab === 'layer') {
+        track.style.flexDirection = 'column';
+        track.style.alignItems = 'stretch';
+        renderLayers();
+        return;
+    } else {
+        track.style.flexDirection = 'row';
+        track.style.alignItems = 'center';
+    }
 
     if (!assetsData[tab]) return;
 
     assetsData[tab].forEach(item => {
         const div = document.createElement('div');
         div.className = 'asset-item';
-
         if (tab === 'text') {
             div.innerHTML = `<div class="preview-text ${item.class}">${item.label}</div>`;
             div.onclick = () => addKOKUMINText(item.type, item.label);
         } else if (tab === 'usagi') {
             div.innerHTML = `<img src="${item.path}" style="width:60px;height:60px;object-fit:contain;">`;
-            div.onclick = () => addImageToCanvas(item.path);
+            div.onclick = () => addImageToCanvas(item.path, item.label);
         } else if (tab === 'background') {
             if (item.type === 'color') {
-                div.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                    <div style="width:40px;height:40px;background:${item.color};border-radius:8px;border:1px solid rgba(255,255,255,0.2);"></div>
-                    <span style="font-size:10px;font-weight:bold;">${item.label}</span>
-                </div>`;
-                div.onclick = () => {
-                    canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
-                    canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas));
-                };
+                div.innerHTML = `<div style="width:40px;height:40px;background:${item.color};border-radius:8px;border:1px solid rgba(255,255,255,0.2);"></div><span style="font-size:10px;margin-top:4px;font-weight:bold;">${item.label}</span>`;
+                div.onclick = () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.setBackgroundColor(item.color, canvas.renderAll.bind(canvas)); };
             } else if (item.type === 'upload') {
-                div.innerHTML = `
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,0.8);">
-                        <span class="material-symbols-rounded" style="font-size:32px;">${item.icon}</span>
-                        <span style="font-size:10px;font-weight:bold;">${item.label}</span>
-                    </div>`;
+                div.innerHTML = `<span class="material-symbols-rounded" style="font-size:32px;color:rgba(255,255,255,0.8);">add_a_photo</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
                 div.onclick = () => document.getElementById('bg-upload-input').click();
             }
         } else if (tab === 'stamp') {
-            div.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,0.8);">
-                    <span class="material-symbols-rounded" style="font-size:32px;">${item.icon}</span>
-                    <span style="font-size:10px;font-weight:bold;">${item.label}</span>
-                </div>`;
+            div.innerHTML = `<span class="material-symbols-rounded" style="font-size:32px;color:rgba(255,255,255,0.8);">${item.icon}</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
             div.onclick = () => addKOKUMINStamp(item.type);
         }
-
         track.appendChild(div);
+    });
+};
+
+const renderLayers = () => {
+    const track = document.getElementById('asset-track');
+    track.innerHTML = '';
+
+    // Get all objects, reversed so top is first
+    const objects = canvas.getObjects().slice().reverse();
+
+    objects.forEach((obj, index) => {
+        if (obj.name === 'ウォーターマーク') return;
+
+        const typeLabel = obj.type === 'i-text' ? 'テキスト' : (obj.type === 'image' ? (obj.label || '画像') : '要素');
+        const content = obj.text ? (obj.text.substring(0, 10) + '...') : typeLabel;
+
+        const item = document.createElement('div');
+        item.className = 'layer-item' + (canvas.getActiveObject() === obj ? ' active' : '');
+        item.innerHTML = `
+            <div class="layer-info">${content}</div>
+            <div class="layer-actions">
+                <button class="layer-action-btn btn-up" title="前面へ"><span class="material-symbols-rounded">expand_less</span></button>
+                <button class="layer-action-btn btn-down" title="背面へ"><span class="material-symbols-rounded">expand_more</span></button>
+                <button class="layer-action-btn btn-lock" title="ロック">${obj.lockMovementX ? '<span class="material-symbols-rounded">lock</span>' : '<span class="material-symbols-rounded">lock_open</span>'}</button>
+                <button class="layer-action-btn btn-visibility" title="表示/非表示">${obj.visible ? '<span class="material-symbols-rounded">visibility</span>' : '<span class="material-symbols-rounded">visibility_off</span>'}</button>
+            </div>
+        `;
+
+        item.onclick = (e) => {
+            if (e.target.closest('.layer-action-btn')) return;
+            canvas.setActiveObject(obj);
+            canvas.requestRenderAll();
+            renderLayers();
+        };
+
+        item.querySelector('.btn-up').onclick = () => { obj.bringForward(); renderLayers(); };
+        item.querySelector('.btn-down').onclick = () => { obj.sendBackwards(); renderLayers(); };
+        item.querySelector('.btn-lock').onclick = () => {
+            const isLocked = !obj.lockMovementX;
+            obj.set({ lockMovementX: isLocked, lockMovementY: isLocked, lockScalingX: isLocked, lockScalingY: isLocked, lockRotation: isLocked, hasControls: !isLocked });
+            renderLayers();
+            canvas.requestRenderAll();
+        };
+        item.querySelector('.btn-visibility').onclick = () => { obj.set('visible', !obj.visible); renderLayers(); canvas.requestRenderAll(); };
+
+        track.appendChild(item);
     });
 };
 
@@ -146,47 +251,24 @@ const addKOKUMINText = (type, customText) => {
     const center = canvas.getCenter();
     const content = customText || '丸山かつき';
     let textObj;
-
     if (type === 'name-main') {
-        textObj = new fabric.IText(content, {
-            left: center.left, top: center.top, originX: 'center', originY: 'center',
-            fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 120,
-            fill: '#043e80', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke'
-        });
+        textObj = new fabric.IText(content, { left: center.left, top: center.top, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 120, fill: '#043e80', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke' });
         textObj.set('shadow', new fabric.Shadow({ color: '#043e80', blur: 0, offsetX: 4, offsetY: 4 }));
     } else if (type === 'name-sub') {
-        textObj = new fabric.IText(content, {
-            left: center.left, top: center.top + 100, originX: 'center', originY: 'center',
-            fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80,
-            fill: '#ffffff', stroke: '#043e80', strokeWidth: 8, skewX: -10, paintFirst: 'stroke'
-        });
+        textObj = new fabric.IText(content, { left: center.left, top: center.top + 100, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80, fill: '#ffffff', stroke: '#043e80', strokeWidth: 8, skewX: -10, paintFirst: 'stroke' });
     } else if (type === 'policy') {
-        textObj = new fabric.Textbox('手取りを増やす。\nインフレに勝つ。', {
-            left: center.left, top: center.top, originX: 'center', originY: 'center',
-            width: 500, fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 60,
-            fill: '#ffffff', backgroundColor: '#E60012', textAlign: 'center', padding: 20
-        });
+        textObj = new fabric.Textbox('手取りを増やす。\nインフレに勝つ。', { left: center.left, top: center.top, originX: 'center', originY: 'center', width: 500, fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 60, fill: '#ffffff', backgroundColor: '#E60012', textAlign: 'center', padding: 20 });
     }
-
-    if (textObj) {
-        canvas.add(textObj);
-        canvas.setActiveObject(textObj);
-        updateControls(textObj);
-    }
+    canvas.add(textObj);
+    canvas.setActiveObject(textObj);
 };
 
-const addImageToCanvas = (path) => {
+const addImageToCanvas = (path, label) => {
     fabric.Image.fromURL(path, (img) => {
         img.scale(0.5);
-        img.set({
-            left: canvas.getCenter().left,
-            top: canvas.getCenter().top,
-            originX: 'center',
-            originY: 'center'
-        });
+        img.set({ left: canvas.getCenter().left, top: canvas.getCenter().top, originX: 'center', originY: 'center', label: label });
         canvas.add(img);
         canvas.setActiveObject(img);
-        updateControls(img);
     });
 };
 
@@ -199,25 +281,6 @@ const addKOKUMINStamp = (type) => {
         canvas.add(obj);
         canvas.setActiveObject(obj);
     }
-};
-
-const updateControls = (obj) => {
-    if (!obj) return;
-    document.getElementById('slider-opacity').value = obj.opacity * 100;
-    document.getElementById('slider-scale').value = (obj.scaleX || 1) * 100;
-};
-
-const setupControls = () => {
-    document.getElementById('slider-opacity').oninput = (e) => {
-        const obj = canvas.getActiveObject();
-        if (obj) { obj.set('opacity', e.target.value / 100); canvas.requestRenderAll(); }
-    };
-    document.getElementById('slider-scale').oninput = (e) => {
-        const obj = canvas.getActiveObject();
-        if (obj) { obj.scale(e.target.value / 100); canvas.requestRenderAll(); }
-    };
-    canvas.on('selection:created', (e) => updateControls(e.selected[0]));
-    canvas.on('selection:updated', (e) => updateControls(e.selected[0]));
 };
 
 const setupImageUpload = () => {
@@ -260,7 +323,6 @@ const setupTabs = () => {
 
 window.onload = () => {
     initCanvas();
-    setupControls();
     setupImageUpload();
     setupExport();
     setupTabs();

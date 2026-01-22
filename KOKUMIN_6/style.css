@@ -19,7 +19,6 @@
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
-    /* Prevent accidental text selection */
 }
 
 body {
@@ -29,7 +28,6 @@ body {
     background-color: var(--color-bg-dark);
     color: white;
     overflow: hidden;
-    /* App-like feel */
     height: 100vh;
     width: 100vw;
 }
@@ -41,13 +39,54 @@ body {
     width: 100%;
 }
 
+/* --- Top Bar (New Header) --- */
+#top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 60px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 200;
+}
+
+.header-left,
+.header-right {
+    display: flex;
+    gap: 12px;
+}
+
+.header-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.header-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(0.96);
+}
+
+.header-btn span.material-symbols-rounded {
+    font-size: 20px;
+}
+
 /* --- Canvas Area --- */
 #canvas-area {
     flex: 65;
-    /* 65% height */
     position: relative;
     background-color: #333;
-    /* Canvas bg placeholder */
     background-image:
         linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
         linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
@@ -63,21 +102,86 @@ body {
 
 #canvas-wrapper {
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    /* Actual size set by JS */
+    touch-action: none;
+    /* Critical for pinch/zoom */
 }
 
-/* Floating Actions */
-staffers {
+/* SNS Guide Overlay */
+#guide-overlay {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    /* Allow interaction with canvas */
+    z-index: 5;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    /* Guide lines */
 }
 
-.floating-actions {
+.guide-line {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.guide-line.center-x {
+    width: 1px;
+    height: 100%;
+    left: 50%;
+}
+
+.guide-line.center-y {
+    height: 1px;
+    width: 100%;
+    top: 50%;
+}
+
+/* Layer Tab Styling */
+.layer-item {
     display: flex;
+    align-items: center;
     gap: 12px;
-    z-index: 10;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    width: 100%;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.layer-item.active {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: var(--color-kokumin-yellow);
+}
+
+.layer-info {
+    flex: 1;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.layer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.layer-action-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layer-action-btn:hover {
+    color: var(--color-kokumin-yellow);
 }
 
 .glass-btn {
@@ -85,10 +189,10 @@ staffers {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
-    padding: 8px 16px;
+    padding: 8px 20px;
     border-radius: 20px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 900;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -99,21 +203,15 @@ staffers {
 
 .glass-btn.primary {
     background: var(--color-kokumin-yellow);
-    color: var(--color-kokumin-blue);
+    color: var(--color-bg-dark);
     border: none;
-}
-
-.glass-btn:active {
-    transform: scale(0.95);
 }
 
 /* --- UI Panel (Glassmorphism) --- */
 #ui-panel {
     flex: 35;
-    /* 35% height */
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-top: 1px solid var(--glass-border);
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
     border-radius: 24px 24px 0 0;
@@ -121,10 +219,8 @@ staffers {
     flex-direction: column;
     padding: 20px 0 0 0;
     z-index: 100;
-    position: relative;
 }
 
-/* 1. Sliders */
 .panel-section.sliders {
     padding: 0 24px;
     margin-bottom: 20px;
@@ -140,7 +236,7 @@ staffers {
 .slider-group label {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
-    width: 80px;
+    width: 60px;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -161,7 +257,6 @@ input[type=range]::-webkit-slider-thumb {
     background: var(--color-kokumin-yellow);
     cursor: pointer;
     margin-top: -8px;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 input[type=range]::-webkit-slider-runnable-track {
@@ -177,7 +272,6 @@ input[type=range]::-webkit-slider-runnable-track {
     flex: 1;
     overflow-x: auto;
     padding: 0 24px;
-    /* Hide scrollbar */
     scrollbar-width: none;
 }
 
@@ -198,6 +292,7 @@ input[type=range]::-webkit-slider-runnable-track {
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -206,7 +301,6 @@ input[type=range]::-webkit-slider-runnable-track {
 
 .asset-item:active {
     transform: scale(0.9);
-    background: rgba(255, 255, 255, 0.1);
 }
 
 .preview-text {
@@ -215,25 +309,16 @@ input[type=range]::-webkit-slider-runnable-track {
     text-align: center;
     padding: 4px;
     transform: skewX(-10deg);
-    /* Italic preview */
 }
 
 .style-blue {
     color: var(--color-kokumin-blue);
-    text-shadow:
-        2px 2px 0 white,
-        -2px -2px 0 white,
-        2px -2px 0 white,
-        -2px 2px 0 white;
+    text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white;
 }
 
 .style-white {
     color: white;
-    text-shadow:
-        2px 2px 0 var(--color-kokumin-blue),
-        -2px -2px 0 var(--color-kokumin-blue),
-        2px -2px 0 var(--color-kokumin-blue),
-        -2px 2px 0 var(--color-kokumin-blue);
+    text-shadow: 2px 2px 0 var(--color-kokumin-blue), -2px -2px 0 var(--color-kokumin-blue), 2px -2px 0 var(--color-kokumin-blue), -2px 2px 0 var(--color-kokumin-blue);
 }
 
 .style-red {
@@ -249,7 +334,6 @@ input[type=range]::-webkit-slider-runnable-track {
     justify-content: space-around;
     padding: 10px 0 calc(10px + var(--spacing-safe-bottom)) 0;
     background: var(--color-deep-blue);
-    /* 深い国民ブルー */
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -258,7 +342,6 @@ input[type=range]::-webkit-slider-runnable-track {
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.6);
-    /* 未選択時は少し透過した白 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -269,7 +352,6 @@ input[type=range]::-webkit-slider-runnable-track {
 
 .nav-item.active {
     color: var(--color-white);
-    /* アクティブ時の文字は白 */
 }
 
 .nav-item span.material-symbols-rounded,
@@ -289,18 +371,11 @@ input[type=range]::-webkit-slider-runnable-track {
 .nav-item.active span.material-symbols-rounded,
 .nav-item.active .nav-icon-wrapper {
     background: var(--color-kokumin-yellow);
-    /* アクティブボタンはイエローに戻す */
     color: var(--color-bg-dark);
-    /* 中のアイコンはダーク色 */
 }
 
 .usagi-nav-icon img {
     width: 28px;
     height: 28px;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.nav-item.active .usagi-nav-icon img {
-    filter: none;
 }
