@@ -12,7 +12,7 @@
     --glass-blur: 20px;
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
-    --spacing-safe-bottom: env(safe-area-inset-bottom, 20px);
+    --spacing-safe-bottom: max(16px, env(safe-area-inset-bottom, 16px));
 }
 
 * {
@@ -28,14 +28,15 @@ body {
     background-color: var(--color-bg-dark);
     color: white;
     overflow: hidden;
-    height: 100vh;
+    height: 100dvh;
+    /* Use dynamic viewport height */
     width: 100vw;
 }
 
 #app-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100dvh;
     width: 100%;
 }
 
@@ -368,7 +369,7 @@ input[type=range]::-webkit-slider-runnable-track {
 .bottom-nav {
     display: flex;
     justify-content: space-around;
-    padding: 8px 0 calc(8px + var(--spacing-safe-bottom)) 0;
+    padding: 10px 0 calc(10px + var(--spacing-safe-bottom)) 0;
     background: var(--color-deep-blue);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
