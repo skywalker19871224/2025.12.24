@@ -26,6 +26,16 @@ const initCanvas = () => {
         moveCursor: 'move'
     });
 
+    // Default Object styling to Kokumin Yellow
+    fabric.Object.prototype.set({
+        transparentCorners: false,
+        cornerColor: '#f5b500',
+        cornerStrokeColor: '#ffffff',
+        borderColor: '#f5b500',
+        cornerSize: 12,
+        padding: 10
+    });
+
     setupDeleteControl();
     resizeCanvas();
 
@@ -129,7 +139,7 @@ const updateControls = (obj) => {
 
 const setupDeleteControl = () => {
     // White trash can icon
-    const trashIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z' fill='%23ffffff'/%3E%3C/svg%3E`;
+    const trashIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z' fill='%23043e80'/%3E%3C/svg%3E`;
     const img = document.createElement('img');
     img.src = trashIcon;
 
@@ -145,8 +155,8 @@ const setupDeleteControl = () => {
     });
 
     // Grouping Controls
-    const groupIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z' fill='%23ffffff'/%3E%3C/svg%3E`;
-    const ungroupIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M17 7h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1 0 1.43-.98 2.63-2.31 2.98l1.46 1.46C20.88 15.61 22 13.95 22 12c0-2.76-2.24-5-5-5zm-1 6v-2H9.06l2 2H16zM5 7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H5c-1.71 0-3.1-1.39-3.1-3.1 0-1.59 1.21-2.9 2.76-3.07L3.03 7.29C3.62 7.11 4.29 7 5 7zm13.12 11.71l-14.7-14.7L2 5.43l3.66 3.66C4.05 10.03 3 11.89 3 14c0 2.76 2.24 5 5 5h4v-1.9H8c-1.71 0-3.1-1.39-3.1-3.1 0-.32.05-.62.14-.9l8.03 8.03 1.41 1.41 3.64 3.64 1.41-1.41-1.41-1.41z' fill='%23ffffff'/%3E%3C/svg%3E`;
+    const groupIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z' fill='%23043e80'/%3E%3C/svg%3E`;
+    const ungroupIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M17 7h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1 0 1.43-.98 2.63-2.31 2.98l1.46 1.46C20.88 15.61 22 13.95 22 12c0-2.76-2.24-5-5-5zm-1 6v-2H9.06l2 2H16zM5 7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H5c-1.71 0-3.1-1.39-3.1-3.1 0-1.59 1.21-2.9 2.76-3.07L3.03 7.29C3.62 7.11 4.29 7 5 7zm13.12 11.71l-14.7-14.7L2 5.43l3.66 3.66C4.05 10.03 3 11.89 3 14c0 2.76 2.24 5 5 5h4v-1.9H8c-1.71 0-3.1-1.39-3.1-3.1 0-.32.05-.62.14-.9l8.03 8.03 1.41 1.41 3.64 3.64 1.41-1.41-1.41-1.41z' fill='%23043e80'/%3E%3C/svg%3E`;
 
     const gImg = document.createElement('img'); gImg.src = groupIcon;
     const ugImg = document.createElement('img'); ugImg.src = ungroupIcon;
@@ -206,18 +216,18 @@ function renderDeleteIcon(img) {
         ctx.translate(left, top);
         ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
 
-        // Draw shadow/background circle (Dark Gray)
+        // Draw shadow/background circle (Kokumin Yellow)
         ctx.beginPath();
         ctx.arc(0, 0, size / 2, 0, Math.PI * 2, false);
-        ctx.fillStyle = 'rgba(60, 60, 60, 0.9)'; // Sleek Dark Gray
+        ctx.fillStyle = '#f5b500';
         ctx.shadowColor = 'rgba(0,0,0,0.3)';
-        ctx.shadowBlur = 6;
-        ctx.shadowOffsetY = 2;
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 3;
         ctx.fill();
 
         // Stroke for the circle
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
         ctx.stroke();
 
         ctx.drawImage(img, -size / 2 + 6, -size / 2 + 6, size - 12, size - 12);
