@@ -267,7 +267,12 @@ const assetsData = {
         { type: 'policy', label: '手取りを増やす', class: 'style-red' }
     ],
     usagi: usagiFiles.map(name => ({ type: 'usagi', label: name, path: `USAGI/こくみんうさぎ_${name}.png` })),
-    stamp: [{ type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' }],
+    stamp: [
+        { type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' },
+        { type: 'shape-circle', label: 'まる', icon: 'circle' },
+        { type: 'shape-cross', label: 'ばつ', icon: 'close' },
+        { type: 'shape-triangle', label: 'さんかく', icon: 'change_history' }
+    ],
     template: [{ type: 'tpl-1', label: '演説会', icon: 'campaign' }],
     layer: []
 };
@@ -384,7 +389,7 @@ const addKOKUMINText = (type, customText) => {
     const content = customText || '丸山かつき';
     let textObj;
     if (type === 'name-main') {
-        textObj = new fabric.IText(content, { left: center.left, top: center.top, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 120, fill: '#043e80', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke' });
+        textObj = new fabric.IText(content, { left: center.left, top: center.top, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80, fill: '#043e80', stroke: 'white', strokeWidth: 4, skewX: -10, paintFirst: 'stroke' });
         textObj.set('shadow', new fabric.Shadow({ color: '#043e80', blur: 0, offsetX: 4, offsetY: 4 }));
     } else if (type === 'name-sub') {
         textObj = new fabric.IText(content, { left: center.left, top: center.top + 100, originX: 'center', originY: 'center', fontFamily: 'Noto Sans JP', fontWeight: 900, fontSize: 80, fill: '#ffffff', stroke: '#043e80', strokeWidth: 8, skewX: -10, paintFirst: 'stroke' });
@@ -406,10 +411,54 @@ const addImageToCanvas = (path, label) => {
 
 const addKOKUMINStamp = (type) => {
     const center = canvas.getCenter();
+    let obj;
+    const size = 250; // Roughly 1/4 of canvas height/width area
+
     if (type === 'logo-placeholder') {
         const rect = new fabric.Rect({ width: 100, height: 60, fill: '#f5b500', rx: 4, ry: 4 });
         const text = new fabric.Text('国民\n民主党', { fontSize: 20, fontFamily: 'Noto Sans JP', fill: '#043e80', originX: 'center', originY: 'center', fontWeight: 'bold', top: 30, left: 50 });
-        const obj = new fabric.Group([rect, text], { left: center.left, top: center.top, originX: 'center', originY: 'center' });
+        obj = new fabric.Group([rect, text], { left: center.left, top: center.top, originX: 'center', originY: 'center' });
+    } else if (type === 'shape-circle') {
+        obj = new fabric.Circle({
+            radius: size / 2,
+            fill: '#f5b500',
+            left: center.left,
+            top: center.top,
+            originX: 'center',
+            originY: 'center',
+            label: 'まる'
+        });
+    } else if (type === 'shape-cross') {
+        const lineStyles = {
+            width: size,
+            height: 40,
+            fill: '#E60012',
+            originX: 'center',
+            originY: 'center'
+        };
+        const l1 = new fabric.Rect({ ...lineStyles, angle: 45 });
+        const l2 = new fabric.Rect({ ...lineStyles, angle: -45 });
+        obj = new fabric.Group([l1, l2], {
+            left: center.left,
+            top: center.top,
+            originX: 'center',
+            originY: 'center',
+            label: 'ばつ'
+        });
+    } else if (type === 'shape-triangle') {
+        obj = new fabric.Triangle({
+            width: size,
+            height: size * 0.866, // Correct ratio for equilateral triangle
+            fill: '#043e80',
+            left: center.left,
+            top: center.top,
+            originX: 'center',
+            originY: 'center',
+            label: 'さんかく'
+        });
+    }
+
+    if (obj) {
         canvas.add(obj);
         canvas.setActiveObject(obj);
     }
