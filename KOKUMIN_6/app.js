@@ -143,7 +143,54 @@ const setupDeleteControl = () => {
         render: renderDeleteIcon(img),
         cornerSize: 28
     });
+
+    // Grouping Controls
+    const groupIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z' fill='%23ffffff'/%3E%3C/svg%3E`;
+    const ungroupIcon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M17 7h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1 0 1.43-.98 2.63-2.31 2.98l1.46 1.46C20.88 15.61 22 13.95 22 12c0-2.76-2.24-5-5-5zm-1 6v-2H9.06l2 2H16zM5 7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H5c-1.71 0-3.1-1.39-3.1-3.1 0-1.59 1.21-2.9 2.76-3.07L3.03 7.29C3.62 7.11 4.29 7 5 7zm13.12 11.71l-14.7-14.7L2 5.43l3.66 3.66C4.05 10.03 3 11.89 3 14c0 2.76 2.24 5 5 5h4v-1.9H8c-1.71 0-3.1-1.39-3.1-3.1 0-.32.05-.62.14-.9l8.03 8.03 1.41 1.41 3.64 3.64 1.41-1.41-1.41-1.41z' fill='%23ffffff'/%3E%3C/svg%3E`;
+
+    const gImg = document.createElement('img'); gImg.src = groupIcon;
+    const ugImg = document.createElement('img'); ugImg.src = ungroupIcon;
+
+    // Control for ActiveSelection (Multiple items)
+    fabric.ActiveSelection.prototype.controls.groupControl = new fabric.Control({
+        x: -0.5,
+        y: -0.5,
+        offsetY: -20,
+        offsetX: -20,
+        cursorStyle: 'pointer',
+        mouseUpHandler: groupSelectedObjects,
+        render: renderDeleteIcon(gImg), // Reusing the same render style
+        cornerSize: 28
+    });
+
+    // Control for Group (Ungrouping)
+    fabric.Group.prototype.controls.ungroupControl = new fabric.Control({
+        x: -0.5,
+        y: -0.5,
+        offsetY: -20,
+        offsetX: -20,
+        cursorStyle: 'pointer',
+        mouseUpHandler: ungroupSelectedObject,
+        render: renderDeleteIcon(ugImg),
+        cornerSize: 28
+    });
 };
+
+function groupSelectedObjects(eventData, transform) {
+    const target = transform.target;
+    if (target.type !== 'activeSelection') return;
+    target.toGroup();
+    canvas.requestRenderAll();
+    renderLayers();
+}
+
+function ungroupSelectedObject(eventData, transform) {
+    const target = transform.target;
+    if (target.type !== 'group') return;
+    target.toActiveSelection();
+    canvas.requestRenderAll();
+    renderLayers();
+}
 
 function deleteObject(eventData, transform) {
     const target = transform.target;
@@ -356,21 +403,28 @@ const renderAssets = (tab) => {
     });
 };
 
+const expandedGroups = new Set();
+
 const renderLayers = () => {
     const track = document.getElementById('asset-track');
     track.innerHTML = '';
 
     const objects = canvas.getObjects().slice().reverse();
 
-    objects.forEach((obj, index) => {
-        if (obj.name === 'ウォーターマーク') return;
+    const createLayerItem = (obj, depth = 0) => {
+        if (obj.name === 'ウォーターマーク') return null;
 
-        const typeLabel = obj.type === 'i-text' ? 'テキスト' : (obj.type === 'image' ? (obj.label || '画像') : '要素');
-        const content = obj.text ? (obj.text.substring(0, 15) + (obj.text.length > 15 ? '...' : '')) : typeLabel;
+        const typeLabel = obj.type === 'i-text' ? 'テキスト' : (obj.type === 'image' ? (obj.label || '画像') : (obj.type === 'group' ? 'グループ' : '要素'));
+        const content = obj.text ? (obj.text.substring(0, 15) + (obj.text.length > 15 ? '...' : '')) : (obj.label || typeLabel);
+        const isGroup = obj.type === 'group';
+        const isExpanded = expandedGroups.has(obj);
 
         const item = document.createElement('div');
         item.className = 'layer-item' + (canvas.getActiveObject() === obj ? ' active' : '');
+        if (depth > 0) item.style.paddingLeft = (depth * 24 + 12) + 'px';
+
         item.innerHTML = `
+            ${isGroup ? `<span class="material-symbols-rounded group-toggle" style="font-size:16px; margin-right:4px;">${isExpanded ? 'expand_more' : 'chevron_right'}</span>` : ''}
             <div class="layer-info">${content}</div>
             <div class="layer-actions">
                 <button class="layer-action-btn btn-up"><span class="material-symbols-rounded" style="font-size:18px;">expand_less</span></button>
@@ -381,6 +435,12 @@ const renderLayers = () => {
         `;
 
         item.onclick = (e) => {
+            if (e.target.closest('.group-toggle')) {
+                if (isExpanded) expandedGroups.delete(obj);
+                else expandedGroups.add(obj);
+                renderLayers();
+                return;
+            }
             if (e.target.closest('.layer-action-btn')) return;
             canvas.setActiveObject(obj);
             canvas.requestRenderAll();
@@ -397,8 +457,23 @@ const renderLayers = () => {
         };
         item.querySelector('.btn-visibility').onclick = () => { obj.set('visible', !obj.visible); renderLayers(); canvas.requestRenderAll(); };
 
-        track.appendChild(item);
-    });
+        return item;
+    };
+
+    const renderRecursive = (items, depth = 0) => {
+        items.forEach(obj => {
+            const el = createLayerItem(obj, depth);
+            if (el) track.appendChild(el);
+
+            if (obj.type === 'group' && expandedGroups.has(obj)) {
+                // Fabric groups have _objects. We render them reversed to match visual stacking order
+                const children = obj.getObjects().slice().reverse();
+                renderRecursive(children, depth + 1);
+            }
+        });
+    };
+
+    renderRecursive(objects);
 };
 
 const addKOKUMINText = (type, customText) => {
