@@ -237,9 +237,19 @@ const setupInteractions = () => {
 
     // Key Shortcuts
     window.addEventListener('keydown', (e) => {
+        // Undo: Cmd/Ctrl + Z
         if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
             e.preventDefault();
             undo();
+        }
+        // Delete: Delete or Backspace (prevent backspace from navigating away)
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            const activeObj = canvas.getActiveObject();
+            if (activeObj && !activeObj.isEditing) { // Don't delete while editing text
+                e.preventDefault();
+                canvas.remove(activeObj);
+                canvas.requestRenderAll();
+            }
         }
     });
 };
@@ -271,9 +281,13 @@ const assetsData = {
         { type: 'logo-placeholder', label: '党ロゴ', icon: 'flag' },
         { type: 'shape-circle', label: 'まる', icon: 'circle' },
         { type: 'shape-cross', label: 'ばつ', icon: 'close' },
-        { type: 'shape-triangle', label: 'さんかく', icon: 'change_history' }
+        { type: 'shape-triangle', label: 'さんかく', icon: 'change_history' },
+        { type: 'shape-arrow', label: '時刻ベース', icon: 'trending_flat' }
     ],
-    template: [{ type: 'tpl-1', label: '演説会', icon: 'campaign' }],
+    template: [
+        { type: 'tpl-1', label: '演説会', icon: 'campaign' },
+        { type: 'tpl-speech', label: 'スケジュール', icon: 'calendar_month' }
+    ],
     layer: []
 };
 
@@ -307,6 +321,9 @@ const renderAssets = (tab) => {
         if (tab === 'text') {
             div.innerHTML = `<div class="preview-text ${item.class}">${item.label}</div>`;
             div.onclick = () => addKOKUMINText(item.type, item.label);
+        } else if (tab === 'template') {
+            div.innerHTML = `<span class="material-symbols-rounded" style="font-size:28px;color:rgba(255,255,255,0.8);">${item.icon}</span><span style="font-size:10px;font-weight:bold;margin-top:4px;">${item.label}</span>`;
+            div.onclick = () => addKOKUMINTemplate(item.type);
         } else if (tab === 'usagi') {
             div.innerHTML = `<img src="${item.path}" style="width:60px;height:60px;object-fit:contain;">`;
             div.onclick = () => addImageToCanvas(item.path, item.label);
@@ -405,6 +422,7 @@ const addImageToCanvas = (path, label) => {
         img.scale(0.2);
         img.set({ left: canvas.getCenter().left, top: canvas.getCenter().top, originX: 'center', originY: 'center', label: label });
         canvas.add(img);
+        img.bringToFront();
         canvas.setActiveObject(img);
     });
 };
@@ -456,11 +474,97 @@ const addKOKUMINStamp = (type) => {
             originY: 'center',
             label: 'さんかく'
         });
+    } else if (type === 'shape-arrow') {
+        const w = 200;
+        const h = 60;
+        const p = 30; // Point width
+        const path = `M 0 0 L ${w} 0 L ${w + p} ${h / 2} L ${w} ${h} L 0 ${h} Z`;
+        obj = new fabric.Path(path, {
+            fill: '#f5b500',
+            left: center.left,
+            top: center.top,
+            originX: 'center',
+            originY: 'center',
+            label: '時刻ベース'
+        });
     }
 
     if (obj) {
         canvas.add(obj);
         canvas.setActiveObject(obj);
+    }
+};
+
+const addKOKUMINTemplate = (type) => {
+    if (type === 'tpl-1') {
+        // ... Existing basic template if any (currently it's a placeholder)
+        alert('演説会テンプレート案を構築します');
+    } else if (type === 'tpl-speech') {
+        // Clear canvas for a fresh start or add as overlay?
+        // Let's build the layout from the image
+
+        // 1. Right Blue Area
+        const blueBg = new fabric.Rect({
+            left: 600,
+            top: 0,
+            width: 600,
+            height: 675,
+            fill: '#043e80',
+            selectable: true,
+            label: '背景ブルー'
+        });
+        canvas.add(blueBg);
+        blueBg.sendToBack();
+
+        // 2. Title "街頭演説会"
+        const title = new fabric.IText('街頭\n演説会', {
+            left: 750,
+            top: 100,
+            fontFamily: 'Noto Sans JP',
+            fontWeight: 900,
+            fontSize: 100,
+            fill: '#ffffff',
+            lineHeight: 0.9,
+            textAlign: 'center'
+        });
+        canvas.add(title);
+
+        // 3. Example Schedule Row
+        const addScheduleRow = (y, time, location) => {
+            const w = 150;
+            const h = 40;
+            const p = 20;
+            const path = `M 0 0 L ${w} 0 L ${w + p} ${h / 2} L ${w} ${h} L 0 ${h} Z`;
+            const base = new fabric.Path(path, {
+                left: 620,
+                top: y,
+                fill: '#f5b500',
+                label: '時刻ベース'
+            });
+            const timeText = new fabric.Text(time, {
+                left: 630,
+                top: y + 5,
+                fontSize: 28,
+                fontFamily: 'Noto Sans JP',
+                fontWeight: 900,
+                fill: '#043e80'
+            });
+            const locText = new fabric.Text(location, {
+                left: 810,
+                top: y + 5,
+                fontSize: 24,
+                fontFamily: 'Noto Sans JP',
+                fontWeight: 900,
+                fill: '#ffffff'
+            });
+            canvas.add(base, timeText, locText);
+        };
+
+        addScheduleRow(250, '10:00', '日暮里駅前ロータリー');
+        addScheduleRow(320, '11:00', '御徒町駅');
+        addScheduleRow(390, '11:45', '大手町サンケイビル前');
+
+        canvas.requestRenderAll();
     }
 };
 
