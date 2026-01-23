@@ -1,6 +1,6 @@
 
 // KOKUMIN_6 Core Application Logic
-// Version: 1.0.0
+// Version: 1.1.0
 
 let canvas;
 let undoStack = [];
